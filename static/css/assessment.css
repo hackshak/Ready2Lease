@@ -1,0 +1,174 @@
+.assessment-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical center */
+    align-items: center;     /* horizontal center */
+    padding: 20px;
+}
+
+/* Form card */
+form#assessmentForm {
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Headings */
+.assessment-heading{
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: black;
+    margin-bottom: 20px;
+}
+
+/* Progress bar */
+.progress-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.progress-bar {
+    background: #eee;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.progress {
+    background: #FBBF24;
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+
+/* Form steps */
+.form-step {
+    display: none;
+}
+
+.form-step-active {
+    display: block;
+}
+
+/* Labels and inputs */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 80px;
+}
+
+/* Checkbox group */
+input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.form-step div label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-next{
+    background: #FBBF24;
+    color: #fff;
+}
+.btn-next:hover {
+    background: #ab821a;
+}
+
+.Calculate-btn {
+    background: #FBBF24;
+    color: #fff;
+}
+
+.Calculate-btn :hover {
+    background: #ab821a;
+}
+
+
+
+
+.btn-prev {
+    background: #ccc;
+    margin-right: 10px;
+}
+
+.btn-prev:hover {
+    background: #b3b3b3;
+}
+
+/* Result container */
+#result {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    color: #333;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+    form#assessmentForm {
+        padding: 30px 20px;
+    }
+    button {
+        width: 100%;
+        margin-top: 15px;
+    }
+    .btn-prev {
+        margin-right: 0;
+    }
+}

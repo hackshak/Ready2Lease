@@ -1,0 +1,569 @@
+/* ---------------- HERO SECTION ---------------- */
+.hero {
+    position: relative;
+    height: 100vh;
+    background: url("../images/heroSection_image.jpeg") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.71);
+}
+
+.hero-content {
+    position: relative;
+    color: #fff;
+    max-width: 800px;
+    z-index: 2;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 18px 30px;
+    background-color: #facc15;
+    color: #000;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.hero-btn:hover {
+    background-color: #eab308;
+}
+
+
+
+
+
+
+/* ---------------- PROCESS SECTION ---------------- */
+.process-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 20px;
+    background: #f9fafb;
+    width: 100%;
+    text-align: center;
+}
+
+.process-container {
+    max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box; /* prevent overflow */
+}
+
+/* Label & Title */
+.section-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #facc15;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-title {
+    font-size: 36px;
+    margin-bottom: 50px;
+    font-weight: 700;
+}
+
+/* Cards Wrapper (only this is horizontal flex) */
+.process-cards-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* wrap cards on small screens */
+    gap: 30px;
+    width: 100%;
+}
+
+/* Individual Card */
+.process-card {
+    background: #fff;
+    padding: 35px 25px;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    flex: 1 1 300px;
+    max-width: 350px;
+    box-sizing: border-box;
+    transition: 0.3s ease;
+}
+
+.process-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Icon */
+.icon {
+    font-size: 40px;
+    color: #facc15; /* icon color */
+    margin-bottom: 20px;
+    width: 70px;        /* circle size */
+    height: 70px;       /* circle size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;  /* makes it circular */
+    background-color: rgb(14 0 14); /* circle background */
+}
+
+/* Card Heading */
+.process-card h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+/* Card Paragraph */
+.process-card p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* Button */
+.process-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #facc15;                /* text color */
+    padding: 10px 18px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.process-btn i {
+    transition: 0.3s ease;
+}
+
+.process-btn:hover {
+    background-color: #eab308;  /* darker yellow on hover */
+    color: white;
+}
+
+.process-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 992px) {
+    .section-title {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .process-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    .section-title {
+        font-size: 26px;
+    }
+}
+
+
+
+
+
+
+
+/* ---------------- PRICING SECTION ---------------- */
+.pricing-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 20px;  /* slightly larger padding */
+    width: 100%;
+    text-align: center;
+}
+
+.pricing-container {
+    max-width: 1200px;  /* wider container */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Section Heading */
+.pricing-title {
+    font-size: 36px;  
+    margin-bottom: 50px;
+    font-weight: 700;
+}
+
+/* Cards wrapper */
+.pricing-cards-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px; /* slightly larger gap */
+}
+
+/* Individual Card */
+.pricing-card {
+    background: #fff;
+    padding: 45px 30px;  /* larger padding */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+    flex: 1 1 350px;     /* wider card */
+    max-width: 380px;    /* increased max width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;  /* for badge positioning */
+    transition: 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Free card border */
+.pricing-free {
+    border: 2px solid #facc15; /* yellow border */
+}
+
+/* Premium card background and text */
+.pricing-premium {
+    background-color: rgb(14,0,14);
+    color: #fff;
+}
+
+/* Premium badge - stick inside top-right corner */
+.premium-badge {
+    position: absolute;
+    top: 15px;    /* inside card, not outside */
+    right: 15px;  /* inside card */
+    background-color: #facc15;
+    color: #000;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+/* Card Heading */
+.pricing-card h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Small paragraph */
+.pricing-card p {
+    font-size: 15px;
+    color: inherit; /* match card text color */
+    margin-bottom: 25px;
+}
+
+/* Price */
+.price {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.price span {
+    font-size: 16px;
+    font-weight: 500;
+    color: inherit;
+}
+
+/* Feature list */
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 35px;
+    width: 100%;
+    text-align: left;
+}
+
+.pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: inherit;
+}
+
+/* Tick icons */
+.pricing-features li i {
+    font-size: 16px;
+    color: #facc15;
+}
+
+/* Free plan ticks - unchecked */
+.pricing-free .pricing-features li i {
+    color: #777;  /* grey for free plan */
+}
+
+/* Button */
+.pricing-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #facc15;
+    color: #000;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.pricing-btn:hover {
+    background-color: #eab308;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 992px) {
+    .pricing-title {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .pricing-cards-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pricing-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    .pricing-title {
+        font-size: 26px;
+    }
+}
+
+
+
+/* ---------------- FEATURES SECTION ---------------- */
+.features-section {
+    padding: 80px 20px;
+    background-color: #0E0E0E;
+    width: 100%;
+}
+
+.features-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Heading + Paragraph */
+.features-section .section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.features-section .section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: white;
+}
+
+.features-section .section-header p {
+    font-size: 1.1rem;
+    color: #555;
+    color: white;
+}
+
+/* Features Grid using Flex */
+.features-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Feature Box */
+.feature-box {
+    flex: 1 1 calc(20% - 16px); /* 5 per row desktop */
+    min-width: 180px;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid;
+    border-color: rgb(51 51 51 / 1);;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* align everything to the left */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.feature-box:hover {
+    border-color: #fbbf24;
+}
+
+/* Icon */
+.feature-box .feature-icon {
+    font-size: 1.5rem; /* smaller icon */
+    color: #fbbf24;
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover .feature-icon {
+    transform: scale(1.3);
+}
+
+/* Heading + text */
+.feature-box h4 {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: white;
+    text-align: left;
+}
+
+.feature-box p {
+    font-size: 0.95rem;
+    color: #555;
+    text-align: left;
+}
+
+/* Unlock Button */
+.section-footer {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.btn-unlock {
+    background-color: #fbbf24;
+    color: black;
+    padding: 18px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-unlock:hover {
+    background-color: #e6ac00;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 1024px) {
+    .feature-box {
+        flex: 1 1 calc(33.33% - 16px); /* 3 per row tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-box {
+        flex: 1 1 calc(50% - 16px); /* 2 per row mobile landscape */
+    }
+}
+
+@media (max-width: 480px) {
+    .feature-box {
+        flex: 1 1 100%; /* 1 per row mobile portrait */
+    }
+    .features-section .section-header h2 {
+        font-size: 2rem;
+    }
+}
+
+
+
+
+
+/* ---------------- FAQ SECTION ---------------- */
+.faq-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    width: 100%;
+    min-height: 80vh; /* vertically center */
+    color: #2C3E50;
+}
+
+.faq-container {
+    max-width: 800px;
+    width: 100%;
+}
+
+.faq-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #111;
+}
+
+/* Individual FAQ Item */
+.faq-item {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+    font-size: 15px;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    font-size: 14px;
+    color: #4B5563;
+    margin-top: 8px;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+/* Active state */
+.faq-item.active .faq-answer {
+    max-height: 200px; /* enough for most answers */
+    padding-top: 10px;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .faq-title {
+        font-size: 2rem;
+    }
+    .faq-question {
+        font-size: 1rem;
+    }
+}

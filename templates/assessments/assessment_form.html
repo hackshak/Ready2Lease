@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="assessment-container">
+    <h1 class="assessment-heading">Readiness Assessment</h1>
+    <div class="progress-container">
+        <div class="progress-labels">
+            <span class="progress-step-label">Step 1/4</span>
+            <span class="progress-percent-label">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+
+    <form id="assessmentForm">
+
+        <!-- Step 1 -->
+        <div class="form-step form-step-active">
+            <h2>Let's start with the basics</h2>
+            <label>What is your full name?</label>
+            <input type="text" name="full_name" required>
+
+            <label>Where are you looking to rent?</label>
+            <input type="text" id="locationInput" placeholder="Enter suburb or postcode" autocomplete="off" required>
+            <select id="locationSelect" required>
+                <!-- Autocomplete options -->
+            </select>
+
+            <!-- Hidden structured fields sent to backend -->
+            <input type="hidden" id="selectedPostcode" name="postcode" required>
+            <input type="hidden" id="selectedCity" name="city" required>
+            <input type="hidden" id="selectedLat" name="lat" required>
+            <input type="hidden" id="selectedLon" name="lon" required>
+
+            <label>What is your weekly rent budget?</label>
+            <input type="number" name="monthly_rent_budget" required min="0">
+
+            <button type="button" class="btn-next">Next</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-step">
+            <h2>Step 2: Employment & Rental History</h2>
+            <label>Employment Status</label>
+            <select name="employment_status" required>
+                <option value="">Select</option>
+                <option value="full_time">Full time</option>
+                <option value="part_time">Part time</option>
+                <option value="self_employed">Self-employed</option>
+                <option value="student">Student</option>
+                <option value="retired">Retired</option>
+            </select>
+
+            <label>Time in Current Role</label>
+            <input type="text" name="time_in_role" required placeholder="e.g. 2 years">
+
+            <label>Rental History</label>
+            <select name="rental_history" required>
+                <option value="">Select</option>
+                <option value="rented_locally">Rented locally</option>
+                <option value="rented_overseas">Rented overseas</option>
+                <option value="first_time_renter">First-time renter</option>
+                <option value="owned_home">Owned previous home</option>
+            </select>
+
+            <button type="button" class="btn-prev">Back</button>
+            <button type="button" class="btn-next">Next</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-step">
+            <h2>Step 3: Income & Documents</h2>
+            <label>Household Income</label>
+            <input type="number" name="household_income" required min="0">
+            <select name="household_income_period" required>
+                <option value="annual">Annually</option>
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+            </select>
+
+            <label>Individual Income</label>
+            <input type="number" name="individual_income" required min="0">
+            <select name="individual_income_period" required>
+                <option value="annual">Annually</option>
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+            </select>
+
+            <label>Documents Readiness</label>
+            <div>
+                <label><input type="checkbox" name="documents" value="passport"> Passport/Birth Cert</label>
+                <label><input type="checkbox" name="documents" value="driver_license"> Driver license</label>
+                <label><input type="checkbox" name="documents" value="medicare"> Medicare card</label>
+                <label><input type="checkbox" name="documents" value="bank_statement"> Bank statement</label>
+                <label><input type="checkbox" name="documents" value="tenant_ledger"> Tenant ledger</label>
+            </div>
+
+            <label>Proof of Income</label>
+            <select name="proof_of_income" required>
+                <option value="">Select</option>
+                <option value="recent_payslip">Recent payslip</option>
+                <option value="bank_statements">Bank statements only</option>
+                <option value="none">None</option>
+            </select>
+
+            <button type="button" class="btn-prev">Back</button>
+            <button type="button" class="btn-next">Next</button>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="form-step">
+            <h2>Step 4: Household & Context</h2>
+            <label>Moving With:</label>
+            <input type="number" name="moving_with_adults" placeholder="Adults" required min="0">
+            <input type="number" name="moving_with_children" placeholder="Children" required min="0">
+            <input type="number" name="moving_with_pets" placeholder="Pets" required min="0">
+
+            <label>Context / History Issues</label>
+            <textarea name="context_issues" required placeholder="If none, write 'None'"></textarea>
+
+            <button type="button" class="btn-prev">Back</button>
+            <button type="submit" class="Calculate-btn">Calculate Readiness</button>
+        </div>
+
+    </form>
+
+    <div id="result" style="display:none; max-width:600px; margin:20px auto;"></div>
+</div>
+
+
+
+
+{% endblock content %}

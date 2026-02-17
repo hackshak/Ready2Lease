@@ -1,0 +1,122 @@
+/* ---------------- SIGNUP SECTION ---------------- */
+.signup-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.signup-box {
+    background-color: #fff;
+    padding: 50px 45px;      /* Increased padding for larger box */
+    border-radius: 12px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);  /* Slightly stronger shadow */
+    max-width: 500px;        /* Wider box */
+    width: 100%;
+    text-align: center;
+}
+
+.signup-box h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;        /* Larger heading */
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #111;
+}
+
+.signup-box p {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;        /* Slightly bigger paragraph */
+    color: #555;
+    margin-bottom: 35px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 25px;     /* More spacing between fields */
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #111;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 14px 15px;     /* Larger input height */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+}
+
+.btn-signup {
+    width: 100%;
+    padding: 14px 0;        /* Slightly taller button */
+    background-color: #fbbf24;
+    color: #fff;
+    font-size: 17px;         /* Slightly larger font */
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-signup:hover {
+    background-color: #e6ac00;
+}
+
+.login-link {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #555;
+}
+
+.login-link a {
+    color: #fbbf24;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    color: #e6ac00;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .signup-box {
+        padding: 40px 25px;  /* Keep it slightly smaller for small screens */
+        max-width: 100%;
+    }
+
+    .signup-box h2 {
+        font-size: 28px;
+    }
+
+    .signup-box p {
+        font-size: 14px;
+    }
+
+    .btn-signup {
+        font-size: 16px;
+    }
+}

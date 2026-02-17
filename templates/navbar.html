@@ -1,0 +1,43 @@
+<!-- Navbar HTML -->
+<nav class="navbar"  id="home">
+    <div class="container">
+        <!-- Logo -->
+        <a href="{% url 'home' %}" class="logo">
+            <span class="logo-emoji">&#10003;</span>
+            <span>Ready Rent</span>
+        </a>
+
+        <!-- Hamburger menu (for mobile) -->
+        <button class="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Nav Links -->
+        <div class="nav-links">
+            <ul class="nav-items">
+                <li><a href="{% url 'home' %}#how-it-works">How It Works</a></li>
+                <li><a href="{% url 'home' %}#contact">Contact</a></li>
+                <li><a href="{% url 'home' %}#pricing">Pricing</a></li>
+                <li><a href="{% url 'home' %}#faq">Faq</a></li>
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="{% url 'login' %}" class="btn nav-btn-login">Login</a>
+                <a href="{% url 'signup' %}" class="btn nav-btn-signup">Sign Up</a>
+                <a href="#" class="nav-btn-logout" id="logoutBtn" 
+                style="
+                display:none;
+                padding:10px 16px;
+                background-color: #FACC15;
+                color:white;
+                border-radius:10px;
+                text-decoration:none;
+                margin-left:15px
+                ">Logout</a>
+            </div>
+
+        </div>
+    </div>
+</nav>

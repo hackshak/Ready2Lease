@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Your Rental Application Keeps Getting Rejected?</h1>
+        <p>
+            It's not your fault. You're just not "agent-ready" yet.
+            Missing docs, weak references, and bad formatting are costing you homes.
+            Get a readiness score, fix your gaps, and generate an agent-ready dossier in minutes.
+        </p>
+        <a href="{% url 'assessment-page' %}" class="hero-btn">Start Free Readiness Check</a>
+    </div>
+</section>
+
+<!-- Process Section -->
+<section class="process-section" id="how-it-works">
+    <div class="process-container">
+
+        <!-- Label & Heading -->
+        <span class="section-label">Process</span>
+        <h2 class="section-title">From Rejected to Approved</h2>
+
+        <!-- Cards wrapper (flex only here) -->
+        <div class="process-cards-wrapper">
+
+            <div class="process-card">
+                <div class="icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <h3>1. Check Readiness</h3>
+                <p>Take our free 2-minute quiz to see your score and find red flags.</p>
+                <a href="#" class="process-btn">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="process-card">
+                <div class="icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h3>2. Fix Issues</h3>
+                <p>Use our guides and tools to fill gaps in your ID, income, or history.</p>
+                <a href="#" class="process-btn">Explore <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="process-card">
+                <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>3. Get Approved</h3>
+                <p>Apply with a Premium Tenant Dossier that agents love.</p>
+                <a href="#" class="process-btn">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+    <div class="pricing-container">
+
+        <!-- Section Heading -->
+        <h2 class="pricing-title">Choose Your Advantage</h2>
+
+        <!-- Cards Wrapper -->
+        <div class="pricing-cards-wrapper">
+
+            <!-- Free Card -->
+            <div class="pricing-card pricing-free">
+                <h3>Free Account</h3>
+                <p>Good for understanding the basics.</p>
+                <div class="price">
+                    $0<span></span>
+                </div>
+                <ul class="pricing-features">
+                    <li><i class="fa-regular fa-circle"></i> Basic Readiness Score</li>
+                    <li><i class="fa-regular fa-circle"></i> Access to Blog & Guides</li>
+                    <li><i class="fa-regular fa-circle"></i> Basic Checklist</li>
+                </ul>
+                <a href="#" class="pricing-btn">Start Free</a>
+            </div>
+
+            <!-- Premium Card -->
+            <div class="pricing-card pricing-premium">
+                <div class="premium-badge">Most Popular</div>
+                <h3>Premium</h3>
+                <p>The complete toolkit to win the property.</p>
+                <div class="price">
+                    $19<span>one-time</span>
+                </div>
+                <ul class="pricing-features">
+                    <li><i class="fa-solid fa-circle-check"></i> Full Readiness Analysis</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Official Tenant Dossier PDF</li>
+                    <li><i class="fa-solid fa-circle-check"></i> AI Rental Coach (24/7)</li>
+                    <li><i class="fa-solid fa-circle-check"></i> All 15+ Premium Tools</li>
+                </ul>
+                <a href="#" class="pricing-btn">Get Premium</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+
+        <!-- Heading + Paragraph -->
+        <div class="section-header">
+            <h2>Discover All Features</h2>
+            <p>Explore the powerful features of Ready Rent that make renting easy and fast.</p>
+        </div>
+
+        <!-- Features Flex Grid -->
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                <h4>Official Tenant Dossier</h4>
+                <p>Agent-ready PDF resume</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                <h4>Readiness Score Breakdown</h4>
+                <p>Detailed 0-100 analysis</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+                <h4>Rank Estimate</h4>
+                <p>See where you stand vs others</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-search"></i></div>
+                <h4>Gap Analysis</h4>
+                <p>Identify missing requirements</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-map-signs"></i></div>
+                <h4>Customized Action Plan</h4>
+                <p>Step-by-step roadmap</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-envelope"></i></div>
+                <h4>Smart Cover Letter</h4>
+                <p>AI-generated & tailored</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
+                <h4>Reference Templates</h4>
+                <p>Scripts for your referees</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                <h4>Budget Tools</h4>
+                <p>Prove affordability easily</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-folder-open"></i></div>
+                <h4>Document Tracker</h4>
+                <p>Manage 100-point ID</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                <h4>Applications Tracker</h4>
+                <p>Log every submission</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-home"></i></div>
+                <h4>Inspection Prep</h4>
+                <p>Checklist for viewings</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-plane"></i></div>
+                <h4>New Migrant Guide</h4>
+                <p>Strategy for new arrivals</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                <h4>Gap Explainer</h4>
+                <p>Templates for resume gaps</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-paw"></i></div>
+                <h4>Pet-Friendly Pack</h4>
+                <p>Pet resume builder</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <h4>AI Coach</h4>
+                <p>24/7 Rental Expert Chat</p>
+            </div>
+        </div>
+
+        <!-- Unlock button -->
+        <div class="section-footer">
+            <a href="#" class="btn-unlock">Unlock All Features Now</a>
+        </div>
+
+    </div>
+</section>
+
+
+
+
+<!-- FAQ Section -->
+<section class="faq-section" id="faq">
+    <div class="faq-container">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>1. What is Ready Rent?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Ready Rent is a platform that helps renters become agent-ready by providing readiness scores, templates, and AI-guided tools.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>2. How do I get my readiness score?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Take our free 2-minute quiz, and the system will calculate your score and highlight any gaps in your application.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>3. Can I use Ready Rent for free?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yes! The Free Account gives access to basic readiness tools, blog guides, and a simple checklist.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>4. What’s included in the Premium plan?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Premium includes full readiness analysis, official tenant dossier PDF, AI rental coach, and access to all 15+ premium tools.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>5. How secure is my information?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                We use enterprise-grade encryption and do not share your personal data with third parties.
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+{% include "footer.html" %}
+{% endblock content %}
