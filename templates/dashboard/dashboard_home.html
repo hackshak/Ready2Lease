@@ -1,0 +1,867 @@
+{% include "sidebar.html" %}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rental Readiness Dashboard — Home</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0f1730;
+      --text:#e9eefc;
+      --muted:#a9b4d6;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 14px 30px rgba(0,0,0,.35);
+      --radius:18px;
+
+      --good:#28d17c;
+      --mid:#f7c948;
+      --bad:#ff5a7a;
+
+      --primary:#6c7dff;
+      --primary2:#8b5cf6;
+
+      --chip: rgba(255,255,255,.08);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(108,125,255,.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(139,92,246,.22), transparent 60%),
+        radial-gradient(900px 600px at 50% 120%, rgba(40,209,124,.14), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 18px 60px;
+    }
+
+    .knob{
+      width:20px;height:20px;
+      border-radius:999px;
+      position:absolute;
+      top:2px; left:2px;
+      background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.6));
+      transition: transform .18s ease;
+      box-shadow: 0 8px 16px rgba(0,0,0,.35);
+    }
+
+
+    .grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: rgba(17,26,51,.72);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      overflow:hidden;
+      position:relative;
+    }
+    .card.small{ padding:14px; }
+    .card h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.1px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:12px;
+      margin:0;
+      line-height:1.45;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+
+    .scoreWrap{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .scoreLeft{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      min-width: 260px;
+      flex: 1 1 auto;
+    }
+
+    .ring{
+      width:84px;height:84px;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(17,26,51,1) 58%, transparent 59%),
+        conic-gradient(var(--good) 0deg, var(--good) var(--deg), rgba(255,255,255,.10) var(--deg));
+      border:1px solid var(--border);
+      box-shadow: 0 12px 24px rgba(0,0,0,.25);
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .ring b{
+      font-size:22px;
+      letter-spacing:-.5px;
+    }
+    .ring span{
+      font-size:10px;
+      color:var(--muted);
+      margin-top:-2px;
+      display:block;
+      text-align:center;
+    }
+
+    .statusBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      color: var(--text);
+      width: fit-content;
+    }
+    .dot{
+      width:9px;height:9px;border-radius:999px;
+      background: var(--mid);
+      box-shadow: 0 0 0 4px rgba(247,201,72,.12);
+    }
+
+    .cta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+      flex: 1 1 auto;
+      min-width: 260px;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      font-weight:650;
+      letter-spacing:.1px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 12px 24px rgba(108,125,255,.20);
+      transition: transform .12s ease, filter .12s ease;
+      font-size:12px;
+    }
+    button:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+    button:active{ transform: translateY(0px); filter: brightness(.98); }
+
+    .btnGhost{
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--border);
+      box-shadow:none;
+      font-weight:600;
+      color: var(--text);
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .kpi .item{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
+      padding:10px;
+    }
+    .kpi .item .label{
+      color: var(--muted);
+      font-size:11px;
+      margin-bottom:6px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .kpi .item .value{
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.1px;
+    }
+    .chip{
+      background: var(--chip);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:11px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .breakdown{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .barRow{
+      display:grid;
+      grid-template-columns: 150px 1fr 40px;
+      gap:10px;
+      align-items:center;
+    }
+    .barRow .name{
+      font-size:12px;
+      color: var(--text);
+      opacity:.95;
+    }
+    .track{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid var(--border);
+      overflow:hidden;
+      position:relative;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(40,209,124,.9), rgba(108,125,255,.9));
+      transition: width .4s ease;
+    }
+    .pct{
+      font-size:11px;
+      color: var(--muted);
+      text-align:right;
+    }
+
+    .steps{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .step{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .step .left{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      min-width: 0;
+      flex:1 1 auto;
+    }
+    .step .icon{
+      width:34px;height:34px;border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--border);
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      flex: 0 0 auto;
+    }
+    .step h3{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.1px;
+    }
+    .step p{
+      margin:4px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .step .meta{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .impact{
+      display:inline-flex;
+      gap:6px;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(40,209,124,.12);
+      color: rgba(40,209,124,.95);
+      font-size:11px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .lock{
+      filter: saturate(.85) contrast(.98);
+      position:relative;
+    }
+    .lock::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(11,16,32,.05), rgba(11,16,32,.55));
+      pointer-events:none;
+    }
+    .lockedLabel{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius: 14px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    .twoCol{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+    }
+
+    .activity{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .act{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
+      padding:10px;
+    }
+    .act .bubble{
+      width:30px;height:30px;border-radius: 12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.07);
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color: var(--text);
+      flex: 0 0 auto;
+    }
+    .act b{ font-size:12px; }
+    .act p{ margin:3px 0 0; color:var(--muted); font-size:12px; line-height:1.45;}
+
+    .premiumTeaser{
+      margin-top:16px;
+      padding:14px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.16);
+      background: linear-gradient(135deg, rgba(108,125,255,.16), rgba(139,92,246,.14));
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .premiumTeaser .left{
+      min-width: 260px;
+    }
+    .premiumTeaser h3{
+      margin:0;
+      font-size:14px;
+    }
+    .premiumTeaser p{
+      margin:4px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      border:1px solid var(--border);
+      background: rgba(17,26,51,.9);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding:10px 12px;
+      color: var(--text);
+      font-size:12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 20;
+      max-width: calc(100vw - 24px);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    /* Responsive */
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+      .twoCol{ grid-template-columns: 1fr; }
+      .barRow{ grid-template-columns: 130px 1fr 40px; }
+      .topbar{ position: static; }
+    }
+    @media (max-width: 520px){
+      .barRow{ grid-template-columns: 1fr; }
+      .pct{ text-align:left; }
+      .cta{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+
+    <!-- Top grid: Score + Approval -->
+    <div class="grid">
+
+      <!-- Readiness Snapshot -->
+      <section class="card" id="snapshotCard">
+        <h2>Readiness Snapshot</h2>
+
+        <div class="scoreWrap">
+          <div class="scoreLeft">
+            <div class="ring" id="scoreRing" style="--deg: 0deg;">
+              <div style="text-align:center">
+                <b id="scoreValue">—</b>
+                <span>/ 100</span>
+              </div>
+            </div>
+
+            <div style="min-width: 220px;">
+              <div class="statusBadge" id="statusBadge">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">—</span>
+              </div>
+              <p class="sub" id="scoreSummary" style="margin-top:8px;">
+                —
+              </p>
+            </div>
+          </div>
+
+          <div class="cta">
+            <button id="btnImprove">Improve My Score</button>
+            <button class="btnGhost" id="btnViewPlan">View Improvement Plan</button>
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="item">
+            <div class="label">
+              <span>Last Assessment</span>
+              <span class="chip" id="assessDateChip">—</span>
+            </div>
+            <div class="value" id="lastAssessment">—</div>
+          </div>
+
+          <div class="item">
+            <div class="label">
+              <span>Score Trend</span>
+              <span class="chip" id="trendChip">—</span>
+            </div>
+            <div class="value" id="scoreTrend">—</div>
+          </div>
+
+          <div class="item">
+            <div class="label">
+              <span>Income-to-Rent</span>
+              <span class="chip" id="ratioChip">—</span>
+            </div>
+            <div class="value" id="incomeRentRatio">—</div>
+          </div>
+
+          <div class="item">
+            <div class="label">
+              <span>Recommended Max Rent</span>
+              <span class="chip">Weekly</span>
+            </div>
+            <div class="value" id="recommendedRent">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Landlord Confidence Meter -->
+      <section class="card small" id="confidenceCard">
+        <h2>Landlord Confidence Level</h2>
+        <p class="sub" id="confidenceDesc">—</p>
+
+        <div style="margin-top:14px;">
+          <div class="statusBadge" id="confidenceBadge" style="width:100%; justify-content:center;">
+            <span class="dot" id="confidenceDot"></span>
+            <span id="confidenceText">—</span>
+          </div>
+
+          <div style="margin-top:12px;">
+            <p class="sub" style="margin:0 0 8px;">What this means</p>
+            <div class="activity">
+              <div class="act">
+                <div class="bubble">✓</div>
+                <div>
+                  <b id="confLine1">—</b>
+                  <p id="confLine1Sub">—</p>
+                </div>
+              </div>
+              <div class="act">
+                <div class="bubble">↗</div>
+                <div>
+                  <b id="confLine2">—</b>
+                  <p id="confLine2Sub">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+
+    <!-- Area Snapshot + Recent Activity -->
+    <div class="twoCol">
+
+      <section class="card" id="areaCard">
+        <h2>Area & Affordability Snapshot</h2>
+        <p class="sub">Based on your selected postcode and current inputs.</p>
+
+        <div class="kpi" style="margin-top:12px;">
+          <div class="item">
+            <div class="label">
+              <span>Selected Postcode</span>
+              <span class="chip">AU</span>
+            </div>
+            <div class="value" id="postcodeVal">—</div>
+          </div>
+          <div class="item">
+            <div class="label">
+              <span>Avg Rent in Area</span>
+              <span class="chip">Weekly</span>
+            </div>
+            <div class="value" id="avgRent">—</div>
+          </div>
+          <div class="item">
+            <div class="label">
+              <span>Your Target Rent</span>
+              <span class="chip" id="targetChip">—</span>
+            </div>
+            <div class="value" id="targetRent">—</div>
+          </div>
+          <div class="item">
+            <div class="label">
+              <span>Affordability</span>
+              <span class="chip" id="affordChip">—</span>
+            </div>
+            <div class="value" id="affordability">—</div>
+          </div>
+        </div>
+
+        <div class="premiumTeaser lock" id="premiumInsightsLock" style="margin-top:16px;">
+          <div class="left">
+            <h3>🔒 Premium Insight</h3>
+            <p>Unlock deeper approval probability, competitiveness in your area, and risk-flag detection.</p>
+          </div>
+          <div>
+            <button id="btnUpgradeFromArea">Upgrade to Premium</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="activityCard">
+        <h2>Recent Activity</h2>
+        <p class="sub">Your latest readiness actions and updates.</p>
+
+        <div class="activity" id="activityList"></div>
+
+        <div class="premiumTeaser" id="premiumTeaser" style="display:none;">
+          <div class="left">
+            <h3>Unlock your full dashboard</h3>
+            <p>Premium gives you detailed approval probability, competitiveness ranking, risk alerts, and downloadable summary.</p>
+          </div>
+          <div>
+            <button id="btnUpgrade">Upgrade to Premium</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">Saved.</div>
+
+
+
+
+
+
+
+
+
+
+  <script>
+const state = {
+  isPremium: false,
+  user: { name: "" },
+  postcode: "",
+  suburb: "",
+  lastAssessmentISO: "",
+  score: 0,
+  scorePrev: 0,
+  incomeWeekly: 0,
+  targetRentWeekly: 0,
+  avgRentWeekly: 0,
+  breakdown: [],
+  steps: [],
+  activity: []
+};
+
+// ----------------------------
+// Helpers
+// ----------------------------
+const $ = (id) => document.getElementById(id);
+
+function formatAUD(n){
+  const s = Math.round(n || 0).toString();
+  return "$" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function datePretty(iso){
+  if(!iso) return "—";
+  const d = new Date(iso);
+  const opts = { year:"numeric", month:"short", day:"numeric" };
+  return d.toLocaleDateString(undefined, opts);
+}
+
+function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+let toastTimer;
+function toast(msg){
+  const t = $("toast");
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 1600);
+}
+
+// ----------------------------
+// SESSION-BASED FETCH
+// ----------------------------
+async function fetchSession(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+}
+
+// ----------------------------
+// Load Dashboard Data
+// ----------------------------
+async function loadAssessment() {
+  try {
+
+    const res = await fetchSession('/api/detailed-readiness/');
+
+    if (!res.ok) {
+
+      if (res.status === 401) {
+        toast("Please log in.");
+        window.location.href = "/auth/login/";
+        return;
+      }
+
+      if (res.status === 403) {
+        toast("Premium required to view full dashboard.");
+        return;
+      }
+
+      if (res.status === 404) {
+        toast("No assessment found.");
+        return;
+      }
+
+      throw new Error(`API error ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    // ----------------------------
+    // State Mapping (Aligned with Backend)
+    // ----------------------------
+    state.isPremium = data.is_premium || false;
+    state.user.name = data.user_name || "User";
+    state.postcode = data.postcode || "—";
+    state.suburb = data.suburb || "—";
+    state.lastAssessmentISO = data.last_assessment || "";
+    state.score = data.score || 0;
+    state.scorePrev = data.score_prev ?? data.score ?? 0;
+    state.incomeWeekly = data.income_weekly || 0;
+    state.targetRentWeekly = data.target_rent_weekly || 0;
+    state.avgRentWeekly = data.avg_rent_weekly || 0;
+    state.breakdown = Array.isArray(data.breakdown) ? data.breakdown : [];
+    state.steps = Array.isArray(data.steps)
+      ? data.steps.map(s => ({ ...s, action: () => toast(`Executing: ${s.actionLabel}`) }))
+      : [];
+    state.activity = Array.isArray(data.activity) ? data.activity : [];
+
+    render();
+
+  } catch (e) {
+    console.error(e);
+    toast("Failed to load dashboard.");
+  }
+}
+
+// ----------------------------
+// Rendering (UNCHANGED LOGIC)
+// ----------------------------
+function render(){
+  const setText = (id, text) => { const el = $(id); if(el) el.textContent = text; };
+  const setStyle = (id, prop, value) => { const el = $(id); if(el) el.style.setProperty(prop,value); };
+  const setBg = (id, value) => { const el = $(id); if(el) el.style.background = value; };
+  const setBoxShadow = (id, value) => { const el = $(id); if(el) el.style.boxShadow = value; };
+  const setDisplay = (id, value) => { const el = $(id); if(el) el.style.display = value; };
+
+  setText("welcomeLine", `Hi ${state.user.name} — here’s your readiness overview`);
+  setText("postcodePill", `Postcode: ${state.postcode}`);
+  setText("postcodeVal", `${state.postcode} (${state.suburb})`);
+
+  const score = clamp(state.score,0,100);
+  setText("scoreValue", score);
+  setStyle("scoreRing","--deg", Math.round(score/100*360)+"deg");
+
+  setText("assessDateChip", state.isPremium ? "Premium" : "Free");
+  setText("lastAssessment", datePretty(state.lastAssessmentISO));
+
+  const diff = score - state.scorePrev;
+  setText("trendChip", diff>=0?"Up":"Down");
+  setText("scoreTrend", diff===0?"No change":(diff>0?`+${diff} points`:`${diff} points`));
+
+  setText("recommendedRent", formatAUD(state.incomeWeekly * 0.35) + "/wk");
+
+  const ratio = state.incomeWeekly > 0
+    ? clamp((state.targetRentWeekly / state.incomeWeekly) * 100,0,1000)
+    : 0;
+
+  setText("ratioChip", ratio.toFixed(0) + "%");
+  setText("incomeRentRatio", `${formatAUD(state.targetRentWeekly)}/wk on ${formatAUD(state.incomeWeekly)}/wk income`);
+  setText("avgRent", formatAUD(state.avgRentWeekly) + "/wk");
+  setText("targetRent", formatAUD(state.targetRentWeekly) + "/wk");
+
+  // Steps
+  const stepsEl = $("stepsList");
+  if(stepsEl){
+    stepsEl.innerHTML = "";
+    const stepsToShow = state.isPremium ? state.steps : state.steps.slice(0,3);
+
+    stepsToShow.forEach((s,idx)=>{
+      const div = document.createElement("div");
+      div.className = "step";
+      div.innerHTML = `
+        <div class="left">
+          <div class="icon">${s.icon}</div>
+          <div>
+            <h3>${s.title}</h3>
+            <p>${s.desc}</p>
+            <div class="meta">
+              <span class="impact">+${s.impact} score</span>
+              ${state.isPremium
+                ? `<span class="chip">Priority: ${idx===0?"High":idx===1?"Medium":"Low"}</span>`
+                : `<span class="chip">Preview</span>`}
+            </div>
+          </div>
+        </div>
+        <div>
+          <button class="${state.isPremium?"":"btnGhost"}" data-step="${idx}">
+            ${state.isPremium ? s.actionLabel : "Unlock"}
+          </button>
+        </div>
+      `;
+      stepsEl.appendChild(div);
+    });
+
+    stepsEl.querySelectorAll("button[data-step]").forEach(btn=>{
+      btn.onclick = ()=>{
+        const i = Number(btn.getAttribute("data-step"));
+        if (!state.isPremium) { toast("Upgrade to unlock all steps & tools."); return; }
+        state.steps[i].action();
+      };
+    });
+  }
+
+  // Activity
+  const actEl = $("activityList");
+  if(actEl){
+    actEl.innerHTML = "";
+    state.activity.forEach(a=>{
+      const div = document.createElement("div");
+      div.className = "act";
+      div.innerHTML = `
+        <div class="bubble">${a.icon}</div>
+        <div>
+          <b>${a.title}</b>
+          <p>${a.desc} <span class="chip">${a.when}</span></p>
+        </div>`;
+      actEl.appendChild(div);
+    });
+  }
+
+  setDisplay("premiumTeaser", state.isPremium?"none":"flex");
+  setDisplay("premiumInsightsLock", state.isPremium?"none":"flex");
+}
+
+// ----------------------------
+// Initialize
+// ----------------------------
+document.addEventListener("DOMContentLoaded", loadAssessment);
+</script>
+
+
+
+
+
+</body>
+</html>

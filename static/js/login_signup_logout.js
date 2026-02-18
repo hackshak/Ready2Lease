@@ -1,4 +1,18 @@
 // Login JavaScript Integration 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 document.getElementById("loginForm").addEventListener("submit", function(e) {
     e.preventDefault();
@@ -10,23 +24,18 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
         },
         body: JSON.stringify({
             email: email,
             password: password
-        })
+        }),
+        credentials: "same-origin"  
     })
     .then(response => response.json())
     .then(data => {
-        if (data.access) {
-            // Save tokens in localStorage
-            localStorage.setItem("access_token", data.access);
-            localStorage.setItem("refresh_token", data.refresh);
-
-            alert("Login successful!");
-            
-            // ✅ Redirect to home page instead of dashboard
-            window.location.href = "/";  // <-- change here
+        if (data.message) {
+            window.location.href = "/dashboard/home/";
         } else {
             alert("Invalid credentials");
         }
@@ -41,33 +50,48 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 
 
 
+
 // Sign JavaScript Integration 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 document.getElementById("signupForm").addEventListener("submit", function(e) {
-    e.preventDefault();  // prevent page reload
+    e.preventDefault();
 
     const full_name = document.getElementById("full_name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    fetch("/api/signup/", {
+    fetch("/auth/api/signup/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
         },
         body: JSON.stringify({
             full_name: full_name,
             email: email,
             password: password
-        })
+        }),
+        credentials: "same-origin"  // ✅ Required for session
     })
     .then(response => response.json())
     .then(data => {
         if (data.message) {
-            alert("Account created successfully!");
-
-            // ✅ Redirect to login page
-            window.location.href = "/login/";
+            // 🔥 User is already logged in
+            window.location.href = "/dashboard/home/";
         } else {
             alert("Error creating account");
             console.log(data);
@@ -81,37 +105,45 @@ document.getElementById("signupForm").addEventListener("submit", function(e) {
 
 
 
+
 // Logout Api
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 logoutBtn.addEventListener("click", async function(e) {
     e.preventDefault();
-    const refreshToken = localStorage.getItem("refresh_token");
-
-    if (!refreshToken) {
-        // fallback: just clear local storage
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        updateNavbar();
-        return;
-    }
 
     try {
-        const response = await fetch("/api/logout/", {
+        const response = await fetch("/auth/api/logout/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+                "X-CSRFToken": getCookie("csrftoken")
             },
-            body: JSON.stringify({ refresh_token: refreshToken })
+            credentials: "same-origin"
         });
 
         if (response.ok) {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
-            updateNavbar();
+            // Redirect to login page after logout
+            window.location.href = "/auth/login/";
         } else {
             console.error("Logout failed");
         }
+
     } catch (err) {
         console.error("Logout error:", err);
     }
 });
+

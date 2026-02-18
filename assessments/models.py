@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 EMPLOYMENT_CHOICES = [
     ('full_time', 'Full time'),
@@ -29,38 +30,58 @@ DOCUMENTS_CHOICES = [
     ('tenant_ledger', 'Tenant ledger'),
 ]
 
+
 class Assessment(models.Model):
-    session_key = models.CharField(max_length=100)
-    full_name = models.CharField(max_length=255)
-    postcode = models.CharField(max_length=10)
-    suburb = models.CharField(max_length=255, blank=True)
-    monthly_rent_budget = models.DecimalField(max_digits=10, decimal_places=2)
+    # ✅ Allows both anonymous + authenticated
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="assessments"
+    )
 
+    # ✅ used for anonymous persistence + upgrade linking
+    session_key = models.CharField(max_length=100, db_index=True)
 
-    postcode = models.CharField(max_length=20, blank=True, null=True)
+    full_name = models.CharField(max_length=255, blank=True)
+    postcode = models.CharField(max_length=20, blank=True, null=True)   # ✅ keep only ONE postcode field
+    suburb = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
+
+    monthly_rent_budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     lat = models.FloatField(blank=True, null=True)
     lon = models.FloatField(blank=True, null=True)
 
-
     employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_CHOICES, blank=True)
     time_in_role = models.CharField(max_length=50, blank=True)
+
     rental_history = models.CharField(max_length=20, choices=RENTAL_HISTORY_CHOICES, blank=True)
 
     household_income = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    household_income_period = models.CharField(max_length=10, choices=[('annual','Annually'),('monthly','Monthly'),('weekly','Weekly')], blank=True)
+    household_income_period = models.CharField(
+        max_length=10,
+        choices=[('annual', 'Annually'), ('monthly', 'Monthly'), ('weekly', 'Weekly')],
+        blank=True
+    )
+
     individual_income = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    individual_income_period = models.CharField(max_length=10, choices=[('annual','Annually'),('monthly','Monthly'),('weekly','Weekly')], blank=True)
-    
-    documents = models.JSONField(default=list, blank=True)
+    individual_income_period = models.CharField(
+        max_length=10,
+        choices=[('annual', 'Annually'), ('monthly', 'Monthly'), ('weekly', 'Weekly')],
+        blank=True
+    )
+
+    documents = models.JSONField(default=list, blank=True)  # expects list like ["passport","bank_statement"]
     proof_of_income = models.CharField(max_length=20, choices=PROOF_OF_INCOME_CHOICES, blank=True)
 
     moving_with_adults = models.PositiveIntegerField(null=True, blank=True)
     moving_with_children = models.PositiveIntegerField(null=True, blank=True)
     moving_with_pets = models.PositiveIntegerField(null=True, blank=True)
+
     context_issues = models.TextField(blank=True)
 
+    # computed
     readiness_score = models.IntegerField(null=True, blank=True)
     risk_level = models.CharField(max_length=20, blank=True)
     strengths = models.JSONField(default=list, blank=True)
@@ -69,4 +90,5 @@ class Assessment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Assessment ({self.full_name}) - {self.session_key}"
+        who = self.full_name or (self.user.email if self.user else "Anonymous")
+        return f"Assessment ({who}) - {self.session_key}"

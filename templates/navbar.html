@@ -3,8 +3,7 @@
     <div class="container">
         <!-- Logo -->
         <a href="{% url 'home' %}" class="logo">
-            <span class="logo-emoji">&#10003;</span>
-            <span>Ready Rent</span>
+            <!-- <img src="../static/images/Main_Logo.png" alt=""> -->
         </a>
 
         <!-- Hamburger menu (for mobile) -->
@@ -21,14 +20,11 @@
                 <li><a href="{% url 'home' %}#contact">Contact</a></li>
                 <li><a href="{% url 'home' %}#pricing">Pricing</a></li>
                 <li><a href="{% url 'home' %}#faq">Faq</a></li>
-                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
             </ul>
             <div class="nav-buttons">
-                <a href="{% url 'login' %}" class="btn nav-btn-login">Login</a>
-                <a href="{% url 'signup' %}" class="btn nav-btn-signup">Sign Up</a>
-                <a href="#" class="nav-btn-logout" id="logoutBtn" 
-                style="
-                display:none;
+                {% if request.user.is_authenticated %}
+                    <a href="#" id="logoutBtn" style="
                 padding:10px 16px;
                 background-color: #FACC15;
                 color:white;
@@ -36,6 +32,10 @@
                 text-decoration:none;
                 margin-left:15px
                 ">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-btn-login">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-btn-signup">Sign Up</a>
+                {% endif %}
             </div>
 
         </div>

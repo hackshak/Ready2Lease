@@ -37,20 +37,27 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'password']
+        fields = ["full_name", "email", "password"]
         extra_kwargs = {
-            'password': {'write_only': True}
+            "password": {"write_only": True}
         }
 
     def create(self, validated_data):
-        full_name = validated_data.pop('full_name')
-        password = validated_data.pop('password')
+        full_name = validated_data.pop("full_name")
+        password = validated_data.pop("password")
 
         user = User.objects.create(
-            email=validated_data['email'],
-            first_name=full_name
+            email=validated_data["email"],
         )
+
         user.set_password(password)
+
+        # Split full name into first and last name
+        name_parts = full_name.split()
+        user.first_name = name_parts[0]
+        if len(name_parts) > 1:
+            user.last_name = " ".join(name_parts[1:])
+
         user.save()
 
         return user
@@ -59,9 +66,9 @@ class SignupSerializer(serializers.ModelSerializer):
 
 
 
-# Password Serializer
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
 
 class ResetPasswordConfirmSerializer(serializers.Serializer):
     uid = serializers.IntegerField()
@@ -78,3 +85,12 @@ class ResetPasswordConfirmSerializer(serializers.Serializer):
         self.user.set_password(self.validated_data['password'])
         self.user.save()
         return self.user
+    
+
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'is_premium']

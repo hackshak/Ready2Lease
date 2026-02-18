@@ -1,0 +1,285 @@
+{% include "sidebar.html" %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rental Readiness Dashboard</title>
+<style>
+  :root{
+    --rr-bg:#0b1020;
+    --rr-panel:#111a33;
+    --rr-text:#e9eefc;
+    --rr-muted:#a9b4d6;
+    --rr-border:rgba(255,255,255,.10);
+    --rr-radius:18px;
+    --rr-shadow:0 14px 30px rgba(0,0,0,.35);
+    --rr-good:#28d17c;
+    --rr-mid:#f7c948;
+    --rr-bad:#ff5a7a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--rr-bg); color:var(--rr-text); min-height:100vh;}
+  .rr-wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px;}
+  .rr-card{border:1px solid var(--rr-border); background:var(--rr-panel); border-radius:var(--rr-radius); box-shadow:var(--rr-shadow); padding:16px; margin-bottom:16px;}
+  .rr-card h2{margin:0 0 10px; font-size:14px;}
+  .rr-sub{color:var(--rr-muted); font-size:12px;}
+  .rr-scoreWrap{display:flex;gap:14px; align-items:center; flex-wrap:wrap;}
+  .rr-scoreLeft{display:flex;gap:14px; align-items:center; min-width:260px; flex:1 1 auto;}
+  .rr-ring{width:84px;height:84px;border-radius:999px; background: radial-gradient(circle,#111a33 58%,transparent 59%), conic-gradient(var(--rr-good) 0deg,var(--rr-good) var(--deg),rgba(255,255,255,.1) var(--deg)); border:1px solid var(--rr-border); display:grid; place-items:center; position:relative;}
+  .rr-ring b{font-size:22px;}
+  .rr-ring span{font-size:10px;color:var(--rr-muted); display:block; text-align:center; margin-top:-2px;}
+  .rr-statusBadge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid var(--rr-border); background: rgba(255,255,255,.06); font-size:12px; color: var(--rr-text);}
+  .rr-dot{width:9px;height:9px;border-radius:999px;background: var(--rr-mid);}
+  .rr-cta{display:flex; gap:10px; align-items:center; justify-content:flex-end; flex:1 1 auto; min-width:260px;}
+  button{border:0;cursor:pointer;color: var(--rr-text); padding:10px 12px; border-radius: 12px; background: linear-gradient(135deg,#6c7dff,#8b5cf6);}
+  .rr-btnGhost{background: rgba(255,255,255,.08); border:1px solid var(--rr-border);}
+  .rr-kpi{display:grid;grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;}
+  .rr-item{border:1px solid var(--rr-border); background: rgba(255,255,255,.05); border-radius:14px; padding:10px;}
+  .rr-label{color: var(--rr-muted); font-size:11px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
+  .rr-value{font-size:13px;font-weight:700;}
+  .rr-chip{background: rgba(255,255,255,.08); border:1px solid var(--rr-border); border-radius:999px; padding:4px 8px; font-size:11px;}
+  .rr-breakdown{margin-top:10px; display:flex; flex-direction:column; gap:10px;}
+  .rr-barRow{display:grid; grid-template-columns:150px 1fr 40px; gap:10px; align-items:center;}
+  .rr-name{font-size:12px; color:var(--rr-text);}
+  .rr-track{height:10px;border-radius:999px;background: rgba(255,255,255,.10); border:1px solid var(--rr-border); overflow:hidden;}
+  .rr-fill{height:100%; width:0%; border-radius:999px; background: linear-gradient(90deg,var(--rr-good),#6c7dff); transition: width .4s ease;}
+  .rr-pct{font-size:11px;color: var(--rr-muted); text-align:right;}
+  .assessment-list{margin-bottom:24px;}
+  .assessment-item{border:1px solid var(--rr-border); border-radius:14px; padding:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;}
+</style>
+</head>
+<body>
+<div class="rr-wrap">
+
+  <!-- Assessment List -->
+  <section class="rr-card">
+    <h2>Your Previous Assessments</h2>
+    <div class="assessment-list" id="assessmentList">
+      <!-- Dynamically filled by JS -->
+      <p style="color:var(--rr-muted)">Loading assessments...</p>
+    </div>
+  </section>
+
+  <!-- Readiness Snapshot -->
+  <section class="rr-card" id="rr-snapshotCard">
+    <h2>Readiness Snapshot</h2>
+    <div class="rr-scoreWrap">
+      <div class="rr-scoreLeft">
+        <div class="rr-ring" id="rr-scoreRing" style="--deg:0deg;">
+          <div style="text-align:center">
+            <b id="rr-scoreValue">—</b>
+            <span>/100</span>
+          </div>
+        </div>
+        <div style="min-width:220px;">
+          <div class="rr-statusBadge" id="rr-statusBadge">
+            <span class="rr-dot" id="rr-statusDot"></span>
+            <span id="rr-statusText">—</span>
+          </div>
+          <p class="rr-sub" id="rr-scoreSummary" style="margin-top:8px;">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rr-kpi">
+      <div class="rr-item">
+        <div class="rr-label">
+          <span>Last Assessment</span>
+          <span class="rr-chip" id="rr-assessDateChip">—</span>
+        </div>
+        <div class="rr-value" id="rr-lastAssessment">—</div>
+      </div>
+      <div class="rr-item">
+        <div class="rr-label">
+          <span>Score Trend</span>
+          <span class="rr-chip" id="rr-trendChip">—</span>
+        </div>
+        <div class="rr-value" id="rr-scoreTrend">—</div>
+      </div>
+      <div class="rr-item">
+        <div class="rr-label">
+          <span>Income-to-Rent</span>
+          <span class="rr-chip" id="rr-ratioChip">—</span>
+        </div>
+        <div class="rr-value" id="rr-incomeRentRatio">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breakdown Section -->
+  <section class="rr-card" id="rr-breakdownCard">
+    <h2>Category Breakdown</h2>
+    <div class="rr-breakdown" id="rr-breakdownList">
+      <!-- Dynamically filled by JS -->
+    </div>
+  </section>
+
+</div>
+
+
+
+
+<script>
+const rrState = { score: 0, breakdown: [] };
+
+function $(id){ return document.getElementById(id); }
+function clamp(n,min,max){return Math.max(min,Math.min(max,n)); }
+
+// --------------------------------------------------
+// Update readiness snapshot & breakdown
+// --------------------------------------------------
+function updateSnapshot(data){
+
+  console.log("Detailed Analysis:", data);
+
+  // ✅ Updated overall score mapping
+  rrState.score = data.readiness_score ?? 0;
+
+  $("rr-scoreValue").textContent = rrState.score;
+  $("rr-scoreRing").style.setProperty(
+    "--deg",
+    Math.round(rrState.score/100*360) + "deg"
+  );
+
+  const st = rrState.score >= 80
+    ? {label:"Strong readiness", color:"#28d17c"}
+    : rrState.score >= 55
+      ? {label:"Improving readiness", color:"#f7c948"}
+      : {label:"At risk", color:"#ff5a7a"};
+
+  $("rr-statusText").textContent = st.label;
+  $("rr-statusDot").style.background = st.color;
+
+  // ✅ Updated breakdown mapping from categories array
+  rrState.breakdown = Array.isArray(data.categories)
+    ? data.categories
+        .filter(cat => cat.category !== "overall_competitiveness")
+        .map(cat => ({
+          key: cat.category,
+          score: cat.score ?? 0
+        }))
+    : [];
+
+  const brEl = $("rr-breakdownList");
+  brEl.innerHTML = "";
+
+  rrState.breakdown.forEach(item => {
+
+    const row = document.createElement("div");
+    row.className = "rr-barRow";
+
+    row.innerHTML = `
+      <div class="rr-name">
+        ${item.key.replace(/_/g," ").toUpperCase()}
+      </div>
+      <div class="rr-track">
+        <div class="rr-fill"
+             style="width:0%; background: linear-gradient(90deg,#28d17c,#6c7dff);">
+        </div>
+      </div>
+      <div class="rr-pct">${item.score}%</div>
+    `;
+
+    brEl.appendChild(row);
+
+    requestAnimationFrame(()=>{
+      row.querySelector(".rr-fill").style.width =
+        clamp(item.score,0,100) + "%";
+    });
+  });
+
+  // Update last assessment date
+  if(data.created_at){
+    const date = new Date(data.created_at).toLocaleDateString();
+    $("rr-assessDateChip").textContent = date;
+  }
+}
+
+// --------------------------------------------------
+// Load list of assessments (User or Session)
+// --------------------------------------------------
+async function loadAssessments(){
+
+  const container = $("assessmentList");
+  container.innerHTML =
+    "<p style='color:var(--rr-muted)'>Loading assessments...</p>";
+
+  try {
+
+    const res = await fetch("/api/calculate-detailed-analysis/", {
+      credentials: "same-origin"
+    });
+
+    if(!res.ok) throw new Error("Failed: " + res.status);
+
+    const data = await res.json();
+    container.innerHTML = "";
+
+    if(!data.assessments || data.assessments.length === 0){
+      container.innerHTML =
+        "<p style='color:var(--rr-muted)'>No previous assessments found.</p>";
+      return;
+    }
+
+    data.assessments.forEach(a => {
+
+      const div = document.createElement("div");
+      div.className = "assessment-item";
+
+      div.innerHTML = `
+        <span>
+          ${a.full_name} —
+          ${new Date(a.created_at).toLocaleDateString()} —
+          Score: ${a.score}
+        </span>
+        <button onclick="loadDetailed(${a.id})">
+          Detailed Analysis
+        </button>
+      `;
+
+      container.appendChild(div);
+    });
+
+  } catch(e){
+    console.error(e);
+    container.innerHTML =
+      "<p style='color:red'>Failed to load assessments.</p>";
+  }
+}
+
+// --------------------------------------------------
+// Load detailed analysis for one assessment
+// --------------------------------------------------
+async function loadDetailed(assessmentId){
+
+  try {
+
+    const res = await fetch(
+      `/api/calculate-detailed-analysis/${assessmentId}/`,
+      { credentials: "same-origin" }
+    );
+
+    if(!res.ok){
+      if(res.status === 403){
+        alert("Premium required for detailed analysis.");
+        return;
+      }
+      throw new Error("Failed: " + res.status);
+    }
+
+    const data = await res.json();
+    updateSnapshot(data);
+
+  } catch(e){
+    console.error(e);
+    alert("Failed to load detailed analysis");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadAssessments);
+</script>
+
+</body>
+</html>

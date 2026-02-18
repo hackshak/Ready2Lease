@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="assessment-container">
     <h1 class="assessment-heading">Readiness Assessment</h1>
+
     <div class="progress-container">
         <div class="progress-labels">
-            <span class="progress-step-label">Step 1/4</span>
+            <span class="progress-step-label">Step 1 / 4</span>
             <span class="progress-percent-label">0%</span>
         </div>
         <div class="progress-bar">
@@ -13,35 +15,44 @@
         </div>
     </div>
 
-    <form id="assessmentForm">
+    <form id="assessmentForm" method="post">
+        {% csrf_token %}
 
+        <!-- ========================= -->
         <!-- Step 1 -->
+        <!-- ========================= -->
         <div class="form-step form-step-active">
             <h2>Let's start with the basics</h2>
+
             <label>What is your full name?</label>
             <input type="text" name="full_name" required>
 
             <label>Where are you looking to rent?</label>
-            <input type="text" id="locationInput" placeholder="Enter suburb or postcode" autocomplete="off" required>
+            <input type="text" id="locationInput" placeholder="Enter suburb or postcode" autocomplete="off">
+            
             <select id="locationSelect" required>
-                <!-- Autocomplete options -->
+                <option value="">Select location</option>
             </select>
 
-            <!-- Hidden structured fields sent to backend -->
+            <!-- Hidden structured fields -->
             <input type="hidden" id="selectedPostcode" name="postcode" required>
             <input type="hidden" id="selectedCity" name="city" required>
+            <input type="hidden" id="selectedSuburb" name="suburb">
             <input type="hidden" id="selectedLat" name="lat" required>
             <input type="hidden" id="selectedLon" name="lon" required>
 
-            <label>What is your weekly rent budget?</label>
+            <label>What is your monthly rent budget?</label>
             <input type="number" name="monthly_rent_budget" required min="0">
 
             <button type="button" class="btn-next">Next</button>
         </div>
 
+        <!-- ========================= -->
         <!-- Step 2 -->
+        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 2: Employment & Rental History</h2>
+
             <label>Employment Status</label>
             <select name="employment_status" required>
                 <option value="">Select</option>
@@ -68,9 +79,12 @@
             <button type="button" class="btn-next">Next</button>
         </div>
 
+        <!-- ========================= -->
         <!-- Step 3 -->
+        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 3: Income & Documents</h2>
+
             <label>Household Income</label>
             <input type="number" name="household_income" required min="0">
             <select name="household_income_period" required>
@@ -108,9 +122,12 @@
             <button type="button" class="btn-next">Next</button>
         </div>
 
+        <!-- ========================= -->
         <!-- Step 4 -->
+        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 4: Household & Context</h2>
+
             <label>Moving With:</label>
             <input type="number" name="moving_with_adults" placeholder="Adults" required min="0">
             <input type="number" name="moving_with_children" placeholder="Children" required min="0">
@@ -127,8 +144,9 @@
 
     <div id="result" style="display:none; max-width:600px; margin:20px auto;"></div>
 </div>
-
-
-
-
 {% endblock content %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/assessment.js' %}"></script>
+{% endblock %}

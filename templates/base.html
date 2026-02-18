@@ -60,10 +60,7 @@
     <!-- JS -->
     <script src="{% static 'js/navbar.js' %}"></script>
     <script src="{% static 'js/faq.js' %}"></script>
-    <script src="{% static 'js/login_signup_logout.js' %}"></script>
-    <script src="{% static 'js/forgot_password.js' %}"></script>
-    <script src="{% static 'js/assessment.js' %}"></script>
-
+    {% comment %} <script src="{% static 'js/login_signup_logout.js' %}"></script> {% endcomment %}
 
     <!-- Extra page-specific JS -->
     {% block extra_js %}{% endblock %}
