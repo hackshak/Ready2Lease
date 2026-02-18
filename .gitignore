@@ -2,13 +2,6 @@
 db.sqlite3
 
 # apps
-action_plan
-ai_assist
-applications
-blog
-documents
-payments
-reports
 
 
 # virtual environment

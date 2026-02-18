@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'dashboard',
     'documents',
     'payments',
-    'reports',
     'users'
 ]
 
