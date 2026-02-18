@@ -1,284 +1,416 @@
 {% include "sidebar.html" %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rental Readiness Dashboard</title>
+<title>ReadyRent Dashboard</title>
+
 <style>
-  :root{
-    --rr-bg:#0b1020;
-    --rr-panel:#111a33;
-    --rr-text:#e9eefc;
-    --rr-muted:#a9b4d6;
-    --rr-border:rgba(255,255,255,.10);
-    --rr-radius:18px;
-    --rr-shadow:0 14px 30px rgba(0,0,0,.35);
-    --rr-good:#28d17c;
-    --rr-mid:#f7c948;
-    --rr-bad:#ff5a7a;
+:root{
+  --bg:#0b1225;
+  --panel:#121c36;
+  --panel2:#162246;
+  --text:#e8edff;
+  --muted:#9fb0ff;
+  --border:rgba(255,255,255,.08);
+  --radius:20px;
+  --shadow:0 20px 40px rgba(0,0,0,.35);
+  --good:#28d17c;
+  --mid:#f7c948;
+  --bad:#ff5a7a;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:linear-gradient(180deg,#0a0f1f,#0d1631);
+  color:var(--text);
+}
+
+/* MAIN LAYOUT */
+.wrapper{
+  margin-left:60px;
+  padding:30px;
+  display:grid;
+  grid-template-columns: 3fr 1.2fr;
+  gap:25px;
+}
+
+/* LEFT DASHBOARD */
+.left{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* RIGHT SIDEBAR */
+.right{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  max-height:85vh;
+  overflow-y:auto;
+}
+
+/* CARDS */
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.card h2{
+  margin:0 0 15px;
+  font-size:15px;
+  font-weight:600;
+}
+
+/* SCORE RING */
+.score-wrap{
+  display:flex;
+  align-items:center;
+  gap:25px;
+}
+
+.score-ring{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle,#121c36 60%,transparent 61%),
+    conic-gradient(var(--good) 0deg,var(--good) var(--deg),rgba(255,255,255,.08) var(--deg));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.score-ring b{font-size:28px}
+
+/* KPI GRID */
+.kpi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:20px;
+}
+
+.kpi{
+  background:rgba(255,255,255,.05);
+  border-radius:16px;
+  padding:15px;
+  border:1px solid var(--border);
+}
+
+.kpi span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.kpi strong{
+  display:block;
+  margin-top:5px;
+}
+
+/* BREAKDOWN */
+.bar-row{
+  display:grid;
+  grid-template-columns:160px 1fr 50px;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.bar-track{
+  height:10px;
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+}
+
+.bar-fill{
+  height:100%;
+  width:0%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--good),#6c7dff);
+  transition:width .4s ease;
+}
+
+/* GAP + RECOMMENDATIONS */
+.item-box{
+  background:rgba(255,255,255,.05);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  border:1px solid var(--border);
+}
+
+.priority{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:20px;
+  margin-top:6px;
+  display:inline-block;
+}
+
+.priority.high{background:rgba(255,90,122,.2); color:var(--bad);}
+.priority.medium{background:rgba(247,201,72,.2); color:var(--mid);}
+.priority.low{background:rgba(40,209,124,.2); color:var(--good);}
+
+/* RIGHT LIST */
+.assessment-item{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  margin-top:15px;
+}
+
+.assessment-item button{
+  margin-top:8px;
+  width:100%;
+  padding:8px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(135deg,#6c7dff,#8b5cf6);
+  color:white;
+}
+
+.assessment-item button:hover{
+  opacity:.9;
+}
+
+@media(max-width:1100px){
+  .wrapper{
+    grid-template-columns:1fr;
+    margin-left:0;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--rr-bg); color:var(--rr-text); min-height:100vh;}
-  .rr-wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px;}
-  .rr-card{border:1px solid var(--rr-border); background:var(--rr-panel); border-radius:var(--rr-radius); box-shadow:var(--rr-shadow); padding:16px; margin-bottom:16px;}
-  .rr-card h2{margin:0 0 10px; font-size:14px;}
-  .rr-sub{color:var(--rr-muted); font-size:12px;}
-  .rr-scoreWrap{display:flex;gap:14px; align-items:center; flex-wrap:wrap;}
-  .rr-scoreLeft{display:flex;gap:14px; align-items:center; min-width:260px; flex:1 1 auto;}
-  .rr-ring{width:84px;height:84px;border-radius:999px; background: radial-gradient(circle,#111a33 58%,transparent 59%), conic-gradient(var(--rr-good) 0deg,var(--rr-good) var(--deg),rgba(255,255,255,.1) var(--deg)); border:1px solid var(--rr-border); display:grid; place-items:center; position:relative;}
-  .rr-ring b{font-size:22px;}
-  .rr-ring span{font-size:10px;color:var(--rr-muted); display:block; text-align:center; margin-top:-2px;}
-  .rr-statusBadge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid var(--rr-border); background: rgba(255,255,255,.06); font-size:12px; color: var(--rr-text);}
-  .rr-dot{width:9px;height:9px;border-radius:999px;background: var(--rr-mid);}
-  .rr-cta{display:flex; gap:10px; align-items:center; justify-content:flex-end; flex:1 1 auto; min-width:260px;}
-  button{border:0;cursor:pointer;color: var(--rr-text); padding:10px 12px; border-radius: 12px; background: linear-gradient(135deg,#6c7dff,#8b5cf6);}
-  .rr-btnGhost{background: rgba(255,255,255,.08); border:1px solid var(--rr-border);}
-  .rr-kpi{display:grid;grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;}
-  .rr-item{border:1px solid var(--rr-border); background: rgba(255,255,255,.05); border-radius:14px; padding:10px;}
-  .rr-label{color: var(--rr-muted); font-size:11px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
-  .rr-value{font-size:13px;font-weight:700;}
-  .rr-chip{background: rgba(255,255,255,.08); border:1px solid var(--rr-border); border-radius:999px; padding:4px 8px; font-size:11px;}
-  .rr-breakdown{margin-top:10px; display:flex; flex-direction:column; gap:10px;}
-  .rr-barRow{display:grid; grid-template-columns:150px 1fr 40px; gap:10px; align-items:center;}
-  .rr-name{font-size:12px; color:var(--rr-text);}
-  .rr-track{height:10px;border-radius:999px;background: rgba(255,255,255,.10); border:1px solid var(--rr-border); overflow:hidden;}
-  .rr-fill{height:100%; width:0%; border-radius:999px; background: linear-gradient(90deg,var(--rr-good),#6c7dff); transition: width .4s ease;}
-  .rr-pct{font-size:11px;color: var(--rr-muted); text-align:right;}
-  .assessment-list{margin-bottom:24px;}
-  .assessment-item{border:1px solid var(--rr-border); border-radius:14px; padding:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;}
+}
 </style>
 </head>
+
 <body>
-<div class="rr-wrap">
 
-  <!-- Assessment List -->
-  <section class="rr-card">
-    <h2>Your Previous Assessments</h2>
-    <div class="assessment-list" id="assessmentList">
-      <!-- Dynamically filled by JS -->
-      <p style="color:var(--rr-muted)">Loading assessments...</p>
-    </div>
-  </section>
+<div class="wrapper">
 
-  <!-- Readiness Snapshot -->
-  <section class="rr-card" id="rr-snapshotCard">
-    <h2>Readiness Snapshot</h2>
-    <div class="rr-scoreWrap">
-      <div class="rr-scoreLeft">
-        <div class="rr-ring" id="rr-scoreRing" style="--deg:0deg;">
-          <div style="text-align:center">
-            <b id="rr-scoreValue">—</b>
-            <span>/100</span>
-          </div>
+  <!-- LEFT SIDE DASHBOARD -->
+  <div class="left">
+
+    <!-- SNAPSHOT -->
+    <div class="card">
+      <h2>Readiness Snapshot</h2>
+
+      <div class="score-wrap">
+        <div class="score-ring" id="scoreRing" style="--deg:0deg;">
+          <b id="scoreValue">—</b>
         </div>
-        <div style="min-width:220px;">
-          <div class="rr-statusBadge" id="rr-statusBadge">
-            <span class="rr-dot" id="rr-statusDot"></span>
-            <span id="rr-statusText">—</span>
-          </div>
-          <p class="rr-sub" id="rr-scoreSummary" style="margin-top:8px;">—</p>
+        <div>
+          <div id="statusText" style="font-size:14px;font-weight:500">—</div>
+          <p style="color:var(--muted);font-size:13px">
+            Overall rental competitiveness score.
+          </p>
         </div>
       </div>
-    </div>
 
-    <div class="rr-kpi">
-      <div class="rr-item">
-        <div class="rr-label">
+      <div class="kpi-grid">
+        <div class="kpi">
           <span>Last Assessment</span>
-          <span class="rr-chip" id="rr-assessDateChip">—</span>
+          <strong id="lastAssessment">—</strong>
         </div>
-        <div class="rr-value" id="rr-lastAssessment">—</div>
-      </div>
-      <div class="rr-item">
-        <div class="rr-label">
+        <div class="kpi">
           <span>Score Trend</span>
-          <span class="rr-chip" id="rr-trendChip">—</span>
+          <strong id="scoreTrend">—</strong>
         </div>
-        <div class="rr-value" id="rr-scoreTrend">—</div>
-      </div>
-      <div class="rr-item">
-        <div class="rr-label">
-          <span>Income-to-Rent</span>
-          <span class="rr-chip" id="rr-ratioChip">—</span>
+        <div class="kpi">
+          <span>Income to Rent</span>
+          <strong id="incomeRent">—</strong>
         </div>
-        <div class="rr-value" id="rr-incomeRentRatio">—</div>
+        <div class="kpi">
+          <span>Risk Level</span>
+          <strong id="riskLevel">—</strong>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Breakdown Section -->
-  <section class="rr-card" id="rr-breakdownCard">
-    <h2>Category Breakdown</h2>
-    <div class="rr-breakdown" id="rr-breakdownList">
-      <!-- Dynamically filled by JS -->
+    <!-- CATEGORY BREAKDOWN -->
+    <div class="card">
+      <h2>Category Breakdown</h2>
+      <div id="breakdownList"></div>
     </div>
-  </section>
+
+    <!-- GAP ANALYSIS -->
+    <div class="card">
+      <h2>Gap Analysis</h2>
+      <div id="gapsList"></div>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="card">
+      <h2>Improvement Recommendations</h2>
+      <div id="recommendationsList"></div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE: PREVIOUS ASSESSMENTS -->
+  <div class="right">
+    <h2 style="margin-top:0;">Previous Assessments</h2>
+    <div id="assessmentList">
+      <p style="color:var(--muted)">Loading...</p>
+    </div>
+  </div>
 
 </div>
 
-
-
-
 <script>
-const rrState = { score: 0, breakdown: [] };
+function $(id){return document.getElementById(id);}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-function $(id){ return document.getElementById(id); }
-function clamp(n,min,max){return Math.max(min,Math.min(max,n)); }
-
-// --------------------------------------------------
-// Update readiness snapshot & breakdown
-// --------------------------------------------------
-function updateSnapshot(data){
-
-  console.log("Detailed Analysis:", data);
-
-  // ✅ Updated overall score mapping
-  rrState.score = data.readiness_score ?? 0;
-
-  $("rr-scoreValue").textContent = rrState.score;
-  $("rr-scoreRing").style.setProperty(
-    "--deg",
-    Math.round(rrState.score/100*360) + "deg"
-  );
-
-  const st = rrState.score >= 80
-    ? {label:"Strong readiness", color:"#28d17c"}
-    : rrState.score >= 55
-      ? {label:"Improving readiness", color:"#f7c948"}
-      : {label:"At risk", color:"#ff5a7a"};
-
-  $("rr-statusText").textContent = st.label;
-  $("rr-statusDot").style.background = st.color;
-
-  // ✅ Updated breakdown mapping from categories array
-  rrState.breakdown = Array.isArray(data.categories)
-    ? data.categories
-        .filter(cat => cat.category !== "overall_competitiveness")
-        .map(cat => ({
-          key: cat.category,
-          score: cat.score ?? 0
-        }))
-    : [];
-
-  const brEl = $("rr-breakdownList");
-  brEl.innerHTML = "";
-
-  rrState.breakdown.forEach(item => {
-
-    const row = document.createElement("div");
-    row.className = "rr-barRow";
-
-    row.innerHTML = `
-      <div class="rr-name">
-        ${item.key.replace(/_/g," ").toUpperCase()}
-      </div>
-      <div class="rr-track">
-        <div class="rr-fill"
-             style="width:0%; background: linear-gradient(90deg,#28d17c,#6c7dff);">
-        </div>
-      </div>
-      <div class="rr-pct">${item.score}%</div>
-    `;
-
-    brEl.appendChild(row);
-
-    requestAnimationFrame(()=>{
-      row.querySelector(".rr-fill").style.width =
-        clamp(item.score,0,100) + "%";
-    });
+/* LOAD PREVIOUS ASSESSMENTS */
+async function loadAssessments(){
+  const res = await fetch("/api/detailed-readiness/",{
+    credentials:"same-origin"
   });
 
-  // Update last assessment date
-  if(data.created_at){
-    const date = new Date(data.created_at).toLocaleDateString();
-    $("rr-assessDateChip").textContent = date;
+  if(!res.ok){ return; }
+
+  const data = await res.json();
+
+  const list = $("assessmentList");
+  list.innerHTML="";
+
+  if(!data.previous_assessments || data.previous_assessments.length===0){
+    list.innerHTML="<p style='color:var(--muted)'>No assessments found.</p>";
+    return;
+  }
+
+  data.previous_assessments.forEach(a=>{
+    const div=document.createElement("div");
+    div.className="assessment-item";
+    div.innerHTML=`
+      <strong>Score: ${a.score}</strong>
+      <div style="font-size:12px;color:var(--muted)">
+        ${a.created_at}
+      </div>
+      <button onclick="loadDetailed(${a.id})">
+        Detailed Analysis
+      </button>
+    `;
+    list.appendChild(div);
+  });
+
+  // Load latest automatically
+  if(data.previous_assessments.length>0){
+    loadDetailed(data.previous_assessments[0].id);
   }
 }
 
-// --------------------------------------------------
-// Load list of assessments (User or Session)
-// --------------------------------------------------
-async function loadAssessments(){
+/* LOAD DETAILED ANALYSIS INTO LEFT DASHBOARD */
+async function loadDetailed(id){
+  const res = await fetch(`/api/detailed-readiness/${id}/`,{
+    credentials:"same-origin"
+  });
 
-  const container = $("assessmentList");
-  container.innerHTML =
-    "<p style='color:var(--rr-muted)'>Loading assessments...</p>";
+  if(!res.ok){ return; }
 
-  try {
+  const data = await res.json();
 
-    const res = await fetch("/api/calculate-detailed-analysis/", {
-      credentials: "same-origin"
-    });
+  const score = data.score ?? 0;
 
-    if(!res.ok) throw new Error("Failed: " + res.status);
+  $("scoreValue").textContent = score;
+  $("scoreRing").style.setProperty("--deg",
+    Math.round(score/100*360)+"deg");
 
-    const data = await res.json();
-    container.innerHTML = "";
+  $("riskLevel").textContent = data.risk_level ?? "—";
 
-    if(!data.assessments || data.assessments.length === 0){
-      container.innerHTML =
-        "<p style='color:var(--rr-muted)'>No previous assessments found.</p>";
-      return;
-    }
+  $("lastAssessment").textContent =
+    data.last_assessment
+      ? new Date(data.last_assessment).toLocaleDateString()
+      : "—";
 
-    data.assessments.forEach(a => {
+  $("scoreTrend").textContent =
+    data.score_prev ? (score - data.score_prev) : "—";
 
-      const div = document.createElement("div");
-      div.className = "assessment-item";
+  $("incomeRent").textContent =
+    data.income_weekly && data.target_rent_weekly
+      ? (data.income_weekly / data.target_rent_weekly).toFixed(2)
+      : "—";
 
-      div.innerHTML = `
-        <span>
-          ${a.full_name} —
-          ${new Date(a.created_at).toLocaleDateString()} —
-          Score: ${a.score}
-        </span>
-        <button onclick="loadDetailed(${a.id})">
-          Detailed Analysis
-        </button>
+  $("statusText").textContent =
+    score >= 80 ? "Strong Approval Odds"
+    : score >= 55 ? "Moderate Competitiveness"
+    : "High Risk";
+
+  /* Breakdown */
+  const br=$("breakdownList");
+  br.innerHTML="";
+  if(data.categories){
+    data.categories
+      .filter(c=>c.category!=="overall_competitiveness")
+      .forEach(cat=>{
+        const row=document.createElement("div");
+        row.className="bar-row";
+        row.innerHTML=`
+          <div>${cat.category.replace(/_/g," ")}</div>
+          <div class="bar-track">
+            <div class="bar-fill"></div>
+          </div>
+          <div>${cat.score}%</div>
+        `;
+        br.appendChild(row);
+
+        requestAnimationFrame(()=>{
+          row.querySelector(".bar-fill").style.width=
+            clamp(cat.score,0,100)+"%";
+        });
+      });
+  }
+
+  /* Gaps */
+  const gaps=$("gapsList");
+  gaps.innerHTML="";
+  if(data.gaps && Object.keys(data.gaps).length>0){
+    Object.entries(data.gaps).forEach(([k,v])=>{
+      const div=document.createElement("div");
+      div.className="item-box";
+      div.innerHTML=`
+        <strong>${k.replace(/_/g," ")}</strong>
+        <p style="color:var(--muted);font-size:13px">${v}</p>
       `;
-
-      container.appendChild(div);
+      gaps.appendChild(div);
     });
+  } else {
+    gaps.innerHTML="<p style='color:var(--muted)'>No gaps detected.</p>";
+  }
 
-  } catch(e){
-    console.error(e);
-    container.innerHTML =
-      "<p style='color:red'>Failed to load assessments.</p>";
+  /* Recommendations */
+  const rec=$("recommendationsList");
+  rec.innerHTML="";
+  if(data.recommendations && data.recommendations.length>0){
+    data.recommendations.forEach(r=>{
+      const div=document.createElement("div");
+      div.className="item-box";
+      div.innerHTML=`
+        <strong>${r.category.replace(/_/g," ")}</strong>
+        <p style="color:var(--muted);font-size:13px">${r.suggestion}</p>
+        <span class="priority ${r.priority}">
+          ${r.priority.toUpperCase()}
+        </span>
+      `;
+      rec.appendChild(div);
+    });
+  } else {
+    rec.innerHTML="<p style='color:var(--muted)'>No recommendations available.</p>";
   }
 }
 
-// --------------------------------------------------
-// Load detailed analysis for one assessment
-// --------------------------------------------------
-async function loadDetailed(assessmentId){
-
-  try {
-
-    const res = await fetch(
-      `/api/calculate-detailed-analysis/${assessmentId}/`,
-      { credentials: "same-origin" }
-    );
-
-    if(!res.ok){
-      if(res.status === 403){
-        alert("Premium required for detailed analysis.");
-        return;
-      }
-      throw new Error("Failed: " + res.status);
-    }
-
-    const data = await res.json();
-    updateSnapshot(data);
-
-  } catch(e){
-    console.error(e);
-    alert("Failed to load detailed analysis");
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadAssessments);
+document.addEventListener("DOMContentLoaded",loadAssessments);
 </script>
 
 </body>

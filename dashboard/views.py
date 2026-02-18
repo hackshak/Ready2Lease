@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .services import build_detailed_breakdown,normalize_income_to_annual
 from django.utils import timezone
-from decimal import Decimal
+from assessments.gap_analysis import generate_gap_analysis
 
 
 
@@ -18,13 +18,14 @@ def dashboard_home(request):
 
 
 
+
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request,assessment_id=None):
 
         # 🔒 Premium gate
-        if not request.user.is_premium:
+        if not getattr(request.user, "is_premium", False):
             return Response(
                 {"detail": "Premium required."},
                 status=status.HTTP_403_FORBIDDEN
@@ -33,12 +34,18 @@ class DetailedReadinessAnalysisView(APIView):
         # -----------------------------
         # Get latest assessment
         # -----------------------------
-        assessment = (
-            Assessment.objects
-            .filter(user=request.user)
-            .order_by("-created_at")
-            .first()
-        )
+        if assessment_id:
+            assessment = Assessment.objects.get(
+                id=assessment_id,
+                user=request.user
+            )
+        else:
+            assessment = (
+                Assessment.objects
+                .filter(user=request.user)
+                .order_by("-created_at")
+                .first()
+            )
 
         if not assessment:
             return Response(
@@ -57,14 +64,18 @@ class DetailedReadinessAnalysisView(APIView):
             .first()
         )
 
-        score_prev = previous_assessment.readiness_score if previous_assessment else assessment.readiness_score
+        score_prev = (
+            previous_assessment.readiness_score
+            if previous_assessment and previous_assessment.readiness_score
+            else assessment.readiness_score
+        )
 
         # -----------------------------
         # Financial metrics
         # -----------------------------
         annual_income = normalize_income_to_annual(
-            assessment.household_income,
-            assessment.household_income_period
+            assessment.household_income or assessment.individual_income,
+            assessment.household_income_period or assessment.individual_income_period
         )
 
         income_weekly = round((annual_income / 52), 2) if annual_income else 0
@@ -85,9 +96,15 @@ class DetailedReadinessAnalysisView(APIView):
         avg_rent_weekly = round(avg_rent_monthly / 4, 2)
 
         # -----------------------------
-        # Detailed breakdown (service)
+        # Category breakdown
         # -----------------------------
         categories = build_detailed_breakdown(assessment)
+
+        # Extract category scores dynamically
+        category_scores = {
+            c["category"]: c["score"]
+            for c in categories
+        }
 
         overall = next(
             (c for c in categories if c["category"] == "overall_competitiveness"),
@@ -97,7 +114,6 @@ class DetailedReadinessAnalysisView(APIView):
         overall_score = overall["score"] if overall else assessment.readiness_score
         risk_level = overall["risk_level"] if overall else assessment.risk_level
 
-        # UI-friendly breakdown format
         breakdown = [
             {
                 "key": c["category"],
@@ -105,6 +121,26 @@ class DetailedReadinessAnalysisView(APIView):
             }
             for c in categories
         ]
+
+        # -----------------------------
+        # GAP ANALYSIS ENGINE
+        # -----------------------------
+        gaps, recommendations = generate_gap_analysis(
+            assessment,
+            category_scores
+        )
+
+        # Sort recommendations by priority
+        priority_order = {"high": 1, "medium": 2, "low": 3, "boost": 4}
+        recommendations = sorted(
+            recommendations,
+            key=lambda x: priority_order.get(x.get("priority"), 5)
+        )
+
+        # Save gap analysis
+        assessment.gap_analysis = gaps
+        assessment.recommendations = recommendations
+        assessment.save(update_fields=["gap_analysis", "recommendations"])
 
         # -----------------------------
         # Previous assessments list
@@ -119,34 +155,23 @@ class DetailedReadinessAnalysisView(APIView):
                 "days_ago": (now - item.created_at).days,
                 "created_at": item.created_at.date().isoformat(),
             }
-            for item in Assessment.objects.filter(user=request.user).order_by("-created_at")
+            for item in Assessment.objects
+            .filter(user=request.user)
+            .order_by("-created_at")
         ]
 
         # -----------------------------
-        # Improvement steps (SaaS layer)
+        # Dynamic Improvement Steps
         # -----------------------------
         steps = [
             {
-                "icon": "📄",
-                "title": "Upload proof of income",
-                "desc": "Strong documentation increases approval odds.",
-                "impact": 6,
-                "actionLabel": "Upload"
-            },
-            {
-                "icon": "👤",
-                "title": "Add landlord reference",
-                "desc": "References reduce perceived risk.",
-                "impact": 5,
-                "actionLabel": "Add Reference"
-            },
-            {
-                "icon": "💰",
-                "title": "Adjust rent target",
-                "desc": "Lower rent improves affordability ratio.",
-                "impact": 7,
-                "actionLabel": "Adjust"
-            },
+                "icon": "⚠️" if r["priority"] == "high" else "📌",
+                "title": r["category"].replace("_", " ").title(),
+                "desc": r["suggestion"],
+                "impact": 8 if r["priority"] == "high" else 5,
+                "actionLabel": "Fix Now"
+            }
+            for r in recommendations[:3]
         ]
 
         # -----------------------------
@@ -156,7 +181,7 @@ class DetailedReadinessAnalysisView(APIView):
             {
                 "icon": "🧾",
                 "title": "Assessment completed",
-                "desc": "Your readiness score was calculated.",
+                "desc": "Your readiness score and gap analysis were calculated.",
                 "when": "Recently"
             }
         ]
@@ -182,13 +207,15 @@ class DetailedReadinessAnalysisView(APIView):
             "breakdown": breakdown,
             "categories": categories,
 
+            "gaps": gaps,
+            "recommendations": recommendations,
+
             "previous_assessments": previous_list,
             "steps": steps,
             "activity": activity,
 
             "is_premium": True
         }, status=status.HTTP_200_OK)
-
 
 
 
