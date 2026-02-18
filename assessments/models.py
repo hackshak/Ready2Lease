@@ -89,6 +89,11 @@ class Assessment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+    gap_analysis = models.JSONField(default=dict, blank=True)
+    recommendations = models.JSONField(default=list, blank=True)
+    
+
     def __str__(self):
         who = self.full_name or (self.user.email if self.user else "Anonymous")
         return f"Assessment ({who}) - {self.session_key}"
