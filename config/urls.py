@@ -27,7 +27,6 @@ urlpatterns = [
     path('action-plan/', include('action_plan.urls')),
     path('documents/', include('documents.urls')),
     path('applications/', include('applications.urls')),
-    path('reports/', include('reports.urls')),
     path('blog/', include('blog.urls')),
     path('ai/', include('ai_assist.urls')),
 
