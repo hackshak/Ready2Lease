@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv() 
@@ -147,17 +148,15 @@ STATICFILES_DIRS = [
 
 
 # Django Rest Framework Settings
+LOGIN_URL = "/auth/login/"
+LOGIN_REDIRECT_URL = "/dashboard/home/"
+LOGOUT_REDIRECT_URL = "/auth/login/"
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
-
-SIMPLE_JWT = {
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
-
 
 
 # Custom User Model

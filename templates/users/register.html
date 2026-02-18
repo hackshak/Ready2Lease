@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 
 {% block content %}
 <section class="signup-section">
@@ -36,4 +38,9 @@
         </div>
     </div>
 </section>
+
+{% block extra_js %}
+<script src="{% static 'js/login_sign_logout.js' %}"></script>
+{% endblock %}
+
 {% endblock content %}
