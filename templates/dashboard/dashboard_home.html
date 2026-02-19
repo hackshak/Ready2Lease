@@ -1,11 +1,8 @@
-{% include "sidebar.html" %}
+{% extends "sidebar.html" %}
+{% load static %}
 
+{% block content %}
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Rental Readiness Dashboard — Home</title>
   <style>
     :root{
@@ -42,7 +39,6 @@
     }
 
     .wrap{
-      max-width:1100px;
       margin:0 auto;
       padding:24px 18px 60px;
     }
@@ -112,16 +108,16 @@
     }
 
     .ring{
-      width:84px;height:84px;
-      border-radius:999px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(17,26,51,1) 58%, transparent 59%),
-        conic-gradient(var(--good) 0deg, var(--good) var(--deg), rgba(255,255,255,.10) var(--deg));
-      border:1px solid var(--border);
-      box-shadow: 0 12px 24px rgba(0,0,0,.25);
-      display:grid;
-      place-items:center;
-      position:relative;
+     width:120px;
+    height:120px;
+    margin:30px auto;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at center, #111a33 60%, transparent 61%),
+        conic-gradient(#28d17c 0deg, #28d17c var(--deg), rgba(255,255,255,.1) var(--deg));
+    display:flex;
+    align-items:center;
+    justify-content:center;
     }
     .ring b{
       font-size:22px;
@@ -447,8 +443,8 @@
       .cta{ justify-content:flex-start; }
     }
   </style>
-</head>
-<body>
+
+
   <div class="wrap">
 
 
@@ -860,8 +856,4 @@ document.addEventListener("DOMContentLoaded", loadAssessment);
 </script>
 
 
-
-
-
-</body>
-</html>
+{% endblock %}

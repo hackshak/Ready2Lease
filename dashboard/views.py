@@ -7,6 +7,7 @@ from rest_framework import status
 from .services import build_detailed_breakdown,normalize_income_to_annual
 from django.utils import timezone
 from assessments.gap_analysis import generate_gap_analysis
+from action_plan.services import ActionPlanService
 
 
 
@@ -18,11 +19,18 @@ def dashboard_home(request):
 
 
 
+# Detailed Analysis page
+def detailed_analysis(request):
+    return render(request,"dashboard/detailed_analysis.html")
+
+
+
+
 
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request,assessment_id=None):
+    def get(self, request, assessment_id=None):
 
         # 🔒 Premium gate
         if not getattr(request.user, "is_premium", False):
@@ -54,7 +62,13 @@ class DetailedReadinessAnalysisView(APIView):
             )
 
         # -----------------------------
-        # Previous assessment (for trend)
+        # 🔥 NEW: Use Final Score (Base + Improvements)
+        # -----------------------------
+        final_score = ActionPlanService.get_final_score(request.user)
+        base_score = assessment.readiness_score or 0
+
+        # -----------------------------
+        # Previous assessment (trend)
         # -----------------------------
         previous_assessment = (
             Assessment.objects
@@ -64,11 +78,13 @@ class DetailedReadinessAnalysisView(APIView):
             .first()
         )
 
-        score_prev = (
-            previous_assessment.readiness_score
-            if previous_assessment and previous_assessment.readiness_score
-            else assessment.readiness_score
-        )
+        if previous_assessment:
+            prev_base = previous_assessment.readiness_score or 0
+        else:
+            prev_base = base_score
+
+        # Trend compares FINAL score now vs previous BASE
+        score_prev = prev_base
 
         # -----------------------------
         # Financial metrics
@@ -100,19 +116,12 @@ class DetailedReadinessAnalysisView(APIView):
         # -----------------------------
         categories = build_detailed_breakdown(assessment)
 
-        # Extract category scores dynamically
         category_scores = {
             c["category"]: c["score"]
             for c in categories
         }
 
-        overall = next(
-            (c for c in categories if c["category"] == "overall_competitiveness"),
-            None
-        )
-
-        overall_score = overall["score"] if overall else assessment.readiness_score
-        risk_level = overall["risk_level"] if overall else assessment.risk_level
+        risk_level = assessment.risk_level
 
         breakdown = [
             {
@@ -123,21 +132,19 @@ class DetailedReadinessAnalysisView(APIView):
         ]
 
         # -----------------------------
-        # GAP ANALYSIS ENGINE
+        # GAP ANALYSIS
         # -----------------------------
         gaps, recommendations = generate_gap_analysis(
             assessment,
             category_scores
         )
 
-        # Sort recommendations by priority
         priority_order = {"high": 1, "medium": 2, "low": 3, "boost": 4}
         recommendations = sorted(
             recommendations,
             key=lambda x: priority_order.get(x.get("priority"), 5)
         )
 
-        # Save gap analysis
         assessment.gap_analysis = gaps
         assessment.recommendations = recommendations
         assessment.save(update_fields=["gap_analysis", "recommendations"])
@@ -150,7 +157,10 @@ class DetailedReadinessAnalysisView(APIView):
         previous_list = [
             {
                 "id": item.id,
-                "score": item.readiness_score,
+                # 🔥 Show FINAL score for latest, base for older ones
+                "score": ActionPlanService.get_final_score(request.user)
+                if item.id == assessment.id
+                else (item.readiness_score or 0),
                 "risk_level": item.risk_level,
                 "days_ago": (now - item.created_at).days,
                 "created_at": item.created_at.date().isoformat(),
@@ -175,7 +185,7 @@ class DetailedReadinessAnalysisView(APIView):
         ]
 
         # -----------------------------
-        # Activity feed
+        # Activity
         # -----------------------------
         activity = [
             {
@@ -187,11 +197,11 @@ class DetailedReadinessAnalysisView(APIView):
         ]
 
         # -----------------------------
-        # Final SaaS-ready response
+        # Final Response
         # -----------------------------
         return Response({
             "assessment_id": assessment.id,
-            "score": overall_score,
+            "score": final_score,  # 🔥 ALWAYS FINAL SCORE
             "score_prev": score_prev,
             "risk_level": risk_level,
             "last_assessment": assessment.created_at.isoformat(),
@@ -216,18 +226,6 @@ class DetailedReadinessAnalysisView(APIView):
 
             "is_premium": True
         }, status=status.HTTP_200_OK)
-
-
-
-
-
-# Detailed Analysis page
-def detailed_analysis(request):
-    return render(request,"dashboard/detailed_analysis.html")
-
-
-
-
 
 
 

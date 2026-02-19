@@ -14,8 +14,8 @@
             font-family: Arial, sans-serif;
         }
 
-        body {
-            display: flex;
+       body {
+            margin: 0;
             min-height: 100vh;
             background: #f4f5f7;
         }
@@ -116,11 +116,15 @@
         }
 
         /* Dashboard content */
-        .dashboard-content{
-            margin-left: 250px;
-            min-height: 100vh;
-            transition: margin-left 0.3s ease;
-        }
+.dashboard-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    padding: 0;
+    background: #0b1020;
+    transition: margin-left 0.3s ease;
+}
+
+
 
         .sidebar.collapsed ~ .dashboard-content{
         margin-left: 70px;
@@ -157,14 +161,14 @@
             </li>
 
             <li data-premium="true">
-                <a href="">
+                <a href="{% url 'action_plan_page' %}">
                     <i class="fas fa-building"></i>
                     <span>Action Plan</span>
                 </a>
             </li>
 
             <li data-premium="true">
-                <a href="#">
+                <a href = "{% url 'ai_assist_page' %}">
                     <i class="fa-solid fa-ear-listen"></i>
                     <span>Ai Assist</span>
                 </a>
@@ -216,7 +220,10 @@
     </div>
 
     <!-- Dashboard Content -->
-     <div class="dashboard-content" id="content"></div>
+    <div class="dashboard-content">
+    {% block content %}{% endblock %}
+</div>
+
 
 
 

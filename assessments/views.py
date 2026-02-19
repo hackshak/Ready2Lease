@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from decimal import Decimal, InvalidOperation
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
+import re
 
 
 
@@ -130,10 +131,25 @@ class AssessmentSubmitView(APIView):
 
         for field in decimal_fields:
             value = data.get(field)
+
+            if value in [None, "", "null"]:
+                data[field] = None
+                continue
+
             try:
-                data[field] = Decimal(str(value).strip()) if value not in [None, "", "null"] else None
+                cleaned = str(value).strip()
+
+                # STRICT decimal pattern
+                if not re.match(r"^\d+(\.\d{1,2})?$", cleaned):
+                    data[field] = None
+                    continue
+
+                data[field] = Decimal(cleaned)
+
             except (InvalidOperation, ValueError, TypeError):
                 data[field] = None
+
+
 
         for field in float_fields:
             value = data.get(field)

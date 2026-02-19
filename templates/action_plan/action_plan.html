@@ -1,0 +1,397 @@
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* =========================================
+   ACTION PLAN PAGE (CLEAN + PROPER LAYOUT)
+========================================= */
+
+.action-plan-container{
+    padding:50px 40px;
+    color:#e9eefc;
+    max-width:1200px;
+}
+
+/* Header */
+.ap-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.ap-title{
+    font-size:24px;
+    font-weight:700;
+}
+
+.ap-btn{
+    border:0;
+    cursor:pointer;
+    font-size:13px;
+    padding:10px 16px;
+    border-radius:14px;
+    font-weight:600;
+    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
+    color:#fff;
+    box-shadow:0 10px 20px rgba(108,125,255,.25);
+}
+
+/* Grid Layout */
+.ap-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:28px;
+}
+
+/* Cards */
+.ap-card{
+    background:rgba(17,26,51,.85);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+
+/* Score Ring */
+.ap-ring{
+    width:140px;
+    height:140px;
+    margin:30px auto;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at center, #111a33 60%, transparent 61%),
+        conic-gradient(#28d17c 0deg, #28d17c var(--deg), rgba(255,255,255,.1) var(--deg));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.ap-ring b{
+    font-size:32px;
+}
+
+/* Steps */
+.ap-steps{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-top:10px;
+}
+
+.ap-step{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,.05);
+    padding:18px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.08);
+    transition:.2s ease;
+}
+
+.ap-step:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.ap-step h4{
+    margin:0;
+    font-size:15px;
+}
+
+.ap-step p{
+    margin:6px 0 0;
+    font-size:13px;
+    color:#a9b4d6;
+}
+
+.ap-impact{
+    margin-top:8px;
+    display:inline-block;
+    font-size:11px;
+    background:rgba(40,209,124,.18);
+    color:#28d17c;
+    padding:5px 10px;
+    border-radius:999px;
+    font-weight:700;
+}
+
+.ap-empty{
+    text-align:center;
+    padding:40px;
+    color:#a9b4d6;
+}
+
+/* Modal */
+.ap-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:3000;
+}
+
+.ap-modal-content{
+    background:#111a33;
+    padding:30px;
+    border-radius:18px;
+    width:95%;
+    max-width:520px;
+    border:1px solid rgba(255,255,255,.1);
+}
+
+.ap-close{
+    text-align:right;
+    font-size:13px;
+    cursor:pointer;
+    color:#a9b4d6;
+    margin-bottom:15px;
+}
+
+/* ✅ Improved Modal Styling */
+
+.ap-modal-content h3{
+    color: white;
+    margin-top:0;
+    margin-bottom:18px;
+    font-size:18px;
+}
+
+.ap-modal-content label{
+    display:block;
+    font-size:13px;
+    margin-bottom:6px;
+    color:#a9b4d6;
+}
+
+.ap-modal-content input[type="file"],
+.ap-modal-content textarea{
+    width:100%;
+    background:#0f1730;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    padding:12px;
+    color:#fff;
+    margin-bottom:16px;
+    font-size:13px;
+}
+
+.ap-modal-content textarea{
+    min-height:140px;
+    resize:vertical;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+}
+
+@media(max-width:1000px){
+    .ap-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+<div class="action-plan-container">
+
+    <!-- Hidden CSRF -->
+    <form style="display:none;">
+        {% csrf_token %}
+    </form>
+
+    <div class="ap-header">
+        <div class="ap-title">Your Premium Action Plan</div>
+        <button class="ap-btn" onclick="loadActionPlan()">Refresh</button>
+    </div>
+
+    <div class="ap-grid">
+
+        <div class="ap-card">
+            <h3>Score Improvement</h3>
+
+            <div class="ap-ring" id="scoreRing" style="--deg:0deg;">
+                <b id="finalScore">0</b>
+            </div>
+
+            <p style="text-align:center;color:#a9b4d6;font-size:14px;">
+                Complete tasks below to increase your rental competitiveness.
+            </p>
+        </div>
+
+        <div class="ap-card">
+            <h3>Recommended Actions</h3>
+            <div id="apSteps" class="ap-steps"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="apModal" class="ap-modal">
+  <div class="ap-modal-content">
+    <div class="ap-close" onclick="closeModal()">Close ✕</div>
+    <div id="apModalContent"></div>
+  </div>
+</div>
+
+<script>
+function getCSRFToken(){
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+async function loadActionPlan(){
+  const res = await fetch("/tasks/");
+  const data = await res.json();
+
+  document.getElementById("finalScore").innerText = data.final_score;
+  const deg = (data.final_score / 100) * 360;
+  document.getElementById("scoreRing").style.setProperty("--deg", deg + "deg");
+
+  const container = document.getElementById("apSteps");
+  container.innerHTML = "";
+
+  if(data.tasks.length === 0){
+    container.innerHTML = `<div class="ap-empty">All improvements completed 🎉</div>`;
+    return;
+  }
+
+  data.tasks.forEach(task=>{
+    container.innerHTML += `
+      <div class="ap-step">
+        <div>
+          <h4>${task.title}</h4>
+          <p>${task.description}</p>
+          <div class="ap-impact">+${task.points} Points</div>
+        </div>
+        <button class="ap-btn" onclick="openTask('${task.key}','${task.type}','${task.document_type || ''}')">
+          Start
+        </button>
+      </div>
+    `;
+  });
+}
+
+function openTask(key,type,docType){
+  const modal = document.getElementById("apModal");
+  const content = document.getElementById("apModalContent");
+
+  if(type === "document"){
+    content.innerHTML = `
+      <h3>Upload Document</h3>
+      <label>Select file</label>
+      <input type="file" id="fileInput">
+      <div class="modal-actions">
+        <button class="ap-btn" onclick="uploadDocument('${docType}')">
+          Upload & Complete
+        </button>
+      </div>
+    `;
+  }
+
+  if(type === "reference"){
+    content.innerHTML = `
+      <h3>Add Reference Letter</h3>
+      <label>Reference Text</label>
+      <textarea id="refText"></textarea>
+      <label>Attach File (optional)</label>
+      <input type="file" id="refFile">
+      <div class="modal-actions">
+        <button class="ap-btn" onclick="addReference()">
+          Submit & Complete
+        </button>
+      </div>
+    `;
+  }
+
+  if(type === "cover_letter"){
+    content.innerHTML = `
+      <h3>Improve Cover Letter</h3>
+      <label>Cover Letter (min 200 characters)</label>
+      <textarea id="coverText"></textarea>
+      <div class="modal-actions">
+        <button class="ap-btn" onclick="saveCover()">
+          Save & Complete
+        </button>
+      </div>
+    `;
+  }
+
+  modal.style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("apModal").style.display="none";
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById("apModal");
+  if (event.target === modal) {
+      closeModal();
+  }
+};
+
+async function uploadDocument(docType){
+  const file = document.getElementById("fileInput").files[0];
+  const formData = new FormData();
+  formData.append("document_type", docType);
+  formData.append("file", file);
+
+  await fetch("/upload-document/",{
+    method:"POST",
+    credentials:"same-origin",
+    headers:{
+      "X-CSRFToken": getCSRFToken()
+    },
+    body:formData
+  });
+
+  closeModal();
+  loadActionPlan();
+}
+
+async function addReference(){
+  const text = document.getElementById("refText").value;
+  const file = document.getElementById("refFile").files[0];
+  const formData = new FormData();
+  formData.append("text_content", text);
+  if(file) formData.append("file", file);
+
+  await fetch("/add-reference/",{
+    method:"POST",
+    credentials:"same-origin",
+    headers:{
+      "X-CSRFToken": getCSRFToken()
+    },
+    body:formData
+  });
+
+  closeModal();
+  loadActionPlan();
+}
+
+async function saveCover(){
+  const content = document.getElementById("coverText").value;
+
+  await fetch("/save-cover-letter/",{
+    method:"POST",
+    credentials:"same-origin",
+    headers:{
+      "Content-Type":"application/json",
+      "X-CSRFToken": getCSRFToken()
+    },
+    body:JSON.stringify({content})
+  });
+
+  closeModal();
+  loadActionPlan();
+}
+
+document.addEventListener("DOMContentLoaded", loadActionPlan);
+</script>
+
+{% endblock %}

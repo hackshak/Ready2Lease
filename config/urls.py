@@ -23,11 +23,6 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('', include('assessments.urls')),
     path('', include('dashboard.urls')),
-    path('payments/', include('payments.urls')),
-    path('action-plan/', include('action_plan.urls')),
-    path('documents/', include('documents.urls')),
-    path('applications/', include('applications.urls')),
-    path('blog/', include('blog.urls')),
-    path('ai/', include('ai_assist.urls')),
-
+    path('',include('action_plan.urls')),
+    path("ai-assist/", include("ai_assist.urls")),
 ]

@@ -1,0 +1,299 @@
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --panel2:#0f1730;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.08);
+  --shadow:0 14px 30px rgba(0,0,0,.35);
+  --radius:18px;
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+  --good:#28d17c;
+}
+
+.ai-container{
+  padding:40px;
+  max-width:1200px;
+  margin:auto;
+  color:var(--text);
+}
+
+.ai-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.ai-title{
+  font-size:24px;
+  font-weight:700;
+}
+
+.ai-grid{
+  display:grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap:20px;
+}
+
+.card{
+  background:rgba(17,26,51,.85);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+
+.card h3{
+  margin-top:0;
+  font-size:15px;
+}
+
+.score-ring{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  margin:20px auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center, #111a33 60%, transparent 61%),
+    conic-gradient(var(--good) 0deg, var(--good) var(--deg), rgba(255,255,255,.1) var(--deg));
+}
+
+.score-ring b{
+  font-size:26px;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  font-size:12px;
+  margin-top:8px;
+}
+
+.chat-box{
+  height:420px;
+  overflow-y:auto;
+  padding:15px;
+  background:var(--panel2);
+  border-radius:14px;
+  border:1px solid var(--border);
+  margin-bottom:12px;
+}
+
+.chat-msg{
+  margin-bottom:12px;
+  display:flex;
+}
+
+.chat-msg.user{
+  justify-content:flex-end;
+}
+
+.chat-bubble{
+  padding:10px 14px;
+  border-radius:14px;
+  max-width:75%;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.chat-msg.user .chat-bubble{
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+
+.chat-msg.assistant .chat-bubble{
+  background:rgba(255,255,255,.08);
+}
+
+.chat-input-wrap{
+  display:flex;
+  gap:10px;
+}
+
+.chat-input-wrap input{
+  flex:1;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#0f1730;
+  color:white;
+}
+
+.chat-input-wrap button{
+  padding:12px 18px;
+  border-radius:12px;
+  border:0;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  color:white;
+  font-weight:600;
+}
+
+.quick-prompts{
+  margin-top:15px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.quick-prompts button{
+  padding:6px 10px;
+  font-size:11px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+  cursor:pointer;
+  color:var(--text);
+}
+
+@media(max-width:1000px){
+  .ai-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
+<div class="ai-container">
+
+  <div class="ai-header">
+    <div class="ai-title">AI Rental Assistant</div>
+  </div>
+
+  <div class="ai-grid">
+
+    <!-- LEFT PANEL -->
+    <div class="card">
+      <h3>Your Current Readiness</h3>
+
+      <div class="score-ring" id="scoreRing" style="--deg:0deg;">
+        <b id="scoreValue">0</b>
+      </div>
+
+      <div style="text-align:center;">
+        <div class="badge" id="riskBadge">Risk: —</div>
+      </div>
+
+      <hr style="border-color:rgba(255,255,255,.08); margin:20px 0;">
+
+      <h3>AI Can Help You With:</h3>
+      <ul style="font-size:13px;color:var(--muted);line-height:1.6;padding-left:18px;">
+        <li>Explain your score in simple terms</li>
+        <li>Suggest next best improvement</li>
+        <li>Increase approval chances</li>
+        <li>Improve your cover letter</li>
+        <li>Identify hidden risks</li>
+      </ul>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="card">
+      <h3>Chat With AI</h3>
+
+      <div id="chatBox" class="chat-box"></div>
+
+      <div class="chat-input-wrap">
+        <input type="text" id="chatInput" placeholder="Ask something about your rental readiness...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+
+      <div class="quick-prompts">
+        <button onclick="quickAsk('Explain my readiness score')">Explain score</button>
+        <button onclick="quickAsk('What is my biggest weakness?')">Biggest weakness</button>
+        <button onclick="quickAsk('How can I increase approval chances?')">Increase approval</button>
+        <button onclick="quickAsk('Help improve my cover letter')">Improve cover letter</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function getCSRFToken() {
+  const name = "csrftoken";
+  const cookies = document.cookie.split(";");
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name + "=")) {
+      return decodeURIComponent(cookie.substring(name.length + 1));
+    }
+  }
+  return null;
+}
+async function loadContext(){
+  const res = await fetch("/api/detailed-readiness/", {credentials:"same-origin"});
+  if(!res.ok) return;
+
+  const data = await res.json();
+
+  document.getElementById("scoreValue").innerText = data.score || 0;
+  const deg = (data.score / 100) * 360;
+  document.getElementById("scoreRing").style.setProperty("--deg", deg+"deg");
+  document.getElementById("riskBadge").innerText = "Risk: " + (data.risk_level || "—");
+}
+
+async function loadChat(){
+  const res = await fetch("/ai-assist/chat/", {credentials:"same-origin"});
+  const messages = await res.json();
+
+  const box = document.getElementById("chatBox");
+  box.innerHTML = "";
+
+  messages.forEach(m=>{
+    box.innerHTML += `
+      <div class="chat-msg ${m.role}">
+        <div class="chat-bubble">
+          ${m.content.replace(/\n/g,"<br>")}
+        </div>
+      </div>
+    `;
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendMessage(){
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if(!message) return;
+
+  input.value = "";
+
+  await fetch("/ai-assist/chat/",{
+    method:"POST",
+    credentials:"same-origin",
+    headers:{
+      "Content-Type":"application/json",
+      "X-CSRFToken": getCSRFToken()
+    },
+    body:JSON.stringify({message})
+  });
+
+  loadChat();
+}
+
+function quickAsk(text){
+  document.getElementById("chatInput").value = text;
+  sendMessage();
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  loadContext();
+  loadChat();
+});
+</script>
+
+{% endblock %}

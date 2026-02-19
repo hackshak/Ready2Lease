@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 GEOAPIFY_API_KEY = os.getenv("GEOAPIFY_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,16 +53,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     # Custom Apps
+    'assessments',
+    'dashboard',
+    'users',
     'action_plan',
     'ai_assist',
-    'applications',
-    'assessments',
-    'blog',
-    'core',
-    'dashboard',
-    'documents',
-    'payments',
-    'users'
+    
 ]
 
 MIDDLEWARE = [
