@@ -1,6 +1,7 @@
+# action_plan/services.py
+
 from assessments.models import Assessment
 from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
-
 
 TASK_POINTS = {
     "upload_payslip": 5,
@@ -12,28 +13,19 @@ TASK_POINTS = {
 
 class ActionPlanService:
 
+    # -----------------------------
+    # Generate Tasks Per Assessment
+    # -----------------------------
     @staticmethod
-    def get_latest_assessment(user):
-        return (
-            Assessment.objects
-            .filter(user=user)
-            .order_by("-created_at")
-            .first()
-        )
+    def generate_tasks(user, assessment):
 
-    @staticmethod
-    def get_completed_keys(user):
-        return set(
-            user.ap_completed_tasks.values_list("task_key", flat=True)
-        )
-
-    @staticmethod
-    def generate_tasks(user):
-        assessment = ActionPlanService.get_latest_assessment(user)
         if not assessment:
             return []
 
-        completed = ActionPlanService.get_completed_keys(user)
+        completed = set(
+            assessment.completed_tasks.values_list("task_key", flat=True)
+        )
+
         tasks = []
 
         # Payslip
@@ -93,28 +85,34 @@ class ActionPlanService:
 
         return tasks
 
+    # -----------------------------
+    # Improvement Score Per Assessment
+    # -----------------------------
     @staticmethod
-    def get_improvement_score(user):
+    def get_improvement_score_for_assessment(assessment):
         return sum(
-            user.ap_completed_tasks.values_list("points_awarded", flat=True)
+            assessment.completed_tasks.values_list(
+                "points_awarded",
+                flat=True
+            )
         )
 
+    # -----------------------------
+    # Final Score Per Assessment
+    # -----------------------------
     @staticmethod
-    def get_final_score(user):
-        assessment = ActionPlanService.get_latest_assessment(user)
+    def get_final_score_for_assessment(user, assessment):
+
         if not assessment:
             return 0
 
-        # Base readiness score (from assessment engine)
         base_score = assessment.readiness_score or 0
 
-        # Improvement points (completed action plan tasks)
-        improvement_score = ActionPlanService.get_improvement_score(user)
+        if not getattr(user, "is_premium", False):
+            return base_score
 
-        # Final score = base + improvements
-        final_score = base_score + improvement_score
+        improvement_score = ActionPlanService.get_improvement_score_for_assessment(
+            assessment
+        )
 
-        # Clamp to 100 (important)
-        final_score = min(final_score, 100)
-
-        return final_score
+        return min(base_score + improvement_score, 100)

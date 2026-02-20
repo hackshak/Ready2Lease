@@ -101,6 +101,7 @@ class AssessmentSubmitView(APIView):
     Free assessment submit:
     - uses session_key for anonymous persistence
     - attaches to user if authenticated
+    - creates a NEW assessment on every submission
     """
 
     authentication_classes = [SessionAuthentication]
@@ -120,9 +121,14 @@ class AssessmentSubmitView(APIView):
         allowed_fields = {field.name for field in Assessment._meta.fields}
         clean_data = {k: v for k, v in data.items() if k in allowed_fields}
 
+        # Always set session_key
         clean_data["session_key"] = session_key
-        data = clean_data
 
+        # Attach user if authenticated
+        if request.user.is_authenticated:
+            clean_data["user"] = request.user
+
+        data = clean_data
 
         # --------- Sanitize numeric fields ----------
         decimal_fields = ["monthly_rent_budget", "household_income", "individual_income"]
@@ -149,8 +155,6 @@ class AssessmentSubmitView(APIView):
             except (InvalidOperation, ValueError, TypeError):
                 data[field] = None
 
-
-
         for field in float_fields:
             value = data.get(field)
             try:
@@ -165,16 +169,8 @@ class AssessmentSubmitView(APIView):
             except (ValueError, TypeError):
                 data[field] = 0
 
-        # --------- Save/update assessment ----------
-        assessment, created = Assessment.objects.update_or_create(
-            session_key=session_key,
-            defaults=data
-        )
-
-        # --------- Attach user if authenticated ----------
-        if request.user.is_authenticated and assessment.user_id != request.user.id:
-            assessment.user = request.user
-            assessment.save(update_fields=["user"])
+        # --------- Create NEW assessment ----------
+        assessment = Assessment.objects.create(**data)
 
         # --------- Scoring ----------
         score = 0

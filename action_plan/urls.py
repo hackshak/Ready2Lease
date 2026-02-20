@@ -8,9 +8,46 @@ from .views import (
 )
 
 urlpatterns = [
-    path("action-plan/", ActionPlanPageView.as_view(), name="action_plan_page"),
-    path("tasks/", ActionPlanTasksView.as_view()),
-    path("upload-document/", UploadDocumentView.as_view()),
-    path("add-reference/", AddReferenceView.as_view()),
-    path("save-cover-letter/", SaveCoverLetterView.as_view()),
+
+    # Action Plan Page
+    path(
+        "action-plan/",
+        ActionPlanPageView.as_view(),
+        name="action_plan_page"
+    ),
+
+    # Tasks for specific assessment
+    path(
+        "tasks/<int:assessment_id>/",
+        ActionPlanTasksView.as_view(),
+        name="action_plan_tasks"
+    ),
+
+    # Fallback (latest assessment)
+    path(
+        "tasks/",
+        ActionPlanTasksView.as_view(),
+        name="action_plan_tasks_latest"
+    ),
+
+    # Upload document for selected assessment
+    path(
+        "upload-document/<int:assessment_id>/",
+        UploadDocumentView.as_view(),
+        name="upload_document"
+    ),
+
+    # Add reference for selected assessment
+    path(
+        "add-reference/<int:assessment_id>/",
+        AddReferenceView.as_view(),
+        name="add_reference"
+    ),
+
+    # Save cover letter for selected assessment
+    path(
+        "save-cover-letter/<int:assessment_id>/",
+        SaveCoverLetterView.as_view(),
+        name="save_cover_letter"
+    ),
 ]

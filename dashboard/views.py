@@ -64,8 +64,14 @@ class DetailedReadinessAnalysisView(APIView):
         # -----------------------------
         # 🔥 NEW: Use Final Score (Base + Improvements)
         # -----------------------------
-        final_score = ActionPlanService.get_final_score(request.user)
+        # 🔥 Use selected assessment base score
         base_score = assessment.readiness_score or 0
+
+        # Apply improvements on THIS assessment only
+        final_score = ActionPlanService.get_final_score_for_assessment(
+            request.user,
+            assessment
+        )
 
         # -----------------------------
         # Previous assessment (trend)
@@ -154,21 +160,20 @@ class DetailedReadinessAnalysisView(APIView):
         # -----------------------------
         now = timezone.now()
 
-        previous_list = [
-            {
+        previous_list = []
+        for item in Assessment.objects.filter(user=request.user).order_by("-created_at"):
+            score_value = ActionPlanService.get_final_score_for_assessment(
+                request.user,
+                item
+            )
+
+            previous_list.append({
                 "id": item.id,
-                # 🔥 Show FINAL score for latest, base for older ones
-                "score": ActionPlanService.get_final_score(request.user)
-                if item.id == assessment.id
-                else (item.readiness_score or 0),
+                "score": score_value,
                 "risk_level": item.risk_level,
                 "days_ago": (now - item.created_at).days,
                 "created_at": item.created_at.date().isoformat(),
-            }
-            for item in Assessment.objects
-            .filter(user=request.user)
-            .order_by("-created_at")
-        ]
+            })
 
         # -----------------------------
         # Dynamic Improvement Steps

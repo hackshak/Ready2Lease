@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from assessments.models import Assessment
 
 
 class UserDocument(models.Model):
@@ -53,9 +54,14 @@ class CompletedTask(models.Model):
         on_delete=models.CASCADE,
         related_name="ap_completed_tasks"
     )
+    assessment = models.ForeignKey(
+        Assessment,
+        on_delete=models.CASCADE,
+        related_name="completed_tasks"
+    )
     task_key = models.CharField(max_length=100)
     points_awarded = models.IntegerField()
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("user", "task_key")
+        unique_together = ("assessment", "task_key")

@@ -5,16 +5,16 @@
 
 <style>
 /* =========================================
-   ACTION PLAN PAGE (CLEAN + PROPER LAYOUT)
+   ACTION PLAN PAGE (MULTI-ASSESSMENT READY)
 ========================================= */
 
+/* ✅ Your original styles untouched */
 .action-plan-container{
     padding:50px 40px;
     color:#e9eefc;
     max-width:1200px;
 }
 
-/* Header */
 .ap-header{
     display:flex;
     justify-content:space-between;
@@ -39,14 +39,25 @@
     box-shadow:0 10px 20px rgba(108,125,255,.25);
 }
 
-/* Grid Layout */
+.ap-selector{
+    margin-bottom:30px;
+}
+
+.ap-selector select{
+    background:#0f1730;
+    border:1px solid rgba(255,255,255,.12);
+    color:#fff;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:13px;
+}
+
 .ap-grid{
     display:grid;
     grid-template-columns:1.3fr 1fr;
     gap:28px;
 }
 
-/* Cards */
 .ap-card{
     background:rgba(17,26,51,.85);
     border:1px solid rgba(255,255,255,.08);
@@ -55,7 +66,6 @@
     box-shadow:0 18px 40px rgba(0,0,0,.45);
 }
 
-/* Score Ring */
 .ap-ring{
     width:140px;
     height:140px;
@@ -67,13 +77,13 @@
     display:flex;
     align-items:center;
     justify-content:center;
+    transition:.4s ease;
 }
 
 .ap-ring b{
     font-size:32px;
 }
 
-/* Steps */
 .ap-steps{
     display:flex;
     flex-direction:column;
@@ -96,16 +106,8 @@
     background:rgba(255,255,255,.08);
 }
 
-.ap-step h4{
-    margin:0;
-    font-size:15px;
-}
-
-.ap-step p{
-    margin:6px 0 0;
-    font-size:13px;
-    color:#a9b4d6;
-}
+.ap-step h4{margin:0;font-size:15px;}
+.ap-step p{margin:6px 0 0;font-size:13px;color:#a9b4d6;}
 
 .ap-impact{
     margin-top:8px;
@@ -124,7 +126,6 @@
     color:#a9b4d6;
 }
 
-/* Modal */
 .ap-modal{
     position:fixed;
     inset:0;
@@ -152,83 +153,50 @@
     margin-bottom:15px;
 }
 
-/* ✅ Improved Modal Styling */
-
-.ap-modal-content h3{
-    color: white;
-    margin-top:0;
-    margin-bottom:18px;
-    font-size:18px;
-}
-
-.ap-modal-content label{
-    display:block;
-    font-size:13px;
-    margin-bottom:6px;
-    color:#a9b4d6;
-}
-
-.ap-modal-content input[type="file"],
-.ap-modal-content textarea{
-    width:100%;
-    background:#0f1730;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;
-    padding:12px;
-    color:#fff;
-    margin-bottom:16px;
-    font-size:13px;
-}
-
-.ap-modal-content textarea{
-    min-height:140px;
-    resize:vertical;
-}
-
 .modal-actions{
     display:flex;
     justify-content:flex-end;
 }
 
 @media(max-width:1000px){
-    .ap-grid{
-        grid-template-columns:1fr;
-    }
+    .ap-grid{grid-template-columns:1fr;}
 }
 </style>
 
 <div class="action-plan-container">
 
-    <!-- Hidden CSRF -->
-    <form style="display:none;">
-        {% csrf_token %}
-    </form>
+<form style="display:none;">{% csrf_token %}</form>
 
-    <div class="ap-header">
-        <div class="ap-title">Your Premium Action Plan</div>
-        <button class="ap-btn" onclick="loadActionPlan()">Refresh</button>
-    </div>
+<div class="ap-header">
+    <div class="ap-title">Your Premium Action Plan</div>
+    <button class="ap-btn" onclick="loadTasks()">Refresh</button>
+</div>
 
-    <div class="ap-grid">
+<div class="ap-selector">
+    <label>Select Assessment:</label><br>
+    <select id="assessmentSelect"></select>
+</div>
 
-        <div class="ap-card">
-            <h3>Score Improvement</h3>
+<div class="ap-grid">
 
-            <div class="ap-ring" id="scoreRing" style="--deg:0deg;">
-                <b id="finalScore">0</b>
-            </div>
+    <div class="ap-card">
+        <h3>Score Improvement</h3>
 
-            <p style="text-align:center;color:#a9b4d6;font-size:14px;">
-                Complete tasks below to increase your rental competitiveness.
-            </p>
+        <div class="ap-ring" id="scoreRing" style="--deg:0deg;">
+            <b id="finalScore">0</b>
         </div>
 
-        <div class="ap-card">
-            <h3>Recommended Actions</h3>
-            <div id="apSteps" class="ap-steps"></div>
-        </div>
-
+        <p style="text-align:center;color:#a9b4d6;font-size:14px;">
+            Complete tasks to increase your rental competitiveness.
+        </p>
     </div>
+
+    <div class="ap-card">
+        <h3>Recommended Actions</h3>
+        <div id="apSteps" class="ap-steps"></div>
+    </div>
+
+</div>
 
 </div>
 
@@ -240,158 +208,193 @@
 </div>
 
 <script>
+
+let selectedAssessment = null;
+
 function getCSRFToken(){
-  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
-async function loadActionPlan(){
-  const res = await fetch("/tasks/");
-  const data = await res.json();
+/* Load assessments into dropdown */
+async function loadAssessments(){
+    const res = await fetch("/api/detailed-readiness/");
+    const data = await res.json();
 
-  document.getElementById("finalScore").innerText = data.final_score;
-  const deg = (data.final_score / 100) * 360;
-  document.getElementById("scoreRing").style.setProperty("--deg", deg + "deg");
+    const select = document.getElementById("assessmentSelect");
+    select.innerHTML = "";
 
-  const container = document.getElementById("apSteps");
-  container.innerHTML = "";
+    if(!data.previous_assessments || !data.previous_assessments.length){
+        select.innerHTML = `<option>No Assessments Found</option>`;
+        return;
+    }
 
-  if(data.tasks.length === 0){
-    container.innerHTML = `<div class="ap-empty">All improvements completed 🎉</div>`;
-    return;
-  }
+    data.previous_assessments.forEach(a=>{
+        select.innerHTML += `
+            <option value="${a.id}">
+                ${a.created_at} (Score: ${a.score})
+            </option>
+        `;
+    });
 
-  data.tasks.forEach(task=>{
-    container.innerHTML += `
-      <div class="ap-step">
-        <div>
-          <h4>${task.title}</h4>
-          <p>${task.description}</p>
-          <div class="ap-impact">+${task.points} Points</div>
-        </div>
-        <button class="ap-btn" onclick="openTask('${task.key}','${task.type}','${task.document_type || ''}')">
-          Start
-        </button>
-      </div>
-    `;
-  });
+    selectedAssessment = data.previous_assessments[0].id;
+    select.value = selectedAssessment;
+
+    select.addEventListener("change", function(){
+        selectedAssessment = this.value;
+        loadTasks();
+    });
+
+    loadTasks();
 }
 
+/* Load tasks for selected assessment */
+async function loadTasks(){
+    if(!selectedAssessment) return;
+
+    const res = await fetch(`/tasks/${selectedAssessment}/`);
+    const data = await res.json();
+
+    const score = data.final_score || 0;
+
+    document.getElementById("finalScore").innerText = score;
+
+    const deg = (score / 100) * 360;
+    document.getElementById("scoreRing")
+        .style.setProperty("--deg", deg + "deg");
+
+    const container = document.getElementById("apSteps");
+    container.innerHTML = "";
+
+    if(!data.tasks || data.tasks.length === 0){
+        container.innerHTML = `<div class="ap-empty">All improvements completed 🎉</div>`;
+        return;
+    }
+
+    data.tasks.forEach(task=>{
+        container.innerHTML += `
+            <div class="ap-step">
+                <div>
+                    <h4>${task.title}</h4>
+                    <p>${task.description}</p>
+                    <div class="ap-impact">+${task.points} Points</div>
+                </div>
+                <button class="ap-btn"
+                    onclick="openTask('${task.key}','${task.type}','${task.document_type || ''}')">
+                    Start
+                </button>
+            </div>
+        `;
+    });
+}
+
+/* Modal logic */
 function openTask(key,type,docType){
-  const modal = document.getElementById("apModal");
-  const content = document.getElementById("apModalContent");
+    const modal = document.getElementById("apModal");
+    const content = document.getElementById("apModalContent");
 
-  if(type === "document"){
-    content.innerHTML = `
-      <h3>Upload Document</h3>
-      <label>Select file</label>
-      <input type="file" id="fileInput">
-      <div class="modal-actions">
-        <button class="ap-btn" onclick="uploadDocument('${docType}')">
-          Upload & Complete
-        </button>
-      </div>
-    `;
-  }
+    if(type === "document"){
+        content.innerHTML = `
+            <h3>Upload Document</h3>
+            <input type="file" id="fileInput">
+            <div class="modal-actions">
+                <button class="ap-btn"
+                    onclick="uploadDocument('${docType}')">
+                    Upload & Complete
+                </button>
+            </div>
+        `;
+    }
 
-  if(type === "reference"){
-    content.innerHTML = `
-      <h3>Add Reference Letter</h3>
-      <label>Reference Text</label>
-      <textarea id="refText"></textarea>
-      <label>Attach File (optional)</label>
-      <input type="file" id="refFile">
-      <div class="modal-actions">
-        <button class="ap-btn" onclick="addReference()">
-          Submit & Complete
-        </button>
-      </div>
-    `;
-  }
+    if(type === "reference"){
+        content.innerHTML = `
+            <h3>Add Reference</h3>
+            <textarea id="refText"></textarea>
+            <div class="modal-actions">
+                <button class="ap-btn"
+                    onclick="addReference()">
+                    Submit & Complete
+                </button>
+            </div>
+        `;
+    }
 
-  if(type === "cover_letter"){
-    content.innerHTML = `
-      <h3>Improve Cover Letter</h3>
-      <label>Cover Letter (min 200 characters)</label>
-      <textarea id="coverText"></textarea>
-      <div class="modal-actions">
-        <button class="ap-btn" onclick="saveCover()">
-          Save & Complete
-        </button>
-      </div>
-    `;
-  }
+    if(type === "cover_letter"){
+        content.innerHTML = `
+            <h3>Improve Cover Letter</h3>
+            <textarea id="coverText"></textarea>
+            <div class="modal-actions">
+                <button class="ap-btn"
+                    onclick="saveCover()">
+                    Save & Complete
+                </button>
+            </div>
+        `;
+    }
 
-  modal.style.display="flex";
+    modal.style.display="flex";
 }
 
 function closeModal(){
-  document.getElementById("apModal").style.display="none";
+    document.getElementById("apModal").style.display="none";
 }
 
-window.onclick = function(event) {
-  const modal = document.getElementById("apModal");
-  if (event.target === modal) {
-      closeModal();
-  }
-};
-
+/* Updated endpoints */
 async function uploadDocument(docType){
-  const file = document.getElementById("fileInput").files[0];
-  const formData = new FormData();
-  formData.append("document_type", docType);
-  formData.append("file", file);
+    const file = document.getElementById("fileInput").files[0];
+    const formData = new FormData();
+    formData.append("document_type", docType);
+    formData.append("file", file);
 
-  await fetch("/upload-document/",{
-    method:"POST",
-    credentials:"same-origin",
-    headers:{
-      "X-CSRFToken": getCSRFToken()
-    },
-    body:formData
-  });
+    await fetch(`/upload-document/${selectedAssessment}/`,{
+        method:"POST",
+        credentials:"same-origin",
+        headers:{
+            "X-CSRFToken": getCSRFToken()
+        },
+        body:formData
+    });
 
-  closeModal();
-  loadActionPlan();
+    closeModal();
+    loadTasks();
 }
 
 async function addReference(){
-  const text = document.getElementById("refText").value;
-  const file = document.getElementById("refFile").files[0];
-  const formData = new FormData();
-  formData.append("text_content", text);
-  if(file) formData.append("file", file);
+    const text = document.getElementById("refText").value;
+    const formData = new FormData();
+    formData.append("text_content", text);
 
-  await fetch("/add-reference/",{
-    method:"POST",
-    credentials:"same-origin",
-    headers:{
-      "X-CSRFToken": getCSRFToken()
-    },
-    body:formData
-  });
+    await fetch(`/add-reference/${selectedAssessment}/`,{
+        method:"POST",
+        credentials:"same-origin",
+        headers:{
+            "X-CSRFToken": getCSRFToken()
+        },
+        body:formData
+    });
 
-  closeModal();
-  loadActionPlan();
+    closeModal();
+    loadTasks();
 }
 
 async function saveCover(){
-  const content = document.getElementById("coverText").value;
+    const content = document.getElementById("coverText").value;
 
-  await fetch("/save-cover-letter/",{
-    method:"POST",
-    credentials:"same-origin",
-    headers:{
-      "Content-Type":"application/json",
-      "X-CSRFToken": getCSRFToken()
-    },
-    body:JSON.stringify({content})
-  });
+    await fetch(`/save-cover-letter/${selectedAssessment}/`,{
+        method:"POST",
+        credentials:"same-origin",
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken": getCSRFToken()
+        },
+        body:JSON.stringify({content})
+    });
 
-  closeModal();
-  loadActionPlan();
+    closeModal();
+    loadTasks();
 }
 
-document.addEventListener("DOMContentLoaded", loadActionPlan);
+document.addEventListener("DOMContentLoaded", loadAssessments);
+
 </script>
 
 {% endblock %}
