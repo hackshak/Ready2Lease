@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from assessments.models import Assessment
 from .services import ActionPlanService, TASK_POINTS
 from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
+from .checklist_service import ChecklistService
+
 
 
 # ==========================================================
@@ -158,8 +160,11 @@ class AddReferenceView(APIView):
         })
 
 
+
+
+
 # ==========================================================
-# SAVE COVER LETTER (PER ASSESSMENT)
+# SAVE COVER LETTER (PER ASSESSMENT) - FILE ONLY
 # ==========================================================
 
 class SaveCoverLetterView(APIView):
@@ -167,11 +172,11 @@ class SaveCoverLetterView(APIView):
 
     def post(self, request, assessment_id):
 
-        content = request.data.get("content", "")
+        file = request.FILES.get("file")
 
-        if len(content.strip()) < 200:
+        if not file:
             return Response(
-                {"detail": "Minimum 200 characters required"},
+                {"detail": "Cover letter file is required"},
                 status=400
             )
 
@@ -181,12 +186,14 @@ class SaveCoverLetterView(APIView):
             user=request.user
         )
 
+        # Replace existing file if exists
         CoverLetter.objects.update_or_create(
             user=request.user,
             assessment=assessment,
-            defaults={"content": content}
+            defaults={"file": file}
         )
 
+        # Keep scoring logic untouched
         CompletedTask.objects.get_or_create(
             user=request.user,
             assessment=assessment,
@@ -200,3 +207,139 @@ class SaveCoverLetterView(APIView):
                 assessment
             )
         })
+
+
+
+# ==========================================================
+# SAVE COVER LETTER (PER ASSESSMENT) - FILE ONLY
+# ==========================================================
+
+class SaveCoverLetterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, assessment_id):
+
+        file = request.FILES.get("file")
+
+        if not file:
+            return Response(
+                {"detail": "File is required"},
+                status=400
+            )
+
+        assessment = get_object_or_404(
+            Assessment,
+            id=assessment_id,
+            user=request.user
+        )
+
+        CoverLetter.objects.update_or_create(
+            user=request.user,
+            assessment=assessment,
+            defaults={"file": file}
+        )
+
+        # Keep scoring intact
+        CompletedTask.objects.get_or_create(
+            user=request.user,
+            assessment=assessment,
+            task_key="improve_cover_letter",
+            defaults={"points_awarded": TASK_POINTS["improve_cover_letter"]}
+        )
+
+        return Response({
+            "final_score": ActionPlanService.get_final_score_for_assessment(
+                request.user,
+                assessment
+            )
+        })
+    
+
+
+
+
+
+# ==========================================================
+# DOCUMENTS HOME PAGE (List Assessments)
+# ==========================================================
+
+class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
+    template_name = "action_plan/documents.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        assessments = Assessment.objects.filter(
+            user=self.request.user
+        ).order_by("-created_at")
+
+        context["assessments"] = assessments
+        return context
+
+
+
+
+class DocumentChecklistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, assessment_id):
+
+        assessment = get_object_or_404(
+            Assessment,
+            id=assessment_id,
+            user=request.user
+        )
+
+        data = ChecklistService.get_checklist_for_assessment(
+            request.user,
+            assessment
+        )
+
+        return Response(data)
+    
+
+
+
+
+class DeleteDocumentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, assessment_id, doc_type, object_id):
+
+        assessment = get_object_or_404(
+            Assessment,
+            id=assessment_id,
+            user=request.user
+        )
+
+        if doc_type in ["id_document", "payslip", "bank_statement"]:
+            doc = get_object_or_404(
+                UserDocument,
+                id=object_id,
+                user=request.user,
+                assessment=assessment
+            )
+            doc.file.delete(save=False)
+            doc.delete()
+
+        elif doc_type == "reference_letter":
+            ref = get_object_or_404(
+                ReferenceLetter,
+                id=object_id,
+                user=request.user,
+                assessment=assessment
+            )
+            if ref.file:
+                ref.file.delete(save=False)
+            ref.delete()
+
+        elif doc_type == "cover_letter":
+            cover = get_object_or_404(
+                CoverLetter,
+                id=object_id,
+                user=request.user,
+                assessment=assessment
+            )
+            cover.delete()
+
+        return Response({"detail": "Deleted successfully"})

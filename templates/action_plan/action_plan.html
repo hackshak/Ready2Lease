@@ -266,6 +266,9 @@
   </div>
 </div>
 
+
+
+
 <script>
 let selectedAssessment = null;
 
@@ -342,13 +345,21 @@ async function loadTasks(){
     });
 }
 
+/* ======================================================
+   UPDATED: FILE-ONLY TASK MODALS
+====================================================== */
+
 function openTask(key,type,docType){
     const modal = document.getElementById("apModal");
     const content = document.getElementById("apModalContent");
 
+    // Document upload (ID, Payslip, Bank)
     if(type === "document"){
         content.innerHTML = `
-            <h3>Upload Document</h3>
+            <h3>Upload Required Document</h3>
+            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
+                Please upload the required document file (PDF recommended).
+            </p>
             <input type="file" id="fileInput">
             <div class="modal-actions">
                 <button class="ap-btn"
@@ -359,27 +370,35 @@ function openTask(key,type,docType){
         `;
     }
 
+    // Reference Letter (FILE ONLY)
     if(type === "reference"){
         content.innerHTML = `
-            <h3>Add Reference</h3>
-            <textarea id="refText"></textarea>
+            <h3>Upload Reference Letter</h3>
+            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
+                Upload a landlord or employer reference letter (PDF recommended).
+            </p>
+            <input type="file" id="fileInput">
             <div class="modal-actions">
                 <button class="ap-btn"
-                    onclick="addReference()">
-                    Submit & Complete
+                    onclick="uploadReference()">
+                    Upload & Complete
                 </button>
             </div>
         `;
     }
 
+    // Cover Letter (FILE ONLY)
     if(type === "cover_letter"){
         content.innerHTML = `
-            <h3>Improve Cover Letter</h3>
-            <textarea id="coverText"></textarea>
+            <h3>Upload Cover Letter</h3>
+            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
+                Upload your rental cover letter file (PDF recommended).
+            </p>
+            <input type="file" id="fileInput">
             <div class="modal-actions">
                 <button class="ap-btn"
-                    onclick="saveCover()">
-                    Save & Complete
+                    onclick="uploadCoverLetter()">
+                    Upload & Complete
                 </button>
             </div>
         `;
@@ -392,8 +411,14 @@ function closeModal(){
     document.getElementById("apModal").style.display="none";
 }
 
+/* ======================================================
+   FILE HANDLERS
+====================================================== */
+
 async function uploadDocument(docType){
     const file = document.getElementById("fileInput").files[0];
+    if(!file) return;
+
     const formData = new FormData();
     formData.append("document_type", docType);
     formData.append("file", file);
@@ -409,10 +434,12 @@ async function uploadDocument(docType){
     loadTasks();
 }
 
-async function addReference(){
-    const text = document.getElementById("refText").value;
+async function uploadReference(){
+    const file = document.getElementById("fileInput").files[0];
+    if(!file) return;
+
     const formData = new FormData();
-    formData.append("text_content", text);
+    formData.append("file", file);
 
     await fetch(`/add-reference/${selectedAssessment}/`,{
         method:"POST",
@@ -425,17 +452,18 @@ async function addReference(){
     loadTasks();
 }
 
-async function saveCover(){
-    const content = document.getElementById("coverText").value;
+async function uploadCoverLetter(){
+    const file = document.getElementById("fileInput").files[0];
+    if(!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
 
     await fetch(`/save-cover-letter/${selectedAssessment}/`,{
         method:"POST",
         credentials:"same-origin",
-        headers:{
-            "Content-Type":"application/json",
-            "X-CSRFToken": getCSRFToken()
-        },
-        body:JSON.stringify({content})
+        headers:{ "X-CSRFToken": getCSRFToken() },
+        body:formData
     });
 
     closeModal();

@@ -36,7 +36,6 @@ class ReferenceLetter(models.Model):
         on_delete=models.CASCADE,
         related_name="ap_reference_letters"
     )
-    text_content = models.TextField(blank=True)
     file = models.FileField(
         upload_to="action_plan/reference_letters/",
         null=True,
@@ -58,7 +57,11 @@ class CoverLetter(models.Model):
         on_delete=models.CASCADE,
         related_name="ap_cover_letter"
     )
-    content = models.TextField()
+    file = models.FileField(
+        upload_to="action_plan/cover_letters/",
+        null=True,
+        blank=True
+    )
     updated_at = models.DateTimeField(auto_now=True)
     assessment = models.ForeignKey(
         Assessment,

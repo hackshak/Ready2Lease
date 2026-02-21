@@ -1,0 +1,280 @@
+{% extends "sidebar.html" %}
+{% block content %}
+
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.10);
+  --radius:18px;
+  --good:#28d17c;
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+}
+
+body{background:var(--bg);color:var(--text);}
+
+.wrap{padding:30px 20px;max-width:1100px;margin:auto;}
+
+.card{
+  border:1px solid var(--border);
+  background: rgba(17,26,51,.75);
+  border-radius: var(--radius);
+  padding:20px;
+  margin-bottom:25px;
+}
+
+h1{margin:0 0 8px;font-size:22px;}
+.sub{color:var(--muted);font-size:13px;margin-bottom:15px;}
+
+select{
+  background:#0f1730;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px;
+  border-radius:10px;
+  font-size:13px;
+}
+
+.progressWrap{margin-top:20px;}
+.track{
+  height:12px;
+  border-radius:999px;
+  background: rgba(255,255,255,.10);
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background: linear-gradient(90deg, var(--good), var(--primary));
+  transition:.3s ease;
+}
+
+.grid{
+  margin-top:25px;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  gap:18px;
+}
+
+.docCard{
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.05);
+  border-radius:16px;
+  padding:16px;
+}
+
+.docCard.completed{
+  border:1px solid var(--good);
+}
+
+.docCard h3{margin:0;font-size:15px;}
+.docCard p{margin:6px 0 12px;color:var(--muted);font-size:12px;}
+
+button{
+  border:0;
+  cursor:pointer;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:600;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+}
+
+.btnGhost{
+  background: rgba(255,255,255,.08);
+  border:1px solid var(--border);
+}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111a33;
+  border:1px solid var(--border);
+  padding:10px 14px;
+  border-radius:12px;
+  opacity:0;
+  transition:.2s;
+}
+.toast.show{opacity:1;}
+</style>
+
+<div class="wrap">
+
+  <div class="card">
+    <h1>Documents Checklist & Tracker</h1>
+    <p class="sub">Select an assessment to manage required documents.</p>
+
+    <select id="assessmentSelect">
+      <option value="">-- Select Assessment --</option>
+      {% for assessment in assessments %}
+        <option value="{{ assessment.id }}">
+          Assessment #{{ assessment.id }} - {{ assessment.created_at|date:"M d, Y" }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <div class="progressWrap" id="progressSection" style="display:none;">
+      <p id="progressText"></p>
+      <div class="track">
+        <div class="fill" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="documentsContainer"></div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+
+
+<script>
+let selectedAssessment = null;
+const csrfToken = "{{ csrf_token }}";
+
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2000);
+}
+
+document.getElementById("assessmentSelect")
+.addEventListener("change", function(){
+  selectedAssessment=this.value;
+  if(selectedAssessment){
+    loadChecklist();
+  }
+});
+
+function loadChecklist(){
+  fetch(`/checklist/${selectedAssessment}/`)
+  .then(res=>res.json())
+  .then(data=>{
+
+    document.getElementById("progressSection").style.display="block";
+    document.getElementById("progressText").innerText =
+      `${data.completed} / ${data.total} Completed (${data.percentage}%)`;
+
+    document.getElementById("progressBar").style.width =
+      data.percentage + "%";
+
+    const container=document.getElementById("documentsContainer");
+    container.innerHTML="";
+
+    data.checklist.forEach(item=>{
+      const card=document.createElement("div");
+      card.className="docCard"+(item.uploaded?" completed":"");
+
+      card.innerHTML=`
+        <h3>${item.title} ${item.uploaded?"✔":""}</h3>
+        <p>${item.description}</p>
+        <div class="actions" id="actions-${item.key}"></div>
+      `;
+
+      const actions=card.querySelector(`#actions-${item.key}`);
+
+      if(item.uploaded){
+
+        if(item.file_url){
+          actions.innerHTML+=`
+            <a href="${item.file_url}" target="_blank">
+              <button class="btnGhost">View</button>
+            </a>`;
+        }
+
+        actions.innerHTML+=`
+          <button class="btnGhost"
+            onclick="deleteDoc('${item.key}',${item.object_id})">
+            Delete
+          </button>`;
+      }
+      else{
+
+        // ALL DOCUMENT TYPES NOW USE FILE UPLOAD
+        actions.innerHTML+=`
+          <input type="file"
+            onchange="uploadFile('${item.key}',this.files[0])">
+        `;
+      }
+
+      container.appendChild(card);
+    });
+  });
+}
+
+function uploadFile(type,file){
+
+  if(!file){
+    showToast("Please select a file");
+    return;
+  }
+
+  const formData=new FormData();
+
+  // Decide endpoint based on type
+  if(type==="reference_letter"){
+    formData.append("file",file);
+
+    fetch(`/add-reference/${selectedAssessment}/`,{
+      method:"POST",
+      headers:{"X-CSRFToken":csrfToken},
+      body:formData
+    }).then(()=>{
+      showToast("Reference uploaded");
+      loadChecklist();
+    });
+
+  }
+  else if(type==="cover_letter"){
+    formData.append("file",file);
+
+    fetch(`/save-cover-letter/${selectedAssessment}/`,{
+      method:"POST",
+      headers:{"X-CSRFToken":csrfToken},
+      body:formData
+    }).then(()=>{
+      showToast("Cover letter uploaded");
+      loadChecklist();
+    });
+
+  }
+  else{
+    // ID / Payslip / Bank Statement
+    formData.append("document_type",type);
+    formData.append("file",file);
+
+    fetch(`/upload-document/${selectedAssessment}/`,{
+      method:"POST",
+      headers:{"X-CSRFToken":csrfToken},
+      body:formData
+    }).then(()=>{
+      showToast("Uploaded");
+      loadChecklist();
+    });
+  }
+}
+
+function deleteDoc(type,id){
+  fetch(`/checklist/${selectedAssessment}/delete/${type}/${id}/`,{
+    method:"DELETE",
+    headers:{"X-CSRFToken":csrfToken}
+  }).then(()=>{
+    showToast("Deleted");
+    loadChecklist();
+  });
+}
+</script>
+
+{% endblock %}
