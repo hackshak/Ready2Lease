@@ -1,0 +1,395 @@
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<style>
+:root{
+  --panel:#111a33;
+  --panel2:#0f1730;
+  --text:#ffffff;
+  --muted:#cbd5ff;
+  --border:rgba(255,255,255,.10);
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+  --danger:#ff4d6d;
+}
+
+/* Layout */
+.wrap{max-width:1400px;margin:auto;padding:40px 30px;}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:25px;
+  border-radius:16px;
+  margin-bottom:20px;
+}
+h1{color:#fff;margin-bottom:20px;}
+
+button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:0;
+  cursor:pointer;
+  font-weight:600;
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+.btnGhost{background:rgba(255,255,255,.08);border:1px solid var(--border);}
+.btnDanger{background:var(--danger);}
+
+/* Table */
+table{width:100%;border-collapse:collapse;}
+th,td{
+  padding:14px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  color:#fff;
+}
+th{color:var(--muted);font-size:12px;}
+tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
+
+.status{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+}
+.Applied{background:rgba(247,201,72,.15);}
+.Interview{background:rgba(108,125,255,.15);}
+.Approved{background:rgba(40,209,124,.15);}
+.Rejected{background:rgba(255,90,122,.15);}
+
+/* Detail */
+#detailSection{display:none;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.detail-item{background:var(--panel2);padding:12px;border-radius:10px;}
+.label{color:var(--muted);font-size:12px;}
+.value{color:#fff;font-size:14px;}
+.actions{margin-top:20px;display:flex;gap:10px;}
+
+/* Modal */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+}
+.modal-content{
+  background:var(--panel);
+  padding:30px;
+  border-radius:16px;
+  width:850px;
+  max-width:95%;
+}
+.modal-title{
+  font-size:25px;
+  margin-bottom:20px;
+  color:white;
+  font-weight:bold;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+input,select,textarea{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:#fff;
+}
+.full{grid-column:1/-1;}
+
+/* Toast */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--panel);
+  padding:10px 16px;
+  border-radius:10px;
+  opacity:0;
+  transition:.3s;
+}
+.toast.show{opacity:1;}
+
+/* ===== FULL DARK FLATPICKR FIX ===== */
+
+.flatpickr-calendar{
+  background:#111a33 !important;
+  border:1px solid var(--border);
+}
+
+.flatpickr-month,
+.flatpickr-current-month,
+.flatpickr-current-month input.cur-year,
+.flatpickr-monthDropdown-months{
+  color:#fff !important;
+  background:transparent !important;
+}
+
+.flatpickr-weekdays{
+  background:#111a33 !important;
+}
+
+.flatpickr-weekdays .flatpickr-weekday{
+  color:#fff !important;
+  font-weight:600;
+}
+
+.flatpickr-day{
+  color:#fff !important;
+  border-radius:6px;
+}
+
+.flatpickr-day:hover{
+  background:rgba(108,125,255,.25) !important;
+  color:#fff !important;
+}
+
+.flatpickr-day.today{
+  border:1px solid var(--primary) !important;
+}
+
+.flatpickr-day.selected{
+  background:linear-gradient(135deg,var(--primary),var(--primary2)) !important;
+  color:#fff !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg{
+  fill:#fff !important;
+}
+</style>
+
+<div class="wrap">
+
+<!-- LIST -->
+<div class="card" id="listSection">
+  <h1>Application Tracker</h1>
+  <button onclick="openModal()">+ Add New Application</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Status</th>
+        <th>Date Applied</th>
+        <th>Rent</th>
+        <th>Docs</th>
+      </tr>
+    </thead>
+    <tbody id="appTable"></tbody>
+  </table>
+</div>
+
+<!-- DETAIL -->
+<div class="card" id="detailSection">
+  <h1>Application Details</h1>
+  <div class="detail-grid" id="detailContent"></div>
+  <div class="actions">
+    <button onclick="editCurrent()">Edit</button>
+    <button class="btnDanger" onclick="openDeleteModal()">Delete</button>
+    <button class="btnGhost" onclick="backToList()">Back</button>
+  </div>
+</div>
+
+</div>
+
+<!-- FORM MODAL -->
+<div class="modal" id="formModal">
+  <div class="modal-content">
+    <div class="modal-title" id="modalTitle">New Application</div>
+    <input type="hidden" id="appId">
+
+    <div class="form-grid">
+      <input type="text" id="property_address" placeholder="Property Address">
+      <input type="text" id="company_name" placeholder="Company Name">
+      <input type="text" id="contact_person" placeholder="Contact Person">
+      <input type="email" id="contact_email" placeholder="Contact Email">
+      <input type="text" id="contact_phone" placeholder="Contact Phone">
+      <input type="number" id="rent_amount" placeholder="Rent Amount">
+      <input type="text"
+       id="date_applied"
+       class="date-picker"
+       placeholder="Select application date (YYYY-MM-DD)">
+
+        <input type="text"
+            id="interview_date"
+            class="date-picker"
+            placeholder="Select interview date (optional)">
+
+        <input type="text"
+            id="follow_up_date"
+            class="date-picker"
+            placeholder="Select follow-up reminder date">
+      <select id="status">
+        <option value="Applied">Applied</option>
+        <option value="Interview">Interview</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+      <label class="full" style = "color:white;">
+        <input type="checkbox" id="documents_submitted"> Documents Submitted
+      </label>
+      <textarea id="notes" class="full" rows="3" placeholder="Notes..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btnGhost" onclick="closeModal()">Cancel</button>
+      <button onclick="saveApplication()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal" id="deleteModal">
+  <div class="modal-content" style="width:400px;">
+    <h3 style="color:var(--primary);">Confirm Delete</h3>
+    <p style="color:var(--muted);">Are you sure?</p>
+    <div class="actions">
+      <button class="btnGhost" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btnDanger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+flatpickr(".date-picker",{dateFormat:"Y-m-d"});
+
+const API="/api/applications/";
+let currentApp=null;
+
+document.addEventListener("DOMContentLoaded",loadApplications);
+
+function loadApplications(){
+fetch(API).then(r=>r.json()).then(data=>{
+let table=document.getElementById("appTable");
+table.innerHTML="";
+data.forEach(app=>{
+table.innerHTML+=`
+<tr class="clickable" onclick="viewDetail(${app.id})">
+<td>${app.property_address}</td>
+<td><span class="status ${app.status}">${app.status}</span></td>
+<td>${app.date_applied||"-"}</td>
+<td>${app.rent_amount||"-"}</td>
+<td>${app.documents_submitted?"✅":"—"}</td>
+</tr>`;
+});
+});
+}
+
+function openModal(){
+document.getElementById("modalTitle").innerText="New Application";
+document.getElementById("appId").value="";
+formModal.style.display="flex";
+}
+
+function closeModal(){formModal.style.display="none";}
+
+function saveApplication(){
+let id=appId.value;
+let payload={
+property_address:property_address.value,
+company_name:company_name.value,
+contact_person:contact_person.value,
+contact_email:contact_email.value,
+contact_phone:contact_phone.value,
+rent_amount:rent_amount.value,
+date_applied:date_applied.value,
+interview_date:interview_date.value||null,
+follow_up_date:follow_up_date.value||null,
+documents_submitted:documents_submitted.checked,
+status:status.value,
+notes:notes.value
+};
+
+fetch(id?API+id+"/":API,{
+method:id?"PUT":"POST",
+headers:{
+"Content-Type":"application/json",
+"X-CSRFToken":getCSRFToken()
+},
+body:JSON.stringify(payload)
+}).then(()=>{
+closeModal();
+loadApplications();
+showToast("Saved Successfully");
+});
+}
+
+function viewDetail(id){
+fetch(API+id+"/").then(r=>r.json()).then(app=>{
+currentApp=app;
+let d=document.getElementById("detailContent");
+d.innerHTML="";
+for(let key in app){
+if(key==="id") continue;
+d.innerHTML+=`
+<div class="detail-item">
+<div class="label">${key.replace(/_/g," ")}</div>
+<div class="value">${app[key]||"-"}</div>
+</div>`;
+}
+listSection.style.display="none";
+detailSection.style.display="block";
+});
+}
+
+function backToList(){
+detailSection.style.display="none";
+listSection.style.display="block";
+}
+
+function editCurrent(){
+openModal();
+modalTitle.innerText="Edit Application";
+for(let key in currentApp){
+if(document.getElementById(key)){
+if(document.getElementById(key).type==="checkbox"){
+document.getElementById(key).checked=currentApp[key];
+}else{
+document.getElementById(key).value=currentApp[key]||"";
+}
+}
+}
+appId.value=currentApp.id;
+}
+
+function openDeleteModal(){deleteModal.style.display="flex";}
+function closeDeleteModal(){deleteModal.style.display="none";}
+
+function confirmDelete(){
+fetch(API+currentApp.id+"/",{method:"DELETE",
+headers:{"X-CSRFToken":getCSRFToken()}})
+.then(()=>{
+closeDeleteModal();
+backToList();
+loadApplications();
+showToast("Deleted Successfully");
+});
+}
+
+function showToast(msg){
+toast.innerText=msg;
+toast.classList.add("show");
+setTimeout(()=>toast.classList.remove("show"),2000);
+}
+
+function getCSRFToken(){
+return document.cookie.split('; ')
+.find(r=>r.startsWith('csrftoken'))
+?.split('=')[1];
+}
+</script>
+
+{% endblock %}

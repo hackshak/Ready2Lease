@@ -25,4 +25,5 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('',include('action_plan.urls')),
     path("ai-assist/", include("ai_assist.urls")),
+    path('', include('applications.urls')),
 ]
