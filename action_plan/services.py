@@ -80,30 +80,30 @@ class ActionPlanService:
         # Reference Letter
         # ------------------------------------------------
         if (
-            not assessment.ap_reference_letters.exists()
+            not assessment.ap_reference_letters.filter(file__isnull=False).exists()
             and "add_reference_letter" not in completed
         ):
             tasks.append({
                 "key": "add_reference_letter",
-                "title": "Add Reference Letter",
-                "description": "Upload or write a landlord/employer reference.",
+                "title": "Upload Reference Letter",
+                "description": "Upload a landlord or employer reference letter.",
                 "points": TASK_POINTS["add_reference_letter"],
                 "type": "reference"
             })
 
         # ------------------------------------------------
-        # Cover Letter
+        # Cover Letter (FILE BASED - UPDATED)
         # ------------------------------------------------
         cover = assessment.ap_cover_letters.first()
 
         if (
-            (not cover or len(cover.content.strip()) < 200)
+            (not cover or not cover.file)
             and "improve_cover_letter" not in completed
         ):
             tasks.append({
                 "key": "improve_cover_letter",
-                "title": "Improve Cover Letter",
-                "description": "Write a compelling rental cover letter (min 200 chars).",
+                "title": "Upload Cover Letter",
+                "description": "Upload your rental cover letter as a PDF.",
                 "points": TASK_POINTS["improve_cover_letter"],
                 "type": "cover_letter"
             })

@@ -4,7 +4,10 @@ from .views import (
     UploadDocumentView,
     AddReferenceView,
     SaveCoverLetterView,
-    ActionPlanPageView
+    ActionPlanPageView,
+    DocumentChecklistView,
+    DeleteDocumentView,
+    DocumentsHomePageView
 )
 
 urlpatterns = [
@@ -50,4 +53,23 @@ urlpatterns = [
         SaveCoverLetterView.as_view(),
         name="save_cover_letter"
     ),
+    path(
+        "documents/",
+        DocumentsHomePageView.as_view(),
+        name="document_home"
+    ),
+    path(
+        "checklist/<int:assessment_id>/",
+        DocumentChecklistView.as_view(),
+        name="document_checklist"
+    ),
+    path(
+        "checklist/<int:assessment_id>/delete/<str:doc_type>/<int:object_id>/",
+        DeleteDocumentView.as_view(),
+        name="delete_document"
+    ),
 ]
+
+
+
+
