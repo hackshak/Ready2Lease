@@ -1,7 +1,7 @@
 # action_plan/services.py
 
 from assessments.models import Assessment
-from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
+from .models import CompletedTask
 
 TASK_POINTS = {
     "upload_payslip": 5,
@@ -13,11 +13,23 @@ TASK_POINTS = {
 
 class ActionPlanService:
 
-    # -----------------------------
-    # Generate Tasks Per Assessment
-    # -----------------------------
+    # ------------------------------------------------
+    # Get Latest Assessment (used in fallback URL)
+    # ------------------------------------------------
     @staticmethod
-    def generate_tasks(user, assessment):
+    def get_latest_assessment(user):
+        return (
+            Assessment.objects
+            .filter(user=user)
+            .order_by("-created_at")
+            .first()
+        )
+
+    # ------------------------------------------------
+    # Generate Tasks (STRICTLY PER ASSESSMENT)
+    # ------------------------------------------------
+    @staticmethod
+    def generate_tasks_for_assessment(assessment):
 
         if not assessment:
             return []
@@ -28,12 +40,15 @@ class ActionPlanService:
 
         tasks = []
 
+        # ------------------------------------------------
         # Payslip
-        if not UserDocument.objects.filter(
-            user=user,
-            document_type="payslip"
-        ).exists() and "upload_payslip" not in completed:
-
+        # ------------------------------------------------
+        if (
+            not assessment.ap_documents.filter(
+                document_type="payslip"
+            ).exists()
+            and "upload_payslip" not in completed
+        ):
             tasks.append({
                 "key": "upload_payslip",
                 "title": "Upload Payslip",
@@ -43,12 +58,15 @@ class ActionPlanService:
                 "document_type": "payslip"
             })
 
+        # ------------------------------------------------
         # Bank Statement
-        if not UserDocument.objects.filter(
-            user=user,
-            document_type="bank_statement"
-        ).exists() and "upload_bank_statement" not in completed:
-
+        # ------------------------------------------------
+        if (
+            not assessment.ap_documents.filter(
+                document_type="bank_statement"
+            ).exists()
+            and "upload_bank_statement" not in completed
+        ):
             tasks.append({
                 "key": "upload_bank_statement",
                 "title": "Upload Bank Statement",
@@ -58,10 +76,13 @@ class ActionPlanService:
                 "document_type": "bank_statement"
             })
 
+        # ------------------------------------------------
         # Reference Letter
-        if not ReferenceLetter.objects.filter(user=user).exists() \
-                and "add_reference_letter" not in completed:
-
+        # ------------------------------------------------
+        if (
+            not assessment.ap_reference_letters.exists()
+            and "add_reference_letter" not in completed
+        ):
             tasks.append({
                 "key": "add_reference_letter",
                 "title": "Add Reference Letter",
@@ -70,11 +91,15 @@ class ActionPlanService:
                 "type": "reference"
             })
 
+        # ------------------------------------------------
         # Cover Letter
-        cover = getattr(user, "ap_cover_letter", None)
-        if (not cover or len(cover.content.strip()) < 200) \
-                and "improve_cover_letter" not in completed:
+        # ------------------------------------------------
+        cover = assessment.ap_cover_letters.first()
 
+        if (
+            (not cover or len(cover.content.strip()) < 200)
+            and "improve_cover_letter" not in completed
+        ):
             tasks.append({
                 "key": "improve_cover_letter",
                 "title": "Improve Cover Letter",
@@ -85,11 +110,15 @@ class ActionPlanService:
 
         return tasks
 
-    # -----------------------------
+    # ------------------------------------------------
     # Improvement Score Per Assessment
-    # -----------------------------
+    # ------------------------------------------------
     @staticmethod
     def get_improvement_score_for_assessment(assessment):
+
+        if not assessment:
+            return 0
+
         return sum(
             assessment.completed_tasks.values_list(
                 "points_awarded",
@@ -97,9 +126,9 @@ class ActionPlanService:
             )
         )
 
-    # -----------------------------
+    # ------------------------------------------------
     # Final Score Per Assessment
-    # -----------------------------
+    # ------------------------------------------------
     @staticmethod
     def get_final_score_for_assessment(user, assessment):
 
@@ -111,8 +140,10 @@ class ActionPlanService:
         if not getattr(user, "is_premium", False):
             return base_score
 
-        improvement_score = ActionPlanService.get_improvement_score_for_assessment(
-            assessment
+        improvement_score = (
+            ActionPlanService.get_improvement_score_for_assessment(
+                assessment
+            )
         )
 
         return min(base_score + improvement_score, 100)

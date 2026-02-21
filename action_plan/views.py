@@ -1,8 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -26,8 +24,7 @@ class ActionPlanPageView(LoginRequiredMixin, TemplateView):
 
 
 # ==========================================================
-# TASKS VIEW (NOW SUPPORTS ASSESSMENT SELECTION)
-# URL: /tasks/<assessment_id>/
+# TASKS VIEW (PER ASSESSMENT)
 # ==========================================================
 
 class ActionPlanTasksView(APIView):
@@ -38,7 +35,7 @@ class ActionPlanTasksView(APIView):
         if not request.user.is_premium:
             return Response({"detail": "Premium required"}, status=403)
 
-        # If assessment_id not provided → fallback to latest
+        # If specific assessment selected
         if assessment_id:
             assessment = get_object_or_404(
                 Assessment,
@@ -46,7 +43,9 @@ class ActionPlanTasksView(APIView):
                 user=request.user
             )
         else:
-            assessment = ActionPlanService.get_latest_assessment(request.user)
+            assessment = ActionPlanService.get_latest_assessment(
+                request.user
+            )
 
         if not assessment:
             return Response({
@@ -57,7 +56,6 @@ class ActionPlanTasksView(APIView):
             })
 
         tasks = ActionPlanService.generate_tasks_for_assessment(
-            request.user,
             assessment
         )
 
@@ -75,15 +73,14 @@ class ActionPlanTasksView(APIView):
 
 
 # ==========================================================
-# UPLOAD DOCUMENT (NOW SUPPORTS ASSESSMENT)
+# UPLOAD DOCUMENT (PER ASSESSMENT)
 # ==========================================================
 
 class UploadDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, assessment_id):
 
-        assessment_id = request.data.get("assessment_id")
         doc_type = request.data.get("document_type")
         file = request.FILES.get("file")
 
@@ -122,15 +119,14 @@ class UploadDocumentView(APIView):
 
 
 # ==========================================================
-# ADD REFERENCE (NOW SUPPORTS ASSESSMENT)
+# ADD REFERENCE (PER ASSESSMENT)
 # ==========================================================
 
 class AddReferenceView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, assessment_id):
 
-        assessment_id = request.data.get("assessment_id")
         text = request.data.get("text_content", "")
         file = request.FILES.get("file")
 
@@ -163,15 +159,14 @@ class AddReferenceView(APIView):
 
 
 # ==========================================================
-# SAVE COVER LETTER (NOW SUPPORTS ASSESSMENT)
+# SAVE COVER LETTER (PER ASSESSMENT)
 # ==========================================================
 
 class SaveCoverLetterView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, assessment_id):
 
-        assessment_id = request.data.get("assessment_id")
         content = request.data.get("content", "")
 
         if len(content.strip()) < 200:

@@ -8,7 +8,6 @@
    ACTION PLAN PAGE (MULTI-ASSESSMENT READY)
 ========================================= */
 
-/* ✅ Your original styles untouched */
 .action-plan-container{
     padding:50px 40px;
     color:#e9eefc;
@@ -37,6 +36,12 @@
     background:linear-gradient(135deg,#6c7dff,#8b5cf6);
     color:#fff;
     box-shadow:0 10px 20px rgba(108,125,255,.25);
+    transition:.2s ease;
+}
+
+.ap-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 26px rgba(108,125,255,.35);
 }
 
 .ap-selector{
@@ -126,23 +131,49 @@
     color:#a9b4d6;
 }
 
+/* =========================================
+   PREMIUM MODAL STYLING
+========================================= */
+
 .ap-modal{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.7);
+    background:rgba(5,10,25,.85);
+    backdrop-filter:blur(8px);
     display:none;
     align-items:center;
     justify-content:center;
     z-index:3000;
+    animation:fadeIn .25s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
 }
 
 .ap-modal-content{
-    background:#111a33;
-    padding:30px;
-    border-radius:18px;
+    background:linear-gradient(145deg,#121b35,#0f1730);
+    padding:35px;
+    border-radius:22px;
     width:95%;
     max-width:520px;
-    border:1px solid rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 30px 60px rgba(0,0,0,.6);
+    animation:slideUp .3s ease;
+}
+
+@keyframes slideUp{
+    from{transform:translateY(20px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+
+.ap-modal-content h3{
+    margin-top:0;
+    margin-bottom:20px;
+    font-size:18px;
+    font-weight:600;
+    color:white;
 }
 
 .ap-close{
@@ -153,9 +184,39 @@
     margin-bottom:15px;
 }
 
+.ap-close:hover{
+    color:#fff;
+}
+
+.ap-modal-content input[type="file"],
+.ap-modal-content textarea{
+    width:100%;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);
+    color:#fff;
+    padding:12px 14px;
+    border-radius:14px;
+    font-size:13px;
+    margin-bottom:20px;
+    outline:none;
+    transition:.2s ease;
+}
+
+.ap-modal-content textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+.ap-modal-content input[type="file"]:hover,
+.ap-modal-content textarea:focus{
+    border-color:#6c7dff;
+    background:rgba(255,255,255,.08);
+}
+
 .modal-actions{
     display:flex;
     justify-content:flex-end;
+    gap:12px;
 }
 
 @media(max-width:1000px){
@@ -181,11 +242,9 @@
 
     <div class="ap-card">
         <h3>Score Improvement</h3>
-
         <div class="ap-ring" id="scoreRing" style="--deg:0deg;">
             <b id="finalScore">0</b>
         </div>
-
         <p style="text-align:center;color:#a9b4d6;font-size:14px;">
             Complete tasks to increase your rental competitiveness.
         </p>
@@ -208,14 +267,12 @@
 </div>
 
 <script>
-
 let selectedAssessment = null;
 
 function getCSRFToken(){
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
-/* Load assessments into dropdown */
 async function loadAssessments(){
     const res = await fetch("/api/detailed-readiness/");
     const data = await res.json();
@@ -247,7 +304,6 @@ async function loadAssessments(){
     loadTasks();
 }
 
-/* Load tasks for selected assessment */
 async function loadTasks(){
     if(!selectedAssessment) return;
 
@@ -255,7 +311,6 @@ async function loadTasks(){
     const data = await res.json();
 
     const score = data.final_score || 0;
-
     document.getElementById("finalScore").innerText = score;
 
     const deg = (score / 100) * 360;
@@ -287,7 +342,6 @@ async function loadTasks(){
     });
 }
 
-/* Modal logic */
 function openTask(key,type,docType){
     const modal = document.getElementById("apModal");
     const content = document.getElementById("apModalContent");
@@ -338,7 +392,6 @@ function closeModal(){
     document.getElementById("apModal").style.display="none";
 }
 
-/* Updated endpoints */
 async function uploadDocument(docType){
     const file = document.getElementById("fileInput").files[0];
     const formData = new FormData();
@@ -348,9 +401,7 @@ async function uploadDocument(docType){
     await fetch(`/upload-document/${selectedAssessment}/`,{
         method:"POST",
         credentials:"same-origin",
-        headers:{
-            "X-CSRFToken": getCSRFToken()
-        },
+        headers:{ "X-CSRFToken": getCSRFToken() },
         body:formData
     });
 
@@ -366,9 +417,7 @@ async function addReference(){
     await fetch(`/add-reference/${selectedAssessment}/`,{
         method:"POST",
         credentials:"same-origin",
-        headers:{
-            "X-CSRFToken": getCSRFToken()
-        },
+        headers:{ "X-CSRFToken": getCSRFToken() },
         body:formData
     });
 
@@ -394,7 +443,6 @@ async function saveCover(){
 }
 
 document.addEventListener("DOMContentLoaded", loadAssessments);
-
 </script>
 
 {% endblock %}

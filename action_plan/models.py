@@ -18,6 +18,13 @@ class UserDocument(models.Model):
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
     file = models.FileField(upload_to="action_plan/documents/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    assessment = models.ForeignKey(
+        Assessment,
+        on_delete=models.CASCADE,
+        related_name="ap_documents",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.user.email} - {self.document_type}"
@@ -36,6 +43,13 @@ class ReferenceLetter(models.Model):
         blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    assessment = models.ForeignKey(
+        Assessment,
+        on_delete=models.CASCADE,
+        related_name="ap_reference_letters",
+        null=True,
+        blank=True
+    )
 
 
 class CoverLetter(models.Model):
@@ -46,6 +60,16 @@ class CoverLetter(models.Model):
     )
     content = models.TextField()
     updated_at = models.DateTimeField(auto_now=True)
+    assessment = models.ForeignKey(
+        Assessment,
+        on_delete=models.CASCADE,
+        related_name="ap_cover_letters",
+        null=True,
+        blank=True
+    )
+
+
+
 
 
 class CompletedTask(models.Model):
