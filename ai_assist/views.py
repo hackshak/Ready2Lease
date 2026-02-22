@@ -1,61 +1,69 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
+
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+
 from .models import AIAssistMessage
 from .serializers import AIAssistMessageSerializer
 from .services import generate_ai_response
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-
+from assessments.models import Assessment
+from assessments.serializers import AssessmentSerializer
 
 
 class AIAssistPageView(LoginRequiredMixin, TemplateView):
     template_name = "ai_assist/ai_assist.html"
 
     def dispatch(self, request, *args, **kwargs):
-        # Optional: Premium Gate
+        # Premium Gate
         if not request.user.is_premium:
-            from django.shortcuts import redirect
             return redirect("dashboard_home")
         return super().dispatch(request, *args, **kwargs)
 
 
+# ✅ NEW: List all assessments for logged-in user
+class UserAssessmentsView(ListAPIView):
+    serializer_class = AssessmentSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Assessment.objects.filter(
+            user=self.request.user
+        ).order_by("-created_at")
+
+
+# ✅ Updated Chat View
 class AIAssistChatView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        messages = request.user.ai_messages.all()
-        serializer = AIAssistMessageSerializer(messages, many=True)
-        return Response(serializer.data)
-
     def post(self, request):
         user_message = request.data.get("message", "").strip()
+        assessment_id = request.data.get("assessment_id")
+        history = request.data.get("history", [])
 
         if not user_message:
             return Response({"detail": "Message required"}, status=400)
 
-        # Save user message
-        user_msg = AIAssistMessage.objects.create(
+        if not assessment_id:
+            return Response({"detail": "Assessment selection required"}, status=400)
+
+        try:
+            assessment = Assessment.objects.get(
+                id=assessment_id,
+                user=request.user
+            )
+        except Assessment.DoesNotExist:
+            return Response({"detail": "Invalid assessment"}, status=400)
+
+        # Generate AI response (no DB save)
+        ai_reply = generate_ai_response(
             user=request.user,
-            role="user",
-            content=user_message
+            history=history,
+            assessment=assessment
         )
 
-        # Get last 8 messages for context
-        history = request.user.ai_messages.order_by("-created_at")[:8]
-        history = list(reversed(history))
-
-        # Generate AI response
-        ai_reply = generate_ai_response(request.user, history)
-
-        assistant_msg = AIAssistMessage.objects.create(
-            user=request.user,
-            role="assistant",
-            content=ai_reply
-        )
-
-        return Response({
-            "reply": assistant_msg.content
-        })
+        return Response({"reply": ai_reply})

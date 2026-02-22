@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <style>
 :root{
   --bg:#0b1020;
@@ -20,47 +22,73 @@
 
 .ai-container{
   padding:40px;
-  max-width:1200px;
+  max-width:1300px;
   margin:auto;
   color:var(--text);
-}
-
-.ai-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
 }
 
 .ai-title{
   font-size:24px;
   font-weight:700;
+  margin-bottom:25px;
 }
 
 .ai-grid{
   display:grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: 320px 1fr;
   gap:20px;
 }
 
+/* LEFT PANEL */
+.assessment-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.assessment-box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:15px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.assessment-box:hover{
+  border-color:var(--primary);
+}
+
+.assessment-box.active{
+  border:2px solid var(--primary);
+  background:rgba(108,125,255,.15);
+}
+
+.assessment-box h4{
+  margin:0;
+  font-size:14px;
+}
+
+.assessment-meta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* RIGHT PANEL */
 .card{
-  background:rgba(17,26,51,.85);
+  background:var(--panel);
   border:1px solid var(--border);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   padding:20px;
 }
 
-.card h3{
-  margin-top:0;
-  font-size:15px;
-}
-
 .score-ring{
   width:110px;
   height:110px;
   border-radius:50%;
-  margin:20px auto;
+  margin:15px auto;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -141,41 +169,80 @@
   font-weight:600;
 }
 
-.quick-prompts{
-  margin-top:15px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-
-.quick-prompts button{
-  padding:6px 10px;
-  font-size:11px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.06);
-  cursor:pointer;
-  color:var(--text);
-}
-
 @media(max-width:1000px){
   .ai-grid{
     grid-template-columns:1fr;
   }
 }
+
+.typing{
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.dot{
+  width:6px;
+  height:6px;
+  background:white;
+  border-radius:50%;
+  animation:blink 1.4s infinite both;
+}
+
+.dot:nth-child(2){
+  animation-delay: .2s;
+}
+
+.dot:nth-child(3){
+  animation-delay: .4s;
+}
+
+@keyframes blink{
+  0%{ opacity:.2; }
+  20%{ opacity:1; }
+  100%{ opacity:.2; }
+}
+
+
+.chat-bubble h1,
+.chat-bubble h2,
+.chat-bubble h3 {
+  margin: 10px 0 6px;
+  font-weight: 600;
+}
+
+.chat-bubble ul {
+  padding-left: 18px;
+  margin: 6px 0;
+}
+
+.chat-bubble li {
+  margin-bottom: 4px;
+}
+
+.chat-bubble strong {
+  font-weight: 600;
+}
+
+.chat-bubble p {
+  margin: 6px 0;
+}
 </style>
 
 <div class="ai-container">
 
-  <div class="ai-header">
-    <div class="ai-title">AI Rental Assistant</div>
-  </div>
+  <div class="ai-title">AI Assistant For Your Readiness Score</div>
 
   <div class="ai-grid">
 
-    <!-- LEFT PANEL -->
+    <!-- LEFT SIDE: ASSESSMENTS -->
+    <div class="assessment-list" id="assessmentList">
+      <!-- Assessments loaded dynamically -->
+    </div>
+
+    <!-- RIGHT SIDE: CHAT -->
     <div class="card">
-      <h3>Your Current Readiness</h3>
+      <h3 style="margin-top:0;">Selected Assessment</h3>
 
       <div class="score-ring" id="scoreRing" style="--deg:0deg;">
         <b id="scoreValue">0</b>
@@ -187,41 +254,30 @@
 
       <hr style="border-color:rgba(255,255,255,.08); margin:20px 0;">
 
-      <h3>AI Can Help You With:</h3>
-      <ul style="font-size:13px;color:var(--muted);line-height:1.6;padding-left:18px;">
-        <li>Explain your score in simple terms</li>
-        <li>Suggest next best improvement</li>
-        <li>Increase approval chances</li>
-        <li>Improve your cover letter</li>
-        <li>Identify hidden risks</li>
-      </ul>
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="card">
       <h3>Chat With AI</h3>
 
       <div id="chatBox" class="chat-box"></div>
 
       <div class="chat-input-wrap">
-        <input type="text" id="chatInput" placeholder="Ask something about your rental readiness...">
+        <input type="text" id="chatInput" placeholder="Ask about this assessment...">
         <button onclick="sendMessage()">Send</button>
       </div>
-
-      <div class="quick-prompts">
-        <button onclick="quickAsk('Explain my readiness score')">Explain score</button>
-        <button onclick="quickAsk('What is my biggest weakness?')">Biggest weakness</button>
-        <button onclick="quickAsk('How can I increase approval chances?')">Increase approval</button>
-        <button onclick="quickAsk('Help improve my cover letter')">Improve cover letter</button>
-      </div>
-
     </div>
 
   </div>
 
 </div>
 
+
+
+
+
 <script>
+let selectedAssessmentId = null;
+let selectedAssessmentData = null;
+let chatHistory = [];
+let isTyping = false;
+
 function getCSRFToken() {
   const name = "csrftoken";
   const cookies = document.cookie.split(";");
@@ -233,56 +289,133 @@ function getCSRFToken() {
   }
   return null;
 }
-async function loadContext(){
-  const res = await fetch("/api/detailed-readiness/", {credentials:"same-origin"});
+
+async function loadAssessments(){
+  const res = await fetch("/ai-assist/assessments/", {credentials:"same-origin"});
   if(!res.ok) return;
 
   const data = await res.json();
+  const list = document.getElementById("assessmentList");
+  list.innerHTML = "";
 
-  document.getElementById("scoreValue").innerText = data.score || 0;
-  const deg = (data.score / 100) * 360;
-  document.getElementById("scoreRing").style.setProperty("--deg", deg+"deg");
-  document.getElementById("riskBadge").innerText = "Risk: " + (data.risk_level || "—");
+  data.forEach(a=>{
+    const box = document.createElement("div");
+    box.className = "assessment-box";
+    box.innerHTML = `
+      <h4>${a.suburb || "Assessment"}</h4>
+      <div class="assessment-meta">
+        Score: ${a.readiness_score} <br>
+        Risk: ${a.risk_level}
+      </div>
+    `;
+
+    box.onclick = () => selectAssessment(a, box);
+    list.appendChild(box);
+  });
 }
 
-async function loadChat(){
-  const res = await fetch("/ai-assist/chat/", {credentials:"same-origin"});
-  const messages = await res.json();
+function selectAssessment(assessment, element){
+  selectedAssessmentId = assessment.id;
+  selectedAssessmentData = assessment;
 
+  document.querySelectorAll(".assessment-box")
+    .forEach(b=>b.classList.remove("active"));
+  element.classList.add("active");
+
+  document.getElementById("scoreValue").innerText = assessment.readiness_score;
+  const deg = (assessment.readiness_score / 100) * 360;
+  document.getElementById("scoreRing")
+    .style.setProperty("--deg", deg+"deg");
+  document.getElementById("riskBadge")
+    .innerText = "Risk: " + assessment.risk_level;
+
+  chatHistory = [];
+  renderChat();
+}
+
+function renderChat(){
   const box = document.getElementById("chatBox");
   box.innerHTML = "";
 
-  messages.forEach(m=>{
+  chatHistory.forEach(m=>{
     box.innerHTML += `
       <div class="chat-msg ${m.role}">
         <div class="chat-bubble">
-          ${m.content.replace(/\n/g,"<br>")}
+          ${marked.parse(m.content)}
         </div>
       </div>
     `;
   });
 
+  if(isTyping){
+    box.innerHTML += `
+      <div class="chat-msg assistant">
+        <div class="chat-bubble typing">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    `;
+  }
+
   box.scrollTop = box.scrollHeight;
 }
 
 async function sendMessage(){
+  if(!selectedAssessmentId){
+    alert("Please select an assessment first.");
+    return;
+  }
+
   const input = document.getElementById("chatInput");
   const message = input.value.trim();
   if(!message) return;
 
   input.value = "";
 
-  await fetch("/ai-assist/chat/",{
-    method:"POST",
-    credentials:"same-origin",
-    headers:{
-      "Content-Type":"application/json",
-      "X-CSRFToken": getCSRFToken()
-    },
-    body:JSON.stringify({message})
+  chatHistory.push({
+    role: "user",
+    content: message
   });
 
-  loadChat();
+  isTyping = true;
+  renderChat();
+
+  try{
+    const res = await fetch("/ai-assist/chat/",{
+      method:"POST",
+      credentials:"same-origin",
+      headers:{
+        "Content-Type":"application/json",
+        "X-CSRFToken": getCSRFToken()
+      },
+      body:JSON.stringify({
+        message: message,
+        assessment_id: selectedAssessmentId,
+        history: chatHistory
+      })
+    });
+
+    const data = await res.json();
+
+    isTyping = false;
+
+    chatHistory.push({
+      role: "assistant",
+      content: data.reply
+    });
+
+    renderChat();
+
+  }catch(err){
+    isTyping = false;
+    chatHistory.push({
+      role: "assistant",
+      content: "Something went wrong. Please try again."
+    });
+    renderChat();
+  }
 }
 
 function quickAsk(text){
@@ -291,8 +424,7 @@ function quickAsk(text){
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
-  loadContext();
-  loadChat();
+  loadAssessments();
 });
 </script>
 
