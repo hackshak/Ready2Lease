@@ -1,0 +1,260 @@
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block content %}
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<style>
+:root{
+  --panel:#111a33;
+  --panel2:#0f1730;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.10);
+  --radius:18px;
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+  --shadow:0 14px 30px rgba(0,0,0,.35);
+  --good:#28d17c;
+}
+
+/* Only style inside content */
+.cover-editor-wrap{
+  padding:30px;
+  max-width:1200px;
+}
+
+/* Top bar */
+.editor-topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.editor-topbar a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:13px;
+}
+
+.editor-actions button{
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  border:0;
+  padding:8px 14px;
+  border-radius:10px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  margin-left:8px;
+}
+
+.editor-actions .btnGhost{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);
+}
+
+/* Layout */
+.editor-layout{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:24px;
+}
+
+/* Editor card */
+.editor-card{
+  background:white;
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+#editor{
+  height:480px;
+}
+
+/* Score panel */
+.score-panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  height:fit-content;
+}
+
+.score-title{
+  font-size:13px;
+  margin-bottom:12px;
+  color:var(--muted);
+}
+
+.score-value{
+  font-size:28px;
+  font-weight:700;
+  color:var(--good);
+}
+
+.suggestions{
+  margin-top:16px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+/* Responsive */
+@media(max-width: 1024px){
+  .editor-layout{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
+<div class="cover-editor-wrap">
+
+  <div class="editor-topbar">
+    <div>
+      <a href="/cover-letters/">← Back to List</a>
+    </div>
+
+    <div class="editor-actions">
+      <button type="button" id="saveBtn" onclick="saveContent()">Saved ✓</button>
+      <button class="btnGhost" onclick="exportPDF()">Export PDF</button>
+    </div>
+  </div>
+
+  <div class="editor-layout">
+
+    <!-- Editor -->
+    <div class="editor-card">
+      <div id="editor"></div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const letterId = "{{ letter_id }}";
+  const csrfToken = "{{ csrf_token }}";
+
+  const saveBtn = document.getElementById("saveBtn");
+
+  let isDirty = false;
+  let isSaving = false;
+  let isInitializing = true; // 👈 important
+
+  const quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+
+  /* ================================
+     LOAD LETTER
+  ================================ */
+
+  function loadLetter(){
+    fetch(`/api/cover-letters/${letterId}/`)
+    .then(res=>res.json())
+    .then(data=>{
+
+      // Proper way to set content
+      let formattedContent = (data.content || "")
+        .split("\n")
+        .filter(line => line.trim() !== "")
+        .map(line => `<p>${line}</p>`)
+        .join("");
+
+      quill.clipboard.dangerouslyPasteHTML(formattedContent);
+
+      // Small delay ensures Quill finishes internal updates
+      setTimeout(() => {
+        isDirty = false;
+        isInitializing = false;
+        saveBtn.innerText = "Saved ✓";
+        saveBtn.disabled = true;
+      }, 50);
+
+    });
+  }
+
+  /* ================================
+     TRACK EDITOR CHANGES
+  ================================ */
+
+  quill.on('text-change', function (delta, oldDelta, source) {
+
+    if (isInitializing) return; // 👈 ignore initial load
+
+    if (source === "user" && !isSaving) {
+      isDirty = true;
+      saveBtn.innerText = "Save";
+      saveBtn.disabled = false;
+    }
+
+  });
+
+  /* ================================
+     SAVE CONTENT
+  ================================ */
+
+  window.saveContent = function(){
+
+    if (!isDirty || isSaving) return;
+
+    isSaving = true;
+    saveBtn.innerText = "Saving...";
+    saveBtn.disabled = true;
+
+    fetch(`/api/cover-letters/${letterId}/save/`,{
+      method:"PATCH",
+      headers:{
+        "Content-Type":"application/json",
+        "X-CSRFToken":csrfToken
+      },
+      body:JSON.stringify({
+        edited_content:quill.root.innerHTML
+      })
+    })
+    .then(res=>{
+        if(!res.ok){
+            throw new Error("Save failed");
+        }
+        return res.json();
+    })
+    .then(()=>{
+        isDirty = false;
+        isSaving = false;
+        saveBtn.innerText = "Saved ✓";
+        saveBtn.disabled = true;
+    })
+    .catch(error=>{
+        isSaving = false;
+        saveBtn.innerText = "Save";
+        saveBtn.disabled = false;
+        alert("Save failed. Please try again.");
+        console.error(error);
+    });
+  }
+
+  /* ================================
+     EXPORT PDF
+  ================================ */
+
+  window.exportPDF = function(){
+    window.location.href = `/api/cover-letters/${letterId}/export/`;
+  }
+
+  loadLetter();
+
+});
+</script>
+
+{% endblock content %}

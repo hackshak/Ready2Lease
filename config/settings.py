@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'action_plan',
     'ai_assist',
     'applications',
+    'cover_letters',
     
 ]
 
