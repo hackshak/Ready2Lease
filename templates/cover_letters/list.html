@@ -1,0 +1,433 @@
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --panel2:#0f1730;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.10);
+  --radius:18px;
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+  --shadow:0 14px 30px rgba(0,0,0,.35);
+}
+
+.wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.topbar h2{
+  color:white;
+}
+
+.generate-btn{
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  border:0;
+  padding:10px 16px;
+  border-radius:12px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(108,125,255,.3);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+}
+
+.card h3{
+  margin:0 0 6px;
+  font-size:14px;
+  color:white;
+}
+
+.card small{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.card .meta{
+  margin-top:10px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.card a{
+  display:inline-block;
+  margin-top:12px;
+  font-size:12px;
+  text-decoration:none;
+  color:white;
+  background:rgba(255,255,255,.08);
+  padding:6px 10px;
+  border-radius:8px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  backdrop-filter:blur(4px);
+}
+
+.modal-content{
+  background:var(--panel2);
+  width:720px;
+  max-height:90vh;
+  overflow:auto;
+  padding:28px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.modal-header h3{
+  margin:0;
+  font-size:16px;
+  color:white;
+}
+
+.close{
+  cursor:pointer;
+  font-size:18px;
+  color:var(--muted);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group label{
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+/* Inputs */
+.modal input,
+.modal textarea{
+  padding:10px 12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:white;
+  font-size:12px;
+}
+
+/* Select Styling Fix */
+.modal select{
+  padding:10px 12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:white;
+  font-size:12px;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  cursor:pointer;
+}
+
+/* Custom arrow */
+.modal select {
+  background-image: linear-gradient(45deg, transparent 50%, white 50%),
+                    linear-gradient(135deg, white 50%, transparent 50%);
+  background-position: calc(100% - 16px) calc(50% - 4px),
+                       calc(100% - 10px) calc(50% - 4px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Dropdown options */
+.modal select option{
+  background-color:#111a33;
+  color:#ffffff;
+}
+
+/* Focus */
+.modal input:focus,
+.modal textarea:focus,
+.modal select:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(108,125,255,.25);
+}
+
+.modal textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+.full-width{
+  grid-column:1 / -1;
+}
+
+.generate-submit{
+  margin-top:24px;
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:0;
+  font-weight:600;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  color:white;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.generate-submit.loading{
+  opacity:.6;
+  pointer-events:none;
+}
+
+.empty-state{
+  text-align:center;
+  padding:40px;
+  color:var(--muted);
+  border:1px dashed var(--border);
+  border-radius:var(--radius);
+}
+</style>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <h2>My Cover Letters</h2>
+    <button class="generate-btn" onclick="openModal()">
+      + Generate New Cover Letter
+    </button>
+  </div>
+
+  <div class="grid" id="lettersGrid"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="generateModal">
+  <div class="modal-content">
+    
+    <div class="modal-header">
+      <h3>Generate Landlord-Friendly Cover Letter</h3>
+      <span class="close" onclick="closeModal()">✕</span>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Property Address</label>
+        <input id="property_address">
+      </div>
+
+      <div class="form-group">
+        <label>Tone</label>
+        <select id="tone">
+          <option value="professional">Professional</option>
+          <option value="friendly">Friendly</option>
+          <option value="confident">Confident</option>
+          <option value="direct">Short & Direct</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Employment Type</label>
+        <select id="employment_type">
+          <option value="">Select</option>
+          <option value="full_time">Full Time</option>
+          <option value="part_time">Part Time</option>
+          <option value="student">Student</option>
+          <option value="retired">Retired</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Rental History Type</label>
+        <select id="rental_history_type">
+          <option value="">Select</option>
+          <option value="first_time">First Time Renter</option>
+          <option value="rented_before">Rented Before</option>
+          <option value="rented_overseas">Rented Overseas</option>
+        </select>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Full Name</label>
+        <input id="name">
+      </div>
+
+      <div class="form-group full-width">
+        <label>Employment Details</label>
+        <textarea id="employment_info"></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Income Details</label>
+        <textarea id="income"></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Rental History</label>
+        <textarea id="rental_history"></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Additional Notes</label>
+        <textarea id="custom_note"></textarea>
+      </div>
+
+    </div>
+
+    <button class="generate-submit" id="generateBtn" onclick="generateLetter()">
+      Generate Cover Letter
+    </button>
+
+  </div>
+</div>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+function openModal(){
+  document.getElementById("generateModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("generateModal").style.display="none";
+}
+
+function loadLetters(){
+  fetch("/api/cover-letters/")
+  .then(res=>res.json())
+  .then(data=>{
+    const grid=document.getElementById("lettersGrid");
+    grid.innerHTML="";
+
+    if(data.length===0){
+      grid.innerHTML=`<div class="empty-state">
+        You haven’t generated any cover letters yet.
+      </div>`;
+      return;
+    }
+
+    data.forEach(letter=>{
+      grid.innerHTML += `
+        <div class="card">
+          <h3>${letter.property_address || "No Property"}</h3>
+          <small>${new Date(letter.created_at).toLocaleDateString()}</small>
+          <div class="meta">
+            ${letter.employment_type || ""} 
+            ${letter.rental_history_type ? " • "+letter.rental_history_type : ""}
+            ${letter.score ? "<br>Score: "+letter.score : ""}
+          </div>
+          <a href="/cover-letters/${letter.id}/">View / Edit</a>
+        </div>
+      `;
+    });
+  });
+}
+
+
+function generateLetter(){
+  const btn=document.getElementById("generateBtn");
+  btn.classList.add("loading");
+  btn.innerText="Generating...";
+
+  fetch("/api/cover-letters/generate/",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "X-CSRFToken":csrfToken
+    },
+    body:JSON.stringify({
+      property_address:document.getElementById("property_address").value,
+      tone:document.getElementById("tone").value,
+      employment_type:document.getElementById("employment_type").value,
+      rental_history_type:document.getElementById("rental_history_type").value,
+      name:document.getElementById("name").value,
+      employment_info:document.getElementById("employment_info").value,
+      income:document.getElementById("income").value,
+      rental_history:document.getElementById("rental_history").value,
+      custom_note:document.getElementById("custom_note").value
+    })
+  })
+  .then(res => {
+      if (!res.ok) {
+          throw new Error("Server error");
+      }
+      return res.json();
+  })
+  .then(data=>{
+      btn.classList.remove("loading");
+      btn.innerText="Generate Cover Letter";
+
+      if(data && data.id){
+          document.getElementById("generateModal").style.display="none";
+          loadLetters();
+
+          // reset form
+          document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
+              .forEach(el => el.value="");
+      } else {
+          alert(data.error || "Error generating letter");
+      }
+  })
+  .catch(error=>{
+      btn.classList.remove("loading");
+      btn.innerText="Generate Cover Letter";
+      alert("Something went wrong. Please try again.");
+      console.error(error);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadLetters);
+</script>
+
+{% endblock content %}
