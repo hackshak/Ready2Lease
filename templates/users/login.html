@@ -10,7 +10,7 @@
             <p>Enter your credentials to access your dashboard</p>
 
             <!-- Login Form -->
-            <form method="POST" action="{% url 'api-login' %}" id="loginForm">
+            <form method="POST">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="email">Email Address</label>

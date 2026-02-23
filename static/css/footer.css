@@ -1,70 +1,69 @@
-/* ---------------- FOOTER ---------------- */
+/* ========================= */
+/*        FOOTER             */
+/* ========================= */
+
 .site-footer {
-    background-color: #111;
-    color: #fff;
-    padding: 60px 20px 30px;
+    background: #0c0c0c;
+    color: #ffffff;
+    padding: 80px 20px 30px;
     width: 100%;
-    font-family: sans-serif;
+    font-family: Arial, sans-serif;
 }
+
+/* ===== Layout Container ===== */
 
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 50px;
+    align-items: start;
 }
 
+/* ===== Columns ===== */
+
 .footer-col {
-    flex: 1 1 220px;
-    min-width: 180px;
+    display: flex;
+    flex-direction: column;
 }
+
+/* ===== Logo ===== */
 
 .footer-logo {
     display: flex;
     align-items: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #fbbf24; /* Yellow */
-    margin-bottom: 15px;
+    height: 60px;
+    margin-bottom: 20px;
+    overflow: hidden;
 }
 
-.footer-logo i {
-    margin-right: 10px;
+.footer-logo img {
+    height: 100%;
+    transform: scale(2.8);   /* same scale as navbar */
+    transform-origin: left center;
 }
+
+/* ===== About Text ===== */
 
 .footer-about p {
     font-size: 0.95rem;
-    color: #ccc;
-    margin-bottom: 15px;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    max-width: 300px;
 }
 
-.footer-socials a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    background-color: #222;
-    color: #fff;
-    margin-right: 10px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    font-size: 1rem;
-}
-
-.footer-socials a:hover {
-    background-color: #fbbf24;
-    color: #111;
-}
+/* ===== Section Headings ===== */
 
 .footer-col h4 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    color: #fbbf24; /* yellow accent */
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+    color: #fbbf24;
+    font-weight: 600;
 }
+
+/* ===== Links ===== */
 
 .footer-col ul {
     list-style: none;
@@ -78,35 +77,89 @@
 }
 
 .footer-col ul li a {
-    color: #A0A0A0;
+    color: #bbb;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
+.footer-col ul li a:hover {
+    color: #fbbf24;
+    padding-left: 4px;
+}
+
+/* ===== Social Icons ===== */
+
+.footer-socials {
+    display: flex;
+    gap: 12px;
+}
+
+.footer-socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    color: #fff;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.footer-socials a:hover {
+    background: #fbbf24;
+    color: #111;
+}
+
+/* ===== Footer Bottom ===== */
 
 .footer-bottom {
     text-align: center;
-    margin-top: 40px;
-    font-size: 0.9rem;
+    margin-top: 70px;
+    padding-top: 25px;
+    border-top: 1px solid #1f1f1f;
+    font-size: 0.85rem;
     color: #777;
 }
 
-/* ---------------- RESPONSIVE ---------------- */
+/* ========================= */
+/*        RESPONSIVE         */
+/* ========================= */
+
+/* Tablet (2 columns) */
 @media (max-width: 992px) {
     .footer-container {
-        justify-content: center;
-    }
-    .footer-col {
-        flex: 1 1 45%;
-        margin-bottom: 20px;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
     }
 }
 
+/* Mobile (1 column) */
 @media (max-width: 600px) {
-    .footer-col {
-        flex: 1 1 100%;
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
     }
-    .footer-socials a {
-        margin-right: 8px;
+
+    .footer-logo {
+        justify-content: center;
+    }
+
+    .footer-logo img {
+        transform-origin: center center;  /* 🔥 FIX */
+    }
+
+    .footer-about p {
+        margin: 0 auto 25px;
+    }
+
+    .footer-socials {
+        justify-content: center;
+    }
+
+    .footer-col ul li a:hover {
+        padding-left: 0;
     }
 }

@@ -11,7 +11,7 @@
             <p>Sign up to access your dashboard and all features</p>
 
             <!-- Signup Form -->
-            <form method="POST" action="{% url 'api-signup' %}">
+            <form method="POST">
                 {% csrf_token %}
                 
                 <div class="form-group">
