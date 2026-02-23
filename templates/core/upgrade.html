@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+    background:#f3f4f6;
+    font-family:'Inter', sans-serif;
+}
+
+.section{
+    padding:90px 20px;
+    text-align:center;
+}
+
+.section h1{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+.section p{
+    color:#6b7280;
+    font-size:16px;
+    max-width:650px;
+    margin:0 auto 70px auto;
+}
+
+/* Layout */
+.wrapper{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+}
+
+/* ================= LEFT CARD ================= */
+
+.premium-card{
+    width:440px;   /* matched closer */
+    background:#f3f4f6;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+.card-header{
+    background:#0c0c0c;
+    padding:20px 26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-header h2{
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0;
+}
+
+.card-header i{
+    color:#d4af37;
+    font-size:15px;
+}
+
+.badge{
+    background:#d4af37;
+    color:black;
+    font-size:11px;
+    padding:6px 14px;
+    border-radius:20px;
+    font-weight:600;
+}
+
+.card-body{
+    padding:32px 34px 10px 34px;
+    text-align:left;   /* force left alignment */
+}
+
+/* Feature Row */
+.feature{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:34px;
+}
+
+.icon-box{
+    width:40px;
+    height:40px;
+    background:#e5e7eb;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.icon-box i{
+    color:#d4af37;
+    font-size:15px;
+}
+
+.feature-content h4{
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 6px 0;
+    color:#111827;
+}
+
+.feature-content p{
+    font-size:14px;
+    color:#6b7280;
+    line-height:1.6;
+    margin:0;
+}
+
+/* ================= RIGHT CARD ================= */
+
+.price-card{
+    width:340px;
+    background:white;
+    border-radius:16px;
+    padding:48px 36px;
+    border:1.5px solid #d4af37;
+    box-shadow:0 8px 22px rgba(0,0,0,0.05);
+}
+
+.price{
+    font-size:54px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.price-sub{
+    color:#6b7280;
+    margin-bottom:36px;
+    font-size:15px;
+}
+
+.price-features{
+    text-align:left;
+    margin-bottom:36px;
+}
+
+.price-features div{
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+.price-features i{
+    color:#16a34a;
+    margin-right:10px;
+    font-size:14px;
+}
+
+.btn-upgrade{
+    background:#c6a24a;
+    border:none;
+    width:100%;
+    padding:18px;
+    border-radius:14px;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-upgrade:hover{
+    background:#b8953e;
+}
+
+.btn-upgrade i{
+    margin-right:8px;
+}
+
+.small-text{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:20px;
+    line-height:1.6;
+}
+
+.free-link{
+    display:block;
+    margin-top:25px;
+    font-size:15px;
+    color:#6b7280;
+    text-decoration:none;
+}
+
+.free-link:hover{
+    text-decoration:underline;
+}
+
+/* Responsive */
+@media(max-width:900px){
+    .wrapper{
+        flex-direction:column;
+        align-items:center;
+        gap:50px;
+    }
+
+    .premium-card,
+    .price-card{
+        width:100%;
+        max-width:480px;
+    }
+}
+</style>
+
+<section class="section">
+    <h1>Unlock Your Full Potential</h1>
+    <p>You’ve identified the gaps. Now get the professional tools to fix them and get approved.</p>
+
+    <div class="wrapper">
+
+        <!-- LEFT CARD -->
+        <div class="premium-card">
+
+            <div class="card-header">
+                <h2>
+                    <i class="fa-solid fa-crown"></i>
+                    Premium Pack
+                </h2>
+                <span class="badge">RECOMMENDED</span>
+            </div>
+
+            <div class="card-body">
+
+                <div class="feature">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>7-Page Tenant Dossier PDF</h4>
+                        <p>A professional rental resume organizing your ID, income, and references into one impressive document agents love.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Priority Action Plan</h4>
+                        <p>Interactive checklist tailored to your specific score gaps. Track your progress from “At Risk” to “Approved”.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="icon-box">
+                        <i class="fa-regular fa-star"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Smart Cover Letter</h4>
+                        <p>AI-generated letter that professionally explains your situation to landlords.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Rental Coach AI</h4>
+                        <p>24/7 access to our specialized assistant for inspections, applications, and negotiations.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT CARD -->
+        <div class="price-card">
+
+            <div class="price">$19</div>
+            <div class="price-sub">One-time payment</div>
+
+            <div class="price-features">
+                <div><i class="fa-solid fa-check"></i> Lifetime Access</div>
+                <div><i class="fa-solid fa-check"></i> Instant PDF Download</div>
+                <div><i class="fa-solid fa-check"></i> 100% Satisfaction Guarantee</div>
+            </div>
+
+            <button class="btn-upgrade">
+                <i class="fa-solid fa-lock"></i>
+                Upgrade to Premium — $19 (One-time)
+            </button>
+
+            <div class="small-text">
+                One-time payment. Lifetime access. Instant download.<br>
+                Secure checkout • No subscription
+            </div>
+
+            <a href="{% url 'assessment-page' %}" class="free-link">No thanks, continue as Free</a>
+
+        </div>
+
+    </div>
+</section>
+
+{% include "footer.html" %}
+{% endblock content %}
