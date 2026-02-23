@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 
@@ -26,24 +26,24 @@ def require_premium(user):
 
 
 # ==========================================================
-# TEMPLATE VIEWS (PREMIUM REQUIRED)
+# TEMPLATE VIEWS (VISIBLE TO ALL LOGGED-IN USERS)
 # ==========================================================
 
 @login_required
 def cover_letter_list_view(request):
-
-    if not require_premium(request.user):
-        return redirect("dashboard_home")
-
-    return render(request, "cover_letters/list.html")
+    # ✅ Page visible to all logged-in users
+    return render(
+        request,
+        "cover_letters/list.html",
+        {
+            "is_premium": require_premium(request.user)
+        }
+    )
 
 
 @login_required
 def cover_letter_editor_view(request, pk):
-
-    if not require_premium(request.user):
-        return redirect("dashboard_home")
-
+    # ✅ Page visible to all logged-in users
     letter = get_object_or_404(
         CoverLetter,
         pk=pk,
@@ -53,12 +53,15 @@ def cover_letter_editor_view(request, pk):
     return render(
         request,
         "cover_letters/editor.html",
-        {"letter_id": letter.id}
+        {
+            "letter_id": letter.id,
+            "is_premium": require_premium(request.user)
+        }
     )
 
 
 # ==========================================================
-# API: LIST LETTERS (PREMIUM REQUIRED)
+# API: LIST LETTERS (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class CoverLetterListAPI(APIView):
@@ -91,7 +94,7 @@ class CoverLetterListAPI(APIView):
 
 
 # ==========================================================
-# API: GENERATE NEW LETTER (PREMIUM REQUIRED)
+# API: GENERATE NEW LETTER (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class GenerateCoverLetterAPI(APIView):
@@ -153,7 +156,7 @@ class GenerateCoverLetterAPI(APIView):
 
 
 # ==========================================================
-# API: GET LETTER DETAIL (PREMIUM REQUIRED)
+# API: GET LETTER DETAIL (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class CoverLetterDetailAPI(APIView):
@@ -178,7 +181,7 @@ class CoverLetterDetailAPI(APIView):
 
 
 # ==========================================================
-# API: SAVE EDITED CONTENT (PREMIUM REQUIRED)
+# API: SAVE EDITED CONTENT (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class SaveCoverLetterAPI(APIView):
@@ -213,7 +216,7 @@ class SaveCoverLetterAPI(APIView):
 
 
 # ==========================================================
-# API: EXPORT PDF (PREMIUM REQUIRED)
+# API: EXPORT PDF (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class ExportCoverLetterPDFAPI(APIView):
