@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 
@@ -18,16 +18,32 @@ from .services.pdf import CoverLetterPDFService
 
 
 # ==========================================================
-# TEMPLATE VIEWS
+# HELPER
+# ==========================================================
+
+def require_premium(user):
+    return getattr(user, "is_premium", False)
+
+
+# ==========================================================
+# TEMPLATE VIEWS (PREMIUM REQUIRED)
 # ==========================================================
 
 @login_required
 def cover_letter_list_view(request):
+
+    if not require_premium(request.user):
+        return redirect("dashboard_home")
+
     return render(request, "cover_letters/list.html")
 
 
 @login_required
 def cover_letter_editor_view(request, pk):
+
+    if not require_premium(request.user):
+        return redirect("dashboard_home")
+
     letter = get_object_or_404(
         CoverLetter,
         pk=pk,
@@ -42,13 +58,20 @@ def cover_letter_editor_view(request, pk):
 
 
 # ==========================================================
-# API: LIST LETTERS
+# API: LIST LETTERS (PREMIUM REQUIRED)
 # ==========================================================
 
 class CoverLetterListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         letters = CoverLetter.objects.filter(
             user=request.user
         ).order_by("-created_at")
@@ -68,13 +91,19 @@ class CoverLetterListAPI(APIView):
 
 
 # ==========================================================
-# API: GENERATE NEW LETTER
+# API: GENERATE NEW LETTER (PREMIUM REQUIRED)
 # ==========================================================
 
 class GenerateCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         serializer = CoverLetterCreateSerializer(data={
             "property_address": request.data.get("property_address"),
@@ -94,7 +123,6 @@ class GenerateCoverLetterAPI(APIView):
             return Response(serializer.errors, status=400)
 
         validated_data = serializer.validated_data
-
         generator = CoverLetterGeneratorService()
 
         try:
@@ -125,13 +153,20 @@ class GenerateCoverLetterAPI(APIView):
 
 
 # ==========================================================
-# API: GET LETTER DETAIL
+# API: GET LETTER DETAIL (PREMIUM REQUIRED)
 # ==========================================================
 
 class CoverLetterDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         letter = get_object_or_404(
             CoverLetter,
             pk=pk,
@@ -143,13 +178,20 @@ class CoverLetterDetailAPI(APIView):
 
 
 # ==========================================================
-# API: SAVE EDITED CONTENT
+# API: SAVE EDITED CONTENT (PREMIUM REQUIRED)
 # ==========================================================
 
 class SaveCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         letter = get_object_or_404(
             CoverLetter,
             pk=pk,
@@ -171,13 +213,20 @@ class SaveCoverLetterAPI(APIView):
 
 
 # ==========================================================
-# API: EXPORT PDF
+# API: EXPORT PDF (PREMIUM REQUIRED)
 # ==========================================================
 
 class ExportCoverLetterPDFAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         letter = get_object_or_404(
             CoverLetter,
             pk=pk,
@@ -192,7 +241,6 @@ class ExportCoverLetterPDFAPI(APIView):
 
         pdf_service = CoverLetterPDFService()
         pdf_file = pdf_service.generate_pdf(letter)
-        print("FINAL CONTENT:", letter.final_content)
 
         return FileResponse(
             pdf_file,

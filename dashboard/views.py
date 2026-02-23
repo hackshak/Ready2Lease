@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from assessments.models import Assessment
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,29 +10,55 @@ from assessments.gap_analysis import generate_gap_analysis
 from action_plan.services import ActionPlanService
 
 
+# ==========================================================
+# HELPER
+# ==========================================================
+
+def require_premium(user):
+    return getattr(user, "is_premium", False)
+
+
+# ==========================================================
+# TEMPLATE VIEWS (PREMIUM REQUIRED)
+# ==========================================================
+
 def dashboard_home(request):
+
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    if not require_premium(request.user):
+        return redirect("dashboard_home")
+
     return render(request, "dashboard/dashboard_home.html")
 
 
 def detailed_analysis(request):
+
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    if not require_premium(request.user):
+        return redirect("dashboard_home")
+
     return render(request, "dashboard/detailed_analysis.html")
 
 
-
-
+# ==========================================================
+# DETAILED READINESS ANALYSIS (PREMIUM REQUIRED)
+# ==========================================================
 
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
-        if not getattr(request.user, "is_premium", False):
+        if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # ✅ FIX: Get from query params
         assessment_id = request.query_params.get("assessment_id")
 
         if assessment_id:
@@ -162,7 +188,6 @@ class DetailedReadinessAnalysisView(APIView):
             for r in recommendations[:3]
         ]
 
-        
         return Response({
             "assessment_id": assessment.id,
             "score": final_score,
@@ -179,11 +204,8 @@ class DetailedReadinessAnalysisView(APIView):
             "target_rent_weekly": target_rent_weekly,
             "avg_rent_weekly": avg_rent_weekly,
             "breakdown": breakdown,
-
-            # ✅ ADD THESE BACK
             "gaps": gaps,
             "recommendations": recommendations,
-
             "steps": steps,
             "previous_assessments": previous_list,
             "risk_level": assessment.risk_level,
@@ -191,51 +213,26 @@ class DetailedReadinessAnalysisView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+# ==========================================================
+# CATEGORY SCORES VIEW (NOW FULLY PREMIUM)
+# ==========================================================
 
 class CalculateCategoryScoresView(APIView):
-    """
-    - If assessment_id provided → return detailed category breakdown (Premium only)
-    - Otherwise → list user/session assessments
-    """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id=None, format=None):
 
-        user = request.user if request.user.is_authenticated else None
-        session_key = request.session.session_key
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-        # ======================================================
-        # DETAILED BREAKDOWN (Premium Only)
-        # ======================================================
         if assessment_id:
-
-            if not user:
-                return Response(
-                    {"detail": "Login required."},
-                    status=status.HTTP_401_UNAUTHORIZED
-                )
-
-            if not user.is_premium:
-                return Response(
-                    {"detail": "Premium required."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-
             try:
                 assessment = Assessment.objects.get(
                     id=assessment_id,
-                    user=user
+                    user=request.user
                 )
             except Assessment.DoesNotExist:
                 return Response(
@@ -253,21 +250,11 @@ class CalculateCategoryScoresView(APIView):
                 "risk_level": assessment.risk_level
             }, status=status.HTTP_200_OK)
 
-        # ======================================================
-        # LIST ALL ASSESSMENTS (User or Session)
-        # ======================================================
-        if user:
-            assessments = (
-                Assessment.objects
-                .filter(user=user)
-                .order_by('-created_at')
-            )
-        else:
-            assessments = (
-                Assessment.objects
-                .filter(session_key=session_key)
-                .order_by('-created_at')
-            )
+        assessments = (
+            Assessment.objects
+            .filter(user=request.user)
+            .order_by('-created_at')
+        )
 
         data = [
             {
