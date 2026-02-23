@@ -1,6 +1,5 @@
 {% extends "sidebar.html" %}
 {% load static %}
-
 {% block content %}
 
 <style>
@@ -44,9 +43,7 @@
     box-shadow:0 14px 26px rgba(108,125,255,.35);
 }
 
-.ap-selector{
-    margin-bottom:30px;
-}
+.ap-selector{margin-bottom:30px;}
 
 .ap-selector select{
     background:#0f1730;
@@ -76,18 +73,31 @@
     height:140px;
     margin:30px auto;
     border-radius:50%;
-    background:
-        radial-gradient(circle at center, #111a33 60%, transparent 61%),
-        conic-gradient(#28d17c 0deg, #28d17c var(--deg), rgba(255,255,255,.1) var(--deg));
     display:flex;
     align-items:center;
     justify-content:center;
     transition:.4s ease;
 }
 
-.ap-ring b{
-    font-size:32px;
+.ap-ring.good{
+    background:
+        radial-gradient(circle at center,#111a33 60%,transparent 61%),
+        conic-gradient(#28d17c 0deg,#28d17c var(--deg),rgba(255,255,255,.1) var(--deg));
 }
+
+.ap-ring.mid{
+    background:
+        radial-gradient(circle at center,#111a33 60%,transparent 61%),
+        conic-gradient(#f7c948 0deg,#f7c948 var(--deg),rgba(255,255,255,.1) var(--deg));
+}
+
+.ap-ring.bad{
+    background:
+        radial-gradient(circle at center,#111a33 60%,transparent 61%),
+        conic-gradient(#ff5a7a 0deg,#ff5a7a var(--deg),rgba(255,255,255,.1) var(--deg));
+}
+
+.ap-ring b{font-size:32px;}
 
 .ap-steps{
     display:flex;
@@ -104,11 +114,6 @@
     padding:18px;
     border-radius:16px;
     border:1px solid rgba(255,255,255,.08);
-    transition:.2s ease;
-}
-
-.ap-step:hover{
-    background:rgba(255,255,255,.08);
 }
 
 .ap-step h4{margin:0;font-size:15px;}
@@ -132,7 +137,7 @@
 }
 
 /* =========================================
-   PREMIUM MODAL STYLING
+   MODAL
 ========================================= */
 
 .ap-modal{
@@ -144,12 +149,6 @@
     align-items:center;
     justify-content:center;
     z-index:3000;
-    animation:fadeIn .25s ease;
-}
-
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
 }
 
 .ap-modal-content{
@@ -160,36 +159,22 @@
     max-width:520px;
     border:1px solid rgba(255,255,255,.08);
     box-shadow:0 30px 60px rgba(0,0,0,.6);
-    animation:slideUp .3s ease;
+    animation:fadeIn .25s ease;
 }
 
-@keyframes slideUp{
-    from{transform:translateY(20px);opacity:0;}
-    to{transform:translateY(0);opacity:1;}
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(15px);}
+    to{opacity:1;transform:translateY(0);}
 }
 
 .ap-modal-content h3{
     margin-top:0;
-    margin-bottom:20px;
+    margin-bottom:15px;
     font-size:18px;
-    font-weight:600;
     color:white;
 }
 
-.ap-close{
-    text-align:right;
-    font-size:13px;
-    cursor:pointer;
-    color:#a9b4d6;
-    margin-bottom:15px;
-}
-
-.ap-close:hover{
-    color:#fff;
-}
-
-.ap-modal-content input[type="file"],
-.ap-modal-content textarea{
+.ap-modal-content input[type="file"]{
     width:100%;
     background:rgba(255,255,255,.05);
     border:1px solid rgba(255,255,255,.1);
@@ -198,25 +183,35 @@
     border-radius:14px;
     font-size:13px;
     margin-bottom:20px;
-    outline:none;
-    transition:.2s ease;
-}
-
-.ap-modal-content textarea{
-    min-height:130px;
-    resize:vertical;
-}
-
-.ap-modal-content input[type="file"]:hover,
-.ap-modal-content textarea:focus{
-    border-color:#6c7dff;
-    background:rgba(255,255,255,.08);
 }
 
 .modal-actions{
     display:flex;
     justify-content:flex-end;
     gap:12px;
+}
+
+/* SUCCESS */
+
+.ap-success{
+    text-align:center;
+    padding:25px 10px;
+}
+
+.ap-success-icon{
+    font-size:48px;
+    margin-bottom:10px;
+    color:#28d17c;
+}
+
+.ap-success h3{
+    margin-bottom:10px;
+}
+
+.ap-success p{
+    font-size:13px;
+    color:#a9b4d6;
+    margin-bottom:20px;
 }
 
 @media(max-width:1000px){
@@ -230,7 +225,7 @@
 
 <div class="ap-header">
     <div class="ap-title">Your Premium Action Plan</div>
-    <button class="ap-btn" onclick="loadTasks()">Refresh</button>
+    <button class="ap-btn" type="button" id="refreshBtn">Refresh</button>
 </div>
 
 <div class="ap-selector">
@@ -242,7 +237,7 @@
 
     <div class="ap-card">
         <h3>Score Improvement</h3>
-        <div class="ap-ring" id="scoreRing" style="--deg:0deg;">
+        <div class="ap-ring good" id="scoreRing" style="--deg:0deg;">
             <b id="finalScore">0</b>
         </div>
         <p style="text-align:center;color:#a9b4d6;font-size:14px;">
@@ -256,53 +251,64 @@
     </div>
 
 </div>
-
 </div>
 
 <div id="apModal" class="ap-modal">
   <div class="ap-modal-content">
-    <div class="ap-close" onclick="closeModal()">Close ✕</div>
+    <div style="text-align:right;cursor:pointer;color:white;" onclick="closeModal()">✕</div>
     <div id="apModalContent"></div>
   </div>
 </div>
 
-
-
-
 <script>
-let selectedAssessment = null;
+let selectedAssessment=null;
 
 function getCSRFToken(){
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
+/* SUCCESS */
+function showSuccess(points){
+    const content=document.getElementById("apModalContent");
+    content.innerHTML=`
+        <div class="ap-success">
+            <div class="ap-success-icon">✓</div>
+            <h3>Task Completed!</h3>
+            <p>You earned <strong>+${points} points</strong>.</p>
+            <div class="modal-actions">
+                <button class="ap-btn" onclick="closeModal()">Continue</button>
+            </div>
+        </div>
+    `;
+}
+
 async function loadAssessments(){
-    const res = await fetch("/api/detailed-readiness/");
-    const data = await res.json();
+    const res=await fetch("/api/detailed-readiness/",{credentials:"same-origin"});
+    if(!res.ok) return;
 
-    const select = document.getElementById("assessmentSelect");
-    select.innerHTML = "";
+    const data=await res.json();
+    const select=document.getElementById("assessmentSelect");
+    select.innerHTML="";
 
-    if(!data.previous_assessments || !data.previous_assessments.length){
-        select.innerHTML = `<option>No Assessments Found</option>`;
+    if(!data.previous_assessments?.length){
+        select.innerHTML="<option>No Assessments Found</option>";
         return;
     }
 
     data.previous_assessments.forEach(a=>{
-        select.innerHTML += `
-            <option value="${a.id}">
-                ${a.created_at} (Score: ${a.score})
-            </option>
-        `;
+        const opt=document.createElement("option");
+        opt.value=a.id;
+        opt.textContent=`${a.created_at} (Score: ${a.score})`;
+        select.appendChild(opt);
     });
 
-    selectedAssessment = data.previous_assessments[0].id;
-    select.value = selectedAssessment;
+    selectedAssessment=data.previous_assessments[0].id;
+    select.value=selectedAssessment;
 
-    select.addEventListener("change", function(){
-        selectedAssessment = this.value;
+    select.onchange=function(){
+        selectedAssessment=this.value;
         loadTasks();
-    });
+    };
 
     loadTasks();
 }
@@ -310,94 +316,72 @@ async function loadAssessments(){
 async function loadTasks(){
     if(!selectedAssessment) return;
 
-    const res = await fetch(`/tasks/${selectedAssessment}/`);
-    const data = await res.json();
+    const res=await fetch(`/tasks/${selectedAssessment}/`,{credentials:"same-origin"});
+    if(!res.ok) return;
 
-    const score = data.final_score || 0;
-    document.getElementById("finalScore").innerText = score;
+    const data=await res.json();
+    const score=data.final_score||0;
 
-    const deg = (score / 100) * 360;
-    document.getElementById("scoreRing")
-        .style.setProperty("--deg", deg + "deg");
+    const ring=document.getElementById("scoreRing");
+    ring.className="ap-ring "+(score>=80?"good":score>=55?"mid":"bad");
 
-    const container = document.getElementById("apSteps");
-    container.innerHTML = "";
+    document.getElementById("finalScore").innerText=score;
+    ring.style.setProperty("--deg",(score/100)*360+"deg");
 
-    if(!data.tasks || data.tasks.length === 0){
-        container.innerHTML = `<div class="ap-empty">All improvements completed 🎉</div>`;
+    const container=document.getElementById("apSteps");
+    container.innerHTML="";
+
+    if(!data.tasks?.length){
+        container.innerHTML=`<div class="ap-empty">All improvements completed 🎉</div>`;
         return;
     }
 
     data.tasks.forEach(task=>{
-        container.innerHTML += `
-            <div class="ap-step">
-                <div>
-                    <h4>${task.title}</h4>
-                    <p>${task.description}</p>
-                    <div class="ap-impact">+${task.points} Points</div>
-                </div>
-                <button class="ap-btn"
-                    onclick="openTask('${task.key}','${task.type}','${task.document_type || ''}')">
-                    Start
-                </button>
+        const div=document.createElement("div");
+        div.className="ap-step";
+
+        div.innerHTML=`
+            <div>
+                <h4>${task.title}</h4>
+                <p>${task.description}</p>
+                <div class="ap-impact">+${task.points} Points</div>
             </div>
         `;
+
+        const btn=document.createElement("button");
+        btn.className="ap-btn";
+        btn.type="button";
+        btn.textContent="Start";
+        btn.onclick=()=>openTask(task.key,task.type,task.document_type||"",task.points);
+
+        div.appendChild(btn);
+        container.appendChild(div);
     });
 }
 
-/* ======================================================
-   UPDATED: FILE-ONLY TASK MODALS
-====================================================== */
+function openTask(key,type,docType,points){
 
-function openTask(key,type,docType){
-    const modal = document.getElementById("apModal");
-    const content = document.getElementById("apModalContent");
+    const modal=document.getElementById("apModal");
+    const content=document.getElementById("apModalContent");
 
-    // Document upload (ID, Payslip, Bank)
-    if(type === "document"){
-        content.innerHTML = `
-            <h3>Upload Required Document</h3>
-            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
-                Please upload the required document file (PDF recommended).
+    if(type==="strategic"){
+        content.innerHTML=`
+            <h3>Strategic Improvement</h3>
+            <p style="color:#a9b4d6;margin-bottom:20px;">
+                Update your assessment inputs to improve this category.
             </p>
-            <input type="file" id="fileInput">
             <div class="modal-actions">
-                <button class="ap-btn"
-                    onclick="uploadDocument('${docType}')">
-                    Upload & Complete
-                </button>
+                <button class="ap-btn" onclick="closeModal()">Got It</button>
             </div>
         `;
     }
 
-    // Reference Letter (FILE ONLY)
-    if(type === "reference"){
-        content.innerHTML = `
-            <h3>Upload Reference Letter</h3>
-            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
-                Upload a landlord or employer reference letter (PDF recommended).
-            </p>
+    else{
+        content.innerHTML=`
+            <h3>Upload File</h3>
             <input type="file" id="fileInput">
             <div class="modal-actions">
-                <button class="ap-btn"
-                    onclick="uploadReference()">
-                    Upload & Complete
-                </button>
-            </div>
-        `;
-    }
-
-    // Cover Letter (FILE ONLY)
-    if(type === "cover_letter"){
-        content.innerHTML = `
-            <h3>Upload Cover Letter</h3>
-            <p style="color:#a9b4d6;font-size:13px;margin-bottom:15px;">
-                Upload your rental cover letter file (PDF recommended).
-            </p>
-            <input type="file" id="fileInput">
-            <div class="modal-actions">
-                <button class="ap-btn"
-                    onclick="uploadCoverLetter()">
+                <button class="ap-btn" onclick="handleUpload('${type}','${docType}',${points})">
                     Upload & Complete
                 </button>
             </div>
@@ -407,70 +391,37 @@ function openTask(key,type,docType){
     modal.style.display="flex";
 }
 
+async function handleUpload(type,docType,points){
+
+    const file=document.getElementById("fileInput").files[0];
+    if(!file) return;
+
+    const formData=new FormData();
+    formData.append("file",file);
+    if(docType) formData.append("document_type",docType);
+
+    let url="";
+    if(type==="document") url=`/upload-document/${selectedAssessment}/`;
+    if(type==="reference") url=`/add-reference/${selectedAssessment}/`;
+    if(type==="cover_letter") url=`/save-cover-letter/${selectedAssessment}/`;
+
+    await fetch(url,{
+        method:"POST",
+        credentials:"same-origin",
+        headers:{"X-CSRFToken":getCSRFToken()},
+        body:formData
+    });
+
+    showSuccess(points);
+    loadTasks();
+}
+
 function closeModal(){
     document.getElementById("apModal").style.display="none";
 }
 
-/* ======================================================
-   FILE HANDLERS
-====================================================== */
-
-async function uploadDocument(docType){
-    const file = document.getElementById("fileInput").files[0];
-    if(!file) return;
-
-    const formData = new FormData();
-    formData.append("document_type", docType);
-    formData.append("file", file);
-
-    await fetch(`/upload-document/${selectedAssessment}/`,{
-        method:"POST",
-        credentials:"same-origin",
-        headers:{ "X-CSRFToken": getCSRFToken() },
-        body:formData
-    });
-
-    closeModal();
-    loadTasks();
-}
-
-async function uploadReference(){
-    const file = document.getElementById("fileInput").files[0];
-    if(!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    await fetch(`/add-reference/${selectedAssessment}/`,{
-        method:"POST",
-        credentials:"same-origin",
-        headers:{ "X-CSRFToken": getCSRFToken() },
-        body:formData
-    });
-
-    closeModal();
-    loadTasks();
-}
-
-async function uploadCoverLetter(){
-    const file = document.getElementById("fileInput").files[0];
-    if(!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    await fetch(`/save-cover-letter/${selectedAssessment}/`,{
-        method:"POST",
-        credentials:"same-origin",
-        headers:{ "X-CSRFToken": getCSRFToken() },
-        body:formData
-    });
-
-    closeModal();
-    loadTasks();
-}
-
-document.addEventListener("DOMContentLoaded", loadAssessments);
+document.getElementById("refreshBtn").onclick=loadTasks;
+document.addEventListener("DOMContentLoaded",loadAssessments);
 </script>
 
 {% endblock %}

@@ -1,15 +1,25 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 
 from assessments.models import Assessment
 from .services import ActionPlanService, TASK_POINTS
 from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
 from .checklist_service import ChecklistService
 
+
+# ==========================================================
+# HELPER
+# ==========================================================
+
+def require_premium(user):
+    return getattr(user, "is_premium", False)
 
 
 # ==========================================================
@@ -20,7 +30,7 @@ class ActionPlanPageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/action_plan.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_premium:
+        if not require_premium(request.user):
             return redirect("dashboard_home")
         return super().dispatch(request, *args, **kwargs)
 
@@ -34,10 +44,12 @@ class ActionPlanTasksView(APIView):
 
     def get(self, request, assessment_id=None):
 
-        if not request.user.is_premium:
-            return Response({"detail": "Premium required"}, status=403)
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-        # If specific assessment selected
         if assessment_id:
             assessment = get_object_or_404(
                 Assessment,
@@ -55,7 +67,7 @@ class ActionPlanTasksView(APIView):
                 "base_score": 0,
                 "improvement_score": 0,
                 "final_score": 0
-            })
+            }, status=status.HTTP_200_OK)
 
         tasks = ActionPlanService.generate_tasks_for_assessment(
             assessment
@@ -71,7 +83,7 @@ class ActionPlanTasksView(APIView):
                 request.user,
                 assessment
             ),
-        })
+        }, status=status.HTTP_200_OK)
 
 
 # ==========================================================
@@ -81,13 +93,37 @@ class ActionPlanTasksView(APIView):
 class UploadDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request, assessment_id):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         doc_type = request.data.get("document_type")
         file = request.FILES.get("file")
 
         if not file:
-            return Response({"detail": "File required"}, status=400)
+            return Response(
+                {"detail": "File required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not doc_type:
+            return Response(
+                {"detail": "Document type required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        task_key = f"upload_{doc_type}"
+
+        if task_key not in TASK_POINTS:
+            return Response(
+                {"detail": "Invalid document type"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         assessment = get_object_or_404(
             Assessment,
@@ -102,22 +138,19 @@ class UploadDocumentView(APIView):
             file=file
         )
 
-        task_key = f"upload_{doc_type}"
-
-        if task_key in TASK_POINTS:
-            CompletedTask.objects.get_or_create(
-                user=request.user,
-                assessment=assessment,
-                task_key=task_key,
-                defaults={"points_awarded": TASK_POINTS[task_key]}
-            )
+        CompletedTask.objects.get_or_create(
+            user=request.user,
+            assessment=assessment,
+            task_key=task_key,
+            defaults={"points_awarded": TASK_POINTS[task_key]}
+        )
 
         return Response({
             "final_score": ActionPlanService.get_final_score_for_assessment(
                 request.user,
                 assessment
             )
-        })
+        }, status=status.HTTP_200_OK)
 
 
 # ==========================================================
@@ -127,10 +160,23 @@ class UploadDocumentView(APIView):
 class AddReferenceView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request, assessment_id):
 
-        text = request.data.get("text_content", "")
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         file = request.FILES.get("file")
+        text = request.data.get("text_content", "")
+
+        if not file and not text:
+            return Response(
+                {"detail": "Reference file or text required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         assessment = get_object_or_404(
             Assessment,
@@ -145,86 +191,46 @@ class AddReferenceView(APIView):
             file=file
         )
 
-        CompletedTask.objects.get_or_create(
-            user=request.user,
-            assessment=assessment,
-            task_key="add_reference_letter",
-            defaults={"points_awarded": TASK_POINTS["add_reference_letter"]}
-        )
+        task_key = "add_reference_letter"
+
+        if task_key in TASK_POINTS:
+            CompletedTask.objects.get_or_create(
+                user=request.user,
+                assessment=assessment,
+                task_key=task_key,
+                defaults={"points_awarded": TASK_POINTS[task_key]}
+            )
 
         return Response({
             "final_score": ActionPlanService.get_final_score_for_assessment(
                 request.user,
                 assessment
             )
-        })
-
-
-
+        }, status=status.HTTP_200_OK)
 
 
 # ==========================================================
-# SAVE COVER LETTER (PER ASSESSMENT) - FILE ONLY
+# SAVE COVER LETTER (PER ASSESSMENT)
 # ==========================================================
 
 class SaveCoverLetterView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request, assessment_id):
 
-        file = request.FILES.get("file")
-
-        if not file:
+        if not require_premium(request.user):
             return Response(
-                {"detail": "Cover letter file is required"},
-                status=400
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
             )
-
-        assessment = get_object_or_404(
-            Assessment,
-            id=assessment_id,
-            user=request.user
-        )
-
-        # Replace existing file if exists
-        CoverLetter.objects.update_or_create(
-            user=request.user,
-            assessment=assessment,
-            defaults={"file": file}
-        )
-
-        # Keep scoring logic untouched
-        CompletedTask.objects.get_or_create(
-            user=request.user,
-            assessment=assessment,
-            task_key="improve_cover_letter",
-            defaults={"points_awarded": TASK_POINTS["improve_cover_letter"]}
-        )
-
-        return Response({
-            "final_score": ActionPlanService.get_final_score_for_assessment(
-                request.user,
-                assessment
-            )
-        })
-
-
-
-# ==========================================================
-# SAVE COVER LETTER (PER ASSESSMENT) - FILE ONLY
-# ==========================================================
-
-class SaveCoverLetterView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, assessment_id):
 
         file = request.FILES.get("file")
 
         if not file:
             return Response(
                 {"detail": "File is required"},
-                status=400
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         assessment = get_object_or_404(
@@ -239,28 +245,26 @@ class SaveCoverLetterView(APIView):
             defaults={"file": file}
         )
 
-        # Keep scoring intact
-        CompletedTask.objects.get_or_create(
-            user=request.user,
-            assessment=assessment,
-            task_key="improve_cover_letter",
-            defaults={"points_awarded": TASK_POINTS["improve_cover_letter"]}
-        )
+        task_key = "improve_cover_letter"
+
+        if task_key in TASK_POINTS:
+            CompletedTask.objects.get_or_create(
+                user=request.user,
+                assessment=assessment,
+                task_key=task_key,
+                defaults={"points_awarded": TASK_POINTS[task_key]}
+            )
 
         return Response({
             "final_score": ActionPlanService.get_final_score_for_assessment(
                 request.user,
                 assessment
             )
-        })
-    
-
-
-
+        }, status=status.HTTP_200_OK)
 
 
 # ==========================================================
-# DOCUMENTS HOME PAGE (List Assessments)
+# DOCUMENTS HOME PAGE
 # ==========================================================
 
 class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
@@ -268,16 +272,17 @@ class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        assessments = Assessment.objects.filter(
-            user=self.request.user
-        ).order_by("-created_at")
-
-        context["assessments"] = assessments
+        context["assessments"] = (
+            Assessment.objects
+            .filter(user=self.request.user)
+            .order_by("-created_at")
+        )
         return context
 
 
-
+# ==========================================================
+# DOCUMENT CHECKLIST API
+# ==========================================================
 
 class DocumentChecklistView(APIView):
     permission_classes = [IsAuthenticated]
@@ -295,15 +300,17 @@ class DocumentChecklistView(APIView):
             assessment
         )
 
-        return Response(data)
-    
+        return Response(data, status=status.HTTP_200_OK)
 
 
-
+# ==========================================================
+# DELETE DOCUMENT
+# ==========================================================
 
 class DeleteDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def delete(self, request, assessment_id, doc_type, object_id):
 
         assessment = get_object_or_404(
@@ -342,4 +349,13 @@ class DeleteDocumentView(APIView):
             )
             cover.delete()
 
-        return Response({"detail": "Deleted successfully"})
+        else:
+            return Response(
+                {"detail": "Invalid document type"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {"detail": "Deleted successfully"},
+            status=status.HTTP_200_OK
+        )

@@ -1,20 +1,29 @@
 # action_plan/services.py
 
+from django.db.models import Sum
 from assessments.models import Assessment
+from dashboard.services import build_detailed_breakdown
 from .models import CompletedTask
+
 
 TASK_POINTS = {
     "upload_payslip": 5,
     "upload_bank_statement": 2,
     "add_reference_letter": 3,
     "improve_cover_letter": 4,
+
+    # 🔥 NEW INTELLIGENCE TASKS
+    "improve_income_strength": 6,
+    "improve_employment_stability": 5,
+    "improve_rental_history": 5,
+    "improve_competitiveness": 4,
 }
 
 
 class ActionPlanService:
 
     # ------------------------------------------------
-    # Get Latest Assessment (used in fallback URL)
+    # Get Latest Assessment
     # ------------------------------------------------
     @staticmethod
     def get_latest_assessment(user):
@@ -26,7 +35,7 @@ class ActionPlanService:
         )
 
     # ------------------------------------------------
-    # Generate Tasks (STRICTLY PER ASSESSMENT)
+    # Generate Tasks (DOCUMENT + INTELLIGENT)
     # ------------------------------------------------
     @staticmethod
     def generate_tasks_for_assessment(assessment):
@@ -34,15 +43,20 @@ class ActionPlanService:
         if not assessment:
             return []
 
+        user = assessment.user
+
         completed = set(
-            assessment.completed_tasks.values_list("task_key", flat=True)
+            CompletedTask.objects
+            .filter(user=user, assessment=assessment)
+            .values_list("task_key", flat=True)
         )
 
         tasks = []
 
-        # ------------------------------------------------
-        # Payslip
-        # ------------------------------------------------
+        # =====================================================
+        # 1️⃣ DOCUMENT TASKS (UNCHANGED)
+        # =====================================================
+
         if (
             not assessment.ap_documents.filter(
                 document_type="payslip"
@@ -58,9 +72,6 @@ class ActionPlanService:
                 "document_type": "payslip"
             })
 
-        # ------------------------------------------------
-        # Bank Statement
-        # ------------------------------------------------
         if (
             not assessment.ap_documents.filter(
                 document_type="bank_statement"
@@ -76,11 +87,10 @@ class ActionPlanService:
                 "document_type": "bank_statement"
             })
 
-        # ------------------------------------------------
-        # Reference Letter
-        # ------------------------------------------------
         if (
-            not assessment.ap_reference_letters.filter(file__isnull=False).exists()
+            not assessment.ap_reference_letters.filter(
+                file__isnull=False
+            ).exists()
             and "add_reference_letter" not in completed
         ):
             tasks.append({
@@ -91,11 +101,7 @@ class ActionPlanService:
                 "type": "reference"
             })
 
-        # ------------------------------------------------
-        # Cover Letter (FILE BASED - UPDATED)
-        # ------------------------------------------------
         cover = assessment.ap_cover_letters.first()
-
         if (
             (not cover or not cover.file)
             and "improve_cover_letter" not in completed
@@ -108,10 +114,69 @@ class ActionPlanService:
                 "type": "cover_letter"
             })
 
+        # =====================================================
+        # 2️⃣ INTELLIGENT CATEGORY TASKS (NEW)
+        # =====================================================
+
+        categories = build_detailed_breakdown(assessment)
+        scores = {c["category"]: c["score"] for c in categories}
+
+        # Income Strength
+        if (
+            scores.get("income_strength", 100) < 50
+            and "improve_income_strength" not in completed
+        ):
+            tasks.append({
+                "key": "improve_income_strength",
+                "title": "Improve Income Strength",
+                "description": "Consider reducing rent target or adding a guarantor to improve affordability.",
+                "points": TASK_POINTS["improve_income_strength"],
+                "type": "strategic"
+            })
+
+        # Employment Stability
+        if (
+            scores.get("employment_stability", 100) < 60
+            and "improve_employment_stability" not in completed
+        ):
+            tasks.append({
+                "key": "improve_employment_stability",
+                "title": "Strengthen Employment Stability",
+                "description": "Provide employment contract or additional proof of stable income.",
+                "points": TASK_POINTS["improve_employment_stability"],
+                "type": "strategic"
+            })
+
+        # Rental History
+        if (
+            scores.get("rental_history", 100) < 60
+            and "improve_rental_history" not in completed
+        ):
+            tasks.append({
+                "key": "improve_rental_history",
+                "title": "Improve Rental History Signal",
+                "description": "Add strong references or additional rental background details.",
+                "points": TASK_POINTS["improve_rental_history"],
+                "type": "strategic"
+            })
+
+        # Overall Competitiveness
+        if (
+            scores.get("overall_competitiveness", 100) < 50
+            and "improve_competitiveness" not in completed
+        ):
+            tasks.append({
+                "key": "improve_competitiveness",
+                "title": "Boost Overall Competitiveness",
+                "description": "Focus on improving weakest scoring areas before applying widely.",
+                "points": TASK_POINTS["improve_competitiveness"],
+                "type": "strategic"
+            })
+
         return tasks
 
     # ------------------------------------------------
-    # Improvement Score Per Assessment
+    # Improvement Score
     # ------------------------------------------------
     @staticmethod
     def get_improvement_score_for_assessment(assessment):
@@ -119,20 +184,24 @@ class ActionPlanService:
         if not assessment:
             return 0
 
-        return sum(
-            assessment.completed_tasks.values_list(
-                "points_awarded",
-                flat=True
-            )
+        result = (
+            CompletedTask.objects
+            .filter(user=assessment.user, assessment=assessment)
+            .aggregate(total=Sum("points_awarded"))
         )
 
+        return result["total"] or 0
+
     # ------------------------------------------------
-    # Final Score Per Assessment
+    # Final Score (UNCHANGED LOGIC)
     # ------------------------------------------------
     @staticmethod
     def get_final_score_for_assessment(user, assessment):
 
         if not assessment:
+            return 0
+
+        if assessment.user != user:
             return 0
 
         base_score = assessment.readiness_score or 0

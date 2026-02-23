@@ -91,4 +91,9 @@ class CompletedTask(models.Model):
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("assessment", "task_key")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "assessment", "task_key"],
+                name="unique_user_assessment_task"
+            )
+        ]
