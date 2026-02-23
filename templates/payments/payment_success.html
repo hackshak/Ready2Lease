@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+
+    <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#131c38;
+      --text:#e9eefc;
+      --muted:#a9b4d6;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 20px 40px rgba(0,0,0,.45);
+      --radius:20px;
+
+      --success:#28d17c;
+      --primary:#6c7dff;
+      --primary2:#8b5cf6;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: ui-sans-serif, system-ui;
+      background:
+        radial-gradient(800px 500px at 20% -10%, rgba(108,125,255,.25), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    .container{
+      width:100%;
+      max-width:520px;
+      padding:20px;
+    }
+
+    .success-card{
+      background:rgba(19,28,56,.75);
+      backdrop-filter: blur(12px);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:40px 30px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .success-card::before{
+      content:"";
+      position:absolute;
+      width:200px;
+      height:200px;
+      background:radial-gradient(circle, rgba(40,209,124,.3), transparent 70%);
+      top:-60px;
+      right:-60px;
+    }
+
+    .icon{
+      width:90px;
+      height:90px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(40,209,124,.15);
+      border:1px solid rgba(40,209,124,.4);
+      font-size:40px;
+      color:var(--success);
+    }
+
+    h1{
+      margin:0;
+      font-size:22px;
+      font-weight:700;
+    }
+
+    p{
+      margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .badge{
+      margin-top:18px;
+      display:inline-block;
+      padding:8px 16px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--primary),var(--primary2));
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.5px;
+    }
+
+    .btn{
+      margin-top:28px;
+      display:inline-block;
+      padding:12px 22px;
+      border-radius:14px;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:600;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--text);
+      transition:.3s ease;
+    }
+
+    .btn:hover{
+      background:rgba(108,125,255,.2);
+      border-color:var(--primary);
+    }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="success-card">
+
+        <div class="icon">
+            ✓
+        </div>
+
+        <h1>Payment Successful</h1>
+
+        <p>
+            Your Premium access has been successfully activated.
+            You now have full access to all advanced features.
+        </p>
+
+        <div class="badge">
+            PREMIUM ACTIVE
+        </div>
+
+        <br>
+
+        <a href="{% url 'dashboard_home' %}" class="btn">
+            Go to Dashboard
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -15,32 +15,59 @@ from assessments.models import Assessment
 from assessments.serializers import AssessmentSerializer
 
 
+# ==========================================================
+# HELPER
+# ==========================================================
+
+def require_premium(user):
+    return getattr(user, "is_premium", False)
+
+
+# ==========================================================
+# PAGE VIEW
+# ==========================================================
+
 class AIAssistPageView(LoginRequiredMixin, TemplateView):
     template_name = "ai_assist/ai_assist.html"
 
     def dispatch(self, request, *args, **kwargs):
-        # Premium Gate
-        if not request.user.is_premium:
+        if not require_premium(request.user):
             return redirect("dashboard_home")
         return super().dispatch(request, *args, **kwargs)
 
 
-# ✅ NEW: List all assessments for logged-in user
+# ==========================================================
+# LIST USER ASSESSMENTS (PREMIUM REQUIRED)
+# ==========================================================
+
 class UserAssessmentsView(ListAPIView):
     serializer_class = AssessmentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if not require_premium(self.request.user):
+            return Assessment.objects.none()
+
         return Assessment.objects.filter(
             user=self.request.user
         ).order_by("-created_at")
 
 
-# ✅ Updated Chat View
+# ==========================================================
+# AI CHAT VIEW (PREMIUM REQUIRED)
+# ==========================================================
+
 class AIAssistChatView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=403
+            )
+
         user_message = request.data.get("message", "").strip()
         assessment_id = request.data.get("assessment_id")
         history = request.data.get("history", [])

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Cancelled</title>
+
+    <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#131c38;
+      --text:#e9eefc;
+      --muted:#a9b4d6;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 20px 40px rgba(0,0,0,.45);
+      --radius:20px;
+
+      --danger:#ff5a7a;
+      --primary:#6c7dff;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: ui-sans-serif, system-ui;
+      background:
+        radial-gradient(800px 500px at 80% -10%, rgba(255,90,122,.25), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    .container{
+      width:100%;
+      max-width:520px;
+      padding:20px;
+    }
+
+    .cancel-card{
+      background:rgba(19,28,56,.75);
+      backdrop-filter: blur(12px);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:40px 30px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .icon{
+      width:90px;
+      height:90px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,90,122,.12);
+      border:1px solid rgba(255,90,122,.4);
+      font-size:36px;
+      color:var(--danger);
+    }
+
+    h1{
+      margin:0;
+      font-size:22px;
+      font-weight:700;
+    }
+
+    p{
+      margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .btn{
+      margin-top:28px;
+      display:inline-block;
+      padding:12px 22px;
+      border-radius:14px;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:600;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      color:var(--text);
+      transition:.3s ease;
+    }
+
+    .btn:hover{
+      background:rgba(255,90,122,.15);
+      border-color:var(--danger);
+    }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="cancel-card">
+
+        <div class="icon">
+            ✕
+        </div>
+
+        <h1>Payment Cancelled</h1>
+
+        <p>
+            Your transaction was not completed.
+            No charges were made. You can try again anytime.
+        </p>
+
+        <a href="{% url 'create_checkout_session' %}" class="btn">
+            Try Again
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -161,7 +161,7 @@ body{
     font-size:14px;
 }
 
-.btn-upgrade{
+/* .btn-upgrade{
     background:#c6a24a;
     border:none;
     width:100%;
@@ -171,11 +171,12 @@ body{
     font-size:16px;
     cursor:pointer;
     transition:0.3s;
-}
+    text-decoration: none;
+} */
 
-.btn-upgrade:hover{
+/* .btn-upgrade:hover{
     background:#b8953e;
-}
+} */
 
 .btn-upgrade i{
     margin-right:8px;
@@ -290,10 +291,10 @@ body{
                 <div><i class="fa-solid fa-check"></i> 100% Satisfaction Guarantee</div>
             </div>
 
-            <button class="btn-upgrade">
+            <a class="btn-upgrade" href="{% url 'create_checkout_session' %}">
                 <i class="fa-solid fa-lock"></i>
                 Upgrade to Premium — $19 (One-time)
-            </button>
+            </a>
 
             <div class="small-text">
                 One-time payment. Lifetime access. Instant download.<br>

@@ -20,6 +20,11 @@ load_dotenv()
 
 GEOAPIFY_API_KEY = os.getenv("GEOAPIFY_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# Payments Related secret variables
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -60,6 +65,7 @@ INSTALLED_APPS = [
     'ai_assist',
     'applications',
     'cover_letters',
+    'payments',
     
 ]
 
