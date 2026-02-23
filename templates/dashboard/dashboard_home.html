@@ -1,859 +1,323 @@
 {% extends "sidebar.html" %}
 {% load static %}
-
 {% block content %}
 
-  <title>Rental Readiness Dashboard — Home</title>
-  <style>
-    :root{
-      --bg:#0b1020;
-      --panel:#111a33;
-      --panel2:#0f1730;
-      --text:#e9eefc;
-      --muted:#a9b4d6;
-      --border:rgba(255,255,255,.10);
-      --shadow: 0 14px 30px rgba(0,0,0,.35);
-      --radius:18px;
+<title>Rental Readiness Dashboard — Home</title>
 
-      --good:#28d17c;
-      --mid:#f7c948;
-      --bad:#ff5a7a;
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.10);
+  --shadow:0 14px 30px rgba(0,0,0,.35);
+  --radius:18px;
 
-      --primary:#6c7dff;
-      --primary2:#8b5cf6;
+  --good:#28d17c;
+  --mid:#f7c948;
+  --bad:#ff5a7a;
 
-      --chip: rgba(255,255,255,.08);
-    }
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(1000px 600px at 10% -10%, rgba(108,125,255,.25), transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(139,92,246,.22), transparent 60%),
-        radial-gradient(900px 600px at 50% 120%, rgba(40,209,124,.14), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      min-height:100vh;
-    }
+body{
+  margin:0;
+  font-family: ui-sans-serif,system-ui;
+  background: radial-gradient(1000px 600px at 10% -10%, rgba(108,125,255,.25), transparent 60%), var(--bg);
+  color:var(--text);
+}
 
-    .wrap{
-      margin:0 auto;
-      padding:24px 18px 60px;
-    }
+.wrap{margin:0 auto;padding:24px 18px 60px;max-width:1200px;}
 
-    .knob{
-      width:20px;height:20px;
-      border-radius:999px;
-      position:absolute;
-      top:2px; left:2px;
-      background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.6));
-      transition: transform .18s ease;
-      box-shadow: 0 8px 16px rgba(0,0,0,.35);
-    }
+.card{
+  margin-top:15px;
+  border:1px solid var(--border);
+  background: rgba(17,26,51,.75);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:18px;
+  margin-bottom:18px;
+}
 
+h2{margin:0 0 12px;font-size:15px;}
+.sub{color:var(--muted);font-size:12px;}
 
-    .grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns: 1.3fr .7fr;
-      gap:16px;
-    }
+.hero{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:20px;
+}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;}
+}
 
-    .card{
-      border:1px solid var(--border);
-      background: rgba(17,26,51,.72);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding:16px;
-      overflow:hidden;
-      position:relative;
-    }
-    .card.small{ padding:14px; }
-    .card h2{
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.1px;
-    }
-    .sub{
-      color:var(--muted);
-      font-size:12px;
-      margin:0;
-      line-height:1.45;
-    }
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.item{background:rgba(255,255,255,.05);padding:12px;border-radius:14px;border:1px solid var(--border);margin-top:5px}
+.label{font-size:11px;color:var(--muted);}
+.value{font-size:15px;font-weight:700;margin-top:5px;}
 
-    .row{
-      display:flex;
-      gap:14px;
-      align-items:stretch;
-      flex-wrap:wrap;
-    }
+/* =========================
+   DARK SELECT DROPDOWN FIX
+========================= */
 
-    .scoreWrap{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
+select{
+  background: rgba(17,26,51,.85);
+  color: var(--text);
+  border:1px solid var(--border);
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:13px;
+  outline:none;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  cursor:pointer;
+}
 
-    .scoreLeft{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      min-width: 260px;
-      flex: 1 1 auto;
-    }
+/* Dropdown options */
+select option{
+  background: #111a33;
+  color: #e9eefc;
+}
 
-    .ring{
-     width:120px;
-    height:120px;
-    margin:30px auto;
-    border-radius:50%;
-    background:
-        radial-gradient(circle at center, #111a33 60%, transparent 61%),
-        conic-gradient(#28d17c 0deg, #28d17c var(--deg), rgba(255,255,255,.1) var(--deg));
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    }
-    .ring b{
-      font-size:22px;
-      letter-spacing:-.5px;
-    }
-    .ring span{
-      font-size:10px;
-      color:var(--muted);
-      margin-top:-2px;
-      display:block;
-      text-align:center;
-    }
+/* Hover state (where supported) */
+select option:hover{
+  background: rgba(108,125,255,.2);
+}
 
-    .statusBadge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.06);
-      font-size:12px;
-      color: var(--text);
-      width: fit-content;
-    }
-    .dot{
-      width:9px;height:9px;border-radius:999px;
-      background: var(--mid);
-      box-shadow: 0 0 0 4px rgba(247,201,72,.12);
-    }
+/* Focus */
+select:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(108,125,255,.3);
+}
 
-    .cta{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:flex-end;
-      flex: 1 1 auto;
-      min-width: 260px;
-    }
+.ring{
+  width:140px;height:140px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:10px auto;
+  background:
+    radial-gradient(circle at center,#111a33 60%,transparent 61%),
+    conic-gradient(var(--good) 0deg,var(--good) var(--deg),rgba(255,255,255,.08) var(--deg));
+}
+.ring.low{background:
+  radial-gradient(circle at center,#111a33 60%,transparent 61%),
+  conic-gradient(var(--bad) 0deg,var(--bad) var(--deg),rgba(255,255,255,.08) var(--deg));
+}
+.ring.mid{background:
+  radial-gradient(circle at center,#111a33 60%,transparent 61%),
+  conic-gradient(var(--mid) 0deg,var(--mid) var(--deg),rgba(255,255,255,.08) var(--deg));
+}
 
-    button{
-      border:0;
-      cursor:pointer;
-      color: var(--text);
-      padding:10px 12px;
-      border-radius: 12px;
-      font-weight:650;
-      letter-spacing:.1px;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      box-shadow: 0 12px 24px rgba(108,125,255,.20);
-      transition: transform .12s ease, filter .12s ease;
-      font-size:12px;
-    }
-    button:hover{ transform: translateY(-1px); filter: brightness(1.05); }
-    button:active{ transform: translateY(0px); filter: brightness(.98); }
+.track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;}
+.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--good),var(--primary));}
 
-    .btnGhost{
-      background: rgba(255,255,255,.08);
-      border:1px solid var(--border);
-      box-shadow:none;
-      font-weight:600;
-      color: var(--text);
-    }
+.riskItem{
+  background:rgba(255,90,122,.08);
+  border:1px solid rgba(255,90,122,.2);
+  padding:10px;border-radius:12px;margin-bottom:8px;
+  font-size:12px;
+}
 
-    .kpi{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-    .kpi .item{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding:10px;
-    }
-    .kpi .item .label{
-      color: var(--muted);
-      font-size:11px;
-      margin-bottom:6px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-    }
-    .kpi .item .value{
-      font-size:13px;
-      font-weight:700;
-      letter-spacing:.1px;
-    }
-    .chip{
-      background: var(--chip);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:4px 8px;
-      font-size:11px;
-      color: var(--muted);
-      white-space:nowrap;
-    }
+.nextAction{
+  background:linear-gradient(135deg,rgba(108,125,255,.15),rgba(139,92,246,.12));
+  border:1px solid rgba(255,255,255,.15);
+  padding:16px;border-radius:var(--radius);
+}
+</style>
 
-    .breakdown{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .barRow{
-      display:grid;
-      grid-template-columns: 150px 1fr 40px;
-      gap:10px;
-      align-items:center;
-    }
-    .barRow .name{
-      font-size:12px;
-      color: var(--text);
-      opacity:.95;
-    }
-    .track{
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid var(--border);
-      overflow:hidden;
-      position:relative;
-    }
-    .fill{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background: linear-gradient(90deg, rgba(40,209,124,.9), rgba(108,125,255,.9));
-      transition: width .4s ease;
-    }
-    .pct{
-      font-size:11px;
-      color: var(--muted);
-      text-align:right;
-    }
+<div class="wrap">
 
-    .steps{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .step{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      border-radius: 16px;
-      padding:12px;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      justify-content:space-between;
-    }
-    .step .left{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      min-width: 0;
-      flex:1 1 auto;
-    }
-    .step .icon{
-      width:34px;height:34px;border-radius: 12px;
-      background: rgba(255,255,255,.08);
-      border:1px solid var(--border);
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      flex: 0 0 auto;
-    }
-    .step h3{
-      margin:0;
-      font-size:13px;
-      letter-spacing:.1px;
-    }
-    .step p{
-      margin:4px 0 0;
-      color: var(--muted);
-      font-size:12px;
-      line-height:1.45;
-    }
-    .step .meta{
-      margin-top:8px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .impact{
-      display:inline-flex;
-      gap:6px;
-      align-items:center;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(40,209,124,.12);
-      color: rgba(40,209,124,.95);
-      font-size:11px;
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    .lock{
-      filter: saturate(.85) contrast(.98);
-      position:relative;
-    }
-    .lock::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(11,16,32,.05), rgba(11,16,32,.55));
-      pointer-events:none;
-    }
-    .lockedLabel{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius: 14px;
-      border:1px dashed rgba(255,255,255,.22);
-      background: rgba(255,255,255,.06);
-      color: var(--muted);
-      font-size:12px;
-    }
-
-    .twoCol{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:16px;
-    }
-
-    .activity{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .act{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding:10px;
-    }
-    .act .bubble{
-      width:30px;height:30px;border-radius: 12px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.07);
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      color: var(--text);
-      flex: 0 0 auto;
-    }
-    .act b{ font-size:12px; }
-    .act p{ margin:3px 0 0; color:var(--muted); font-size:12px; line-height:1.45;}
-
-    .premiumTeaser{
-      margin-top:16px;
-      padding:14px;
-      border-radius: var(--radius);
-      border:1px solid rgba(255,255,255,.16);
-      background: linear-gradient(135deg, rgba(108,125,255,.16), rgba(139,92,246,.14));
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .premiumTeaser .left{
-      min-width: 260px;
-    }
-    .premiumTeaser h3{
-      margin:0;
-      font-size:14px;
-    }
-    .premiumTeaser p{
-      margin:4px 0 0;
-      color: var(--muted);
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      border:1px solid var(--border);
-      background: rgba(17,26,51,.9);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      border-radius: 14px;
-      padding:10px 12px;
-      color: var(--text);
-      font-size:12px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      z-index: 20;
-      max-width: calc(100vw - 24px);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-4px);
-    }
-
-    /* Responsive */
-    @media (max-width: 920px){
-      .grid{ grid-template-columns: 1fr; }
-      .twoCol{ grid-template-columns: 1fr; }
-      .barRow{ grid-template-columns: 130px 1fr 40px; }
-      .topbar{ position: static; }
-    }
-    @media (max-width: 520px){
-      .barRow{ grid-template-columns: 1fr; }
-      .pct{ text-align:left; }
-      .cta{ justify-content:flex-start; }
-    }
-  </style>
-
-
-  <div class="wrap">
-
-
-    <!-- Top grid: Score + Approval -->
-    <div class="grid">
-
-      <!-- Readiness Snapshot -->
-      <section class="card" id="snapshotCard">
-        <h2>Readiness Snapshot</h2>
-
-        <div class="scoreWrap">
-          <div class="scoreLeft">
-            <div class="ring" id="scoreRing" style="--deg: 0deg;">
-              <div style="text-align:center">
-                <b id="scoreValue">—</b>
-                <span>/ 100</span>
-              </div>
-            </div>
-
-            <div style="min-width: 220px;">
-              <div class="statusBadge" id="statusBadge">
-                <span class="dot" id="statusDot"></span>
-                <span id="statusText">—</span>
-              </div>
-              <p class="sub" id="scoreSummary" style="margin-top:8px;">
-                —
-              </p>
-            </div>
-          </div>
-
-          <div class="cta">
-            <button id="btnImprove">Improve My Score</button>
-            <button class="btnGhost" id="btnViewPlan">View Improvement Plan</button>
-          </div>
-        </div>
-
-        <div class="kpi">
-          <div class="item">
-            <div class="label">
-              <span>Last Assessment</span>
-              <span class="chip" id="assessDateChip">—</span>
-            </div>
-            <div class="value" id="lastAssessment">—</div>
-          </div>
-
-          <div class="item">
-            <div class="label">
-              <span>Score Trend</span>
-              <span class="chip" id="trendChip">—</span>
-            </div>
-            <div class="value" id="scoreTrend">—</div>
-          </div>
-
-          <div class="item">
-            <div class="label">
-              <span>Income-to-Rent</span>
-              <span class="chip" id="ratioChip">—</span>
-            </div>
-            <div class="value" id="incomeRentRatio">—</div>
-          </div>
-
-          <div class="item">
-            <div class="label">
-              <span>Recommended Max Rent</span>
-              <span class="chip">Weekly</span>
-            </div>
-            <div class="value" id="recommendedRent">—</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Landlord Confidence Meter -->
-      <section class="card small" id="confidenceCard">
-        <h2>Landlord Confidence Level</h2>
-        <p class="sub" id="confidenceDesc">—</p>
-
-        <div style="margin-top:14px;">
-          <div class="statusBadge" id="confidenceBadge" style="width:100%; justify-content:center;">
-            <span class="dot" id="confidenceDot"></span>
-            <span id="confidenceText">—</span>
-          </div>
-
-          <div style="margin-top:12px;">
-            <p class="sub" style="margin:0 0 8px;">What this means</p>
-            <div class="activity">
-              <div class="act">
-                <div class="bubble">✓</div>
-                <div>
-                  <b id="confLine1">—</b>
-                  <p id="confLine1Sub">—</p>
-                </div>
-              </div>
-              <div class="act">
-                <div class="bubble">↗</div>
-                <div>
-                  <b id="confLine2">—</b>
-                  <p id="confLine2Sub">—</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+    <div>
+      <h2 id="welcomeLine">Hi —</h2>
+      <div class="sub">Track and improve your rental approval strength.</div>
     </div>
 
-
-    <!-- Area Snapshot + Recent Activity -->
-    <div class="twoCol">
-
-      <section class="card" id="areaCard">
-        <h2>Area & Affordability Snapshot</h2>
-        <p class="sub">Based on your selected postcode and current inputs.</p>
-
-        <div class="kpi" style="margin-top:12px;">
-          <div class="item">
-            <div class="label">
-              <span>Selected Postcode</span>
-              <span class="chip">AU</span>
-            </div>
-            <div class="value" id="postcodeVal">—</div>
-          </div>
-          <div class="item">
-            <div class="label">
-              <span>Avg Rent in Area</span>
-              <span class="chip">Weekly</span>
-            </div>
-            <div class="value" id="avgRent">—</div>
-          </div>
-          <div class="item">
-            <div class="label">
-              <span>Your Target Rent</span>
-              <span class="chip" id="targetChip">—</span>
-            </div>
-            <div class="value" id="targetRent">—</div>
-          </div>
-          <div class="item">
-            <div class="label">
-              <span>Affordability</span>
-              <span class="chip" id="affordChip">—</span>
-            </div>
-            <div class="value" id="affordability">—</div>
-          </div>
-        </div>
-
-        <div class="premiumTeaser lock" id="premiumInsightsLock" style="margin-top:16px;">
-          <div class="left">
-            <h3>🔒 Premium Insight</h3>
-            <p>Unlock deeper approval probability, competitiveness in your area, and risk-flag detection.</p>
-          </div>
-          <div>
-            <button id="btnUpgradeFromArea">Upgrade to Premium</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="activityCard">
-        <h2>Recent Activity</h2>
-        <p class="sub">Your latest readiness actions and updates.</p>
-
-        <div class="activity" id="activityList"></div>
-
-        <div class="premiumTeaser" id="premiumTeaser" style="display:none;">
-          <div class="left">
-            <h3>Unlock your full dashboard</h3>
-            <p>Premium gives you detailed approval probability, competitiveness ranking, risk alerts, and downloadable summary.</p>
-          </div>
-          <div>
-            <button id="btnUpgrade">Upgrade to Premium</button>
-          </div>
-        </div>
-      </section>
-
+    <div>
+      <div class="sub">Assessment</div>
+      <select id="assessmentSelect"></select>
     </div>
+  </div>
+</div>
 
+<div class="hero">
+
+<div class="card">
+  <h2>Readiness Score</h2>
+
+  <div class="ring" id="scoreRing" style="--deg:0deg">
+    <div style="text-align:center">
+      <div style="font-size:28px;font-weight:700" id="scoreValue">—</div>
+      <div style="font-size:11px;color:var(--muted)">/ 100</div>
+    </div>
   </div>
 
-  <div class="toast" id="toast">Saved.</div>
+  <div class="kpi">
+    <div class="item">
+      <div class="label">Approval Probability</div>
+      <div class="value" id="approvalProb">—</div>
+    </div>
+    <div class="item">
+      <div class="label">Competitiveness Rank</div>
+      <div class="value" id="competRank">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="nextAction" id="nextActionCard">
+  <h2>🔥 Next Best Action</h2>
+  <div id="nextActionContent">—</div>
+</div>
+
+</div>
+
+<div class="card">
+  <h2>⚠ Risk Signals</h2>
+  <div id="riskSignals"></div>
+</div>
+
+<div class="card">
+  <h2>Category Breakdown</h2>
+  <div id="breakdownList"></div>
+</div>
+
+<div class="card">
+  <h2>Improvement Plan</h2>
+  <div id="stepsList"></div>
+</div>
+
+<div class="card">
+  <h2>Area Snapshot</h2>
+  <div class="kpi">
+    <div class="item"><div class="label">Postcode</div><div class="value" id="postcodeVal"></div></div>
+    <div class="item"><div class="label">Avg Rent</div><div class="value" id="avgRent"></div></div>
+    <div class="item"><div class="label">Target Rent</div><div class="value" id="targetRent"></div></div>
+    <div class="item"><div class="label">Income Weekly</div><div class="value" id="incomeWeekly"></div></div>
+  </div>
+</div>
+
+</div>
 
 
 
 
 
 
+<script>
+function $(id){return document.getElementById(id);}
+function formatAUD(n){return "$"+Math.round(n||0).toLocaleString();}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
+let isLoading = false;
 
+async function loadAssessment(id=null){
+  if(isLoading) return;
+  isLoading = true;
 
+  let url='/api/detailed-readiness/';
+  if(id) url+=`?assessment_id=${id}`;
 
-  <script>
-const state = {
-  isPremium: false,
-  user: { name: "" },
-  postcode: "",
-  suburb: "",
-  lastAssessmentISO: "",
-  score: 0,
-  scorePrev: 0,
-  incomeWeekly: 0,
-  targetRentWeekly: 0,
-  avgRentWeekly: 0,
-  breakdown: [],
-  steps: [],
-  activity: []
-};
-
-// ----------------------------
-// Helpers
-// ----------------------------
-const $ = (id) => document.getElementById(id);
-
-function formatAUD(n){
-  const s = Math.round(n || 0).toString();
-  return "$" + s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function datePretty(iso){
-  if(!iso) return "—";
-  const d = new Date(iso);
-  const opts = { year:"numeric", month:"short", day:"numeric" };
-  return d.toLocaleDateString(undefined, opts);
-}
-
-function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-let toastTimer;
-function toast(msg){
-  const t = $("toast");
-  if(!t) return;
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=> t.classList.remove("show"), 1600);
-}
-
-// ----------------------------
-// SESSION-BASED FETCH
-// ----------------------------
-async function fetchSession(url, options = {}) {
-  return fetch(url, {
-    ...options,
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
+  try{
+    const res=await fetch(url,{credentials:'same-origin'});
+    if(!res.ok){
+      alert("Failed to load assessment");
+      return;
     }
-  });
-}
-
-// ----------------------------
-// Load Dashboard Data
-// ----------------------------
-async function loadAssessment() {
-  try {
-
-    const res = await fetchSession('/api/detailed-readiness/');
-
-    if (!res.ok) {
-
-      if (res.status === 401) {
-        toast("Please log in.");
-        window.location.href = "/auth/login/";
-        return;
-      }
-
-      if (res.status === 403) {
-        toast("Premium required to view full dashboard.");
-        return;
-      }
-
-      if (res.status === 404) {
-        toast("No assessment found.");
-        return;
-      }
-
-      throw new Error(`API error ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    // ----------------------------
-    // State Mapping (Aligned with Backend)
-    // ----------------------------
-    state.isPremium = data.is_premium || false;
-    state.user.name = data.user_name || "User";
-    state.postcode = data.postcode || "—";
-    state.suburb = data.suburb || "—";
-    state.lastAssessmentISO = data.last_assessment || "";
-    state.score = data.score || 0;
-    state.scorePrev = data.score_prev ?? data.score ?? 0;
-    state.incomeWeekly = data.income_weekly || 0;
-    state.targetRentWeekly = data.target_rent_weekly || 0;
-    state.avgRentWeekly = data.avg_rent_weekly || 0;
-    state.breakdown = Array.isArray(data.breakdown) ? data.breakdown : [];
-    state.steps = Array.isArray(data.steps)
-      ? data.steps.map(s => ({ ...s, action: () => toast(`Executing: ${s.actionLabel}`) }))
-      : [];
-    state.activity = Array.isArray(data.activity) ? data.activity : [];
-
-    render();
-
-  } catch (e) {
+    const data=await res.json();
+    render(data);
+  }catch(e){
     console.error(e);
-    toast("Failed to load dashboard.");
+  }finally{
+    isLoading = false;
   }
 }
 
-// ----------------------------
-// Rendering (UNCHANGED LOGIC)
-// ----------------------------
-function render(){
-  const setText = (id, text) => { const el = $(id); if(el) el.textContent = text; };
-  const setStyle = (id, prop, value) => { const el = $(id); if(el) el.style.setProperty(prop,value); };
-  const setBg = (id, value) => { const el = $(id); if(el) el.style.background = value; };
-  const setBoxShadow = (id, value) => { const el = $(id); if(el) el.style.boxShadow = value; };
-  const setDisplay = (id, value) => { const el = $(id); if(el) el.style.display = value; };
+function render(data){
 
-  setText("welcomeLine", `Hi ${state.user.name} — here’s your readiness overview`);
-  setText("postcodePill", `Postcode: ${state.postcode}`);
-  setText("postcodeVal", `${state.postcode} (${state.suburb})`);
+  $("welcomeLine").textContent="Hi "+data.user_name+" 👋";
 
-  const score = clamp(state.score,0,100);
-  setText("scoreValue", score);
-  setStyle("scoreRing","--deg", Math.round(score/100*360)+"deg");
+  const score=clamp(data.score,0,100);
+  $("scoreValue").textContent=score;
+  $("scoreRing").style.setProperty("--deg",(score/100)*360+"deg");
 
-  setText("assessDateChip", state.isPremium ? "Premium" : "Free");
-  setText("lastAssessment", datePretty(state.lastAssessmentISO));
+  if(score<40) $("scoreRing").className="ring low";
+  else if(score<70) $("scoreRing").className="ring mid";
+  else $("scoreRing").className="ring";
 
-  const diff = score - state.scorePrev;
-  setText("trendChip", diff>=0?"Up":"Down");
-  setText("scoreTrend", diff===0?"No change":(diff>0?`+${diff} points`:`${diff} points`));
+  $("approvalProb").textContent=data.approval_probability+"%";
+  $("competRank").textContent="Top "+data.competitiveness_percentile+"%";
 
-  setText("recommendedRent", formatAUD(state.incomeWeekly * 0.35) + "/wk");
+  $("postcodeVal").textContent=data.postcode;
+  $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
+  $("targetRent").textContent=formatAUD(data.target_rent_weekly);
+  $("incomeWeekly").textContent=formatAUD(data.income_weekly);
 
-  const ratio = state.incomeWeekly > 0
-    ? clamp((state.targetRentWeekly / state.incomeWeekly) * 100,0,1000)
-    : 0;
+  if(data.next_best_action){
+    $("nextActionContent").innerHTML="<b>"+data.next_best_action.title+"</b><br>"+data.next_best_action.suggestion;
+  }
 
-  setText("ratioChip", ratio.toFixed(0) + "%");
-  setText("incomeRentRatio", `${formatAUD(state.targetRentWeekly)}/wk on ${formatAUD(state.incomeWeekly)}/wk income`);
-  setText("avgRent", formatAUD(state.avgRentWeekly) + "/wk");
-  setText("targetRent", formatAUD(state.targetRentWeekly) + "/wk");
-
-  // Steps
-  const stepsEl = $("stepsList");
-  if(stepsEl){
-    stepsEl.innerHTML = "";
-    const stepsToShow = state.isPremium ? state.steps : state.steps.slice(0,3);
-
-    stepsToShow.forEach((s,idx)=>{
-      const div = document.createElement("div");
-      div.className = "step";
-      div.innerHTML = `
-        <div class="left">
-          <div class="icon">${s.icon}</div>
-          <div>
-            <h3>${s.title}</h3>
-            <p>${s.desc}</p>
-            <div class="meta">
-              <span class="impact">+${s.impact} score</span>
-              ${state.isPremium
-                ? `<span class="chip">Priority: ${idx===0?"High":idx===1?"Medium":"Low"}</span>`
-                : `<span class="chip">Preview</span>`}
-            </div>
-          </div>
-        </div>
-        <div>
-          <button class="${state.isPremium?"":"btnGhost"}" data-step="${idx}">
-            ${state.isPremium ? s.actionLabel : "Unlock"}
-          </button>
-        </div>
-      `;
-      stepsEl.appendChild(div);
-    });
-
-    stepsEl.querySelectorAll("button[data-step]").forEach(btn=>{
-      btn.onclick = ()=>{
-        const i = Number(btn.getAttribute("data-step"));
-        if (!state.isPremium) { toast("Upgrade to unlock all steps & tools."); return; }
-        state.steps[i].action();
-      };
+  const riskEl=$("riskSignals");
+  riskEl.innerHTML="";
+  if(data.risk_signals.length===0){
+    riskEl.innerHTML="<div class='sub'>No major risks detected.</div>";
+  }else{
+    data.risk_signals.forEach(r=>{
+      const div=document.createElement("div");
+      div.className="riskItem";
+      div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
+      riskEl.appendChild(div);
     });
   }
 
-  // Activity
-  const actEl = $("activityList");
-  if(actEl){
-    actEl.innerHTML = "";
-    state.activity.forEach(a=>{
-      const div = document.createElement("div");
-      div.className = "act";
-      div.innerHTML = `
-        <div class="bubble">${a.icon}</div>
-        <div>
-          <b>${a.title}</b>
-          <p>${a.desc} <span class="chip">${a.when}</span></p>
-        </div>`;
-      actEl.appendChild(div);
-    });
-  }
+  const breakEl=$("breakdownList");
+  breakEl.innerHTML="";
+  data.breakdown.forEach(b=>{
+    const div=document.createElement("div");
+    div.innerHTML=
+      "<div style='font-size:12px;margin-bottom:4px'>"+
+      b.key.replace("_"," ")+" ("+b.value+")</div>"+
+      "<div class='track'><div class='fill' style='width:"+b.value+"%'></div></div><br>";
+    breakEl.appendChild(div);
+  });
 
-  setDisplay("premiumTeaser", state.isPremium?"none":"flex");
-  setDisplay("premiumInsightsLock", state.isPremium?"none":"flex");
+  const stepsEl=$("stepsList");
+  stepsEl.innerHTML="";
+  data.steps.forEach(s=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
+    stepsEl.appendChild(div);
+  });
+
+  populateAssessmentDropdown(data.previous_assessments,data.assessment_id);
 }
 
-// ----------------------------
-// Initialize
-// ----------------------------
-document.addEventListener("DOMContentLoaded", loadAssessment);
+function populateAssessmentDropdown(list,activeId){
+  const select=$("assessmentSelect");
+
+  // Clear only once
+  if(select.options.length !== list.length){
+    select.innerHTML="";
+    list.forEach(a=>{
+      const opt=document.createElement("option");
+      opt.value=a.id;
+      opt.textContent=a.created_at+" • Score "+a.score;
+      select.appendChild(opt);
+    });
+
+    select.addEventListener("change",function(){
+      loadAssessment(this.value);
+    });
+  }
+
+  select.value = activeId;
+}
+
+document.addEventListener("DOMContentLoaded",()=>loadAssessment());
 </script>
-
 
 {% endblock %}

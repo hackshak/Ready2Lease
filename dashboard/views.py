@@ -1,27 +1,21 @@
 from django.shortcuts import render
-from assessments.models import Assessment,DOCUMENTS_CHOICES
+from assessments.models import Assessment
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .services import build_detailed_breakdown,normalize_income_to_annual
+from .services import build_detailed_breakdown, normalize_income_to_annual
 from django.utils import timezone
 from assessments.gap_analysis import generate_gap_analysis
 from action_plan.services import ActionPlanService
 
 
-
-# Create your views here.
 def dashboard_home(request):
-    return render(request,"dashboard/dashboard_home.html")
+    return render(request, "dashboard/dashboard_home.html")
 
 
-
-
-
-# Detailed Analysis page
 def detailed_analysis(request):
-    return render(request,"dashboard/detailed_analysis.html")
+    return render(request, "dashboard/detailed_analysis.html")
 
 
 
@@ -30,23 +24,28 @@ def detailed_analysis(request):
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, assessment_id=None):
+    def get(self, request):
 
-        # 🔒 Premium gate
         if not getattr(request.user, "is_premium", False):
             return Response(
                 {"detail": "Premium required."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # -----------------------------
-        # Get latest assessment
-        # -----------------------------
+        # ✅ FIX: Get from query params
+        assessment_id = request.query_params.get("assessment_id")
+
         if assessment_id:
-            assessment = Assessment.objects.get(
-                id=assessment_id,
-                user=request.user
-            )
+            try:
+                assessment = Assessment.objects.get(
+                    id=assessment_id,
+                    user=request.user
+                )
+            except Assessment.DoesNotExist:
+                return Response(
+                    {"detail": "Assessment not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
         else:
             assessment = (
                 Assessment.objects
@@ -61,21 +60,13 @@ class DetailedReadinessAnalysisView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # -----------------------------
-        # 🔥 NEW: Use Final Score (Base + Improvements)
-        # -----------------------------
-        # 🔥 Use selected assessment base score
         base_score = assessment.readiness_score or 0
 
-        # Apply improvements on THIS assessment only
         final_score = ActionPlanService.get_final_score_for_assessment(
             request.user,
             assessment
         )
 
-        # -----------------------------
-        # Previous assessment (trend)
-        # -----------------------------
         previous_assessment = (
             Assessment.objects
             .filter(user=request.user)
@@ -84,17 +75,11 @@ class DetailedReadinessAnalysisView(APIView):
             .first()
         )
 
-        if previous_assessment:
-            prev_base = previous_assessment.readiness_score or 0
-        else:
-            prev_base = base_score
+        score_prev = (
+            previous_assessment.readiness_score
+            if previous_assessment else base_score
+        )
 
-        # Trend compares FINAL score now vs previous BASE
-        score_prev = prev_base
-
-        # -----------------------------
-        # Financial metrics
-        # -----------------------------
         annual_income = normalize_income_to_annual(
             assessment.household_income or assessment.individual_income,
             assessment.household_income_period or assessment.individual_income_period
@@ -117,50 +102,42 @@ class DetailedReadinessAnalysisView(APIView):
         avg_rent_monthly = suburb_median_rent.get(assessment.suburb or "", 2500)
         avg_rent_weekly = round(avg_rent_monthly / 4, 2)
 
-        # -----------------------------
-        # Category breakdown
-        # -----------------------------
         categories = build_detailed_breakdown(assessment)
 
-        category_scores = {
-            c["category"]: c["score"]
-            for c in categories
-        }
-
-        risk_level = assessment.risk_level
-
         breakdown = [
-            {
-                "key": c["category"],
-                "value": c["score"]
-            }
+            {"key": c["category"], "value": c["score"]}
             for c in categories
         ]
 
-        # -----------------------------
-        # GAP ANALYSIS
-        # -----------------------------
+        approval_probability = min(95, max(25, final_score))
+        competitiveness_percentile = min(95, max(10, int(final_score * 0.9)))
+
+        risk_signals = [
+            {
+                "category": c["category"],
+                "reason": c["explanation"]
+            }
+            for c in categories
+            if c["risk_level"] == "High"
+        ]
+
         gaps, recommendations = generate_gap_analysis(
             assessment,
-            category_scores
+            {c["category"]: c["score"] for c in categories}
         )
 
-        priority_order = {"high": 1, "medium": 2, "low": 3, "boost": 4}
-        recommendations = sorted(
-            recommendations,
-            key=lambda x: priority_order.get(x.get("priority"), 5)
-        )
+        next_best_action = None
+        if recommendations:
+            top = recommendations[0]
+            next_best_action = {
+                "title": top["category"].replace("_", " ").title(),
+                "suggestion": top["suggestion"],
+                "priority": top["priority"]
+            }
 
-        assessment.gap_analysis = gaps
-        assessment.recommendations = recommendations
-        assessment.save(update_fields=["gap_analysis", "recommendations"])
-
-        # -----------------------------
-        # Previous assessments list
-        # -----------------------------
         now = timezone.now()
-
         previous_list = []
+
         for item in Assessment.objects.filter(user=request.user).order_by("-created_at"):
             score_value = ActionPlanService.get_final_score_for_assessment(
                 request.user,
@@ -170,14 +147,10 @@ class DetailedReadinessAnalysisView(APIView):
             previous_list.append({
                 "id": item.id,
                 "score": score_value,
-                "risk_level": item.risk_level,
-                "days_ago": (now - item.created_at).days,
                 "created_at": item.created_at.date().isoformat(),
+                "days_ago": (now - item.created_at).days,
             })
 
-        # -----------------------------
-        # Dynamic Improvement Steps
-        # -----------------------------
         steps = [
             {
                 "icon": "⚠️" if r["priority"] == "high" else "📌",
@@ -189,48 +162,42 @@ class DetailedReadinessAnalysisView(APIView):
             for r in recommendations[:3]
         ]
 
-        # -----------------------------
-        # Activity
-        # -----------------------------
-        activity = [
-            {
-                "icon": "🧾",
-                "title": "Assessment completed",
-                "desc": "Your readiness score and gap analysis were calculated.",
-                "when": "Recently"
-            }
-        ]
-
-        # -----------------------------
-        # Final Response
-        # -----------------------------
+        
         return Response({
             "assessment_id": assessment.id,
-            "score": final_score,  # 🔥 ALWAYS FINAL SCORE
+            "score": final_score,
             "score_prev": score_prev,
-            "risk_level": risk_level,
+            "approval_probability": approval_probability,
+            "competitiveness_percentile": competitiveness_percentile,
+            "risk_signals": risk_signals,
+            "next_best_action": next_best_action,
             "last_assessment": assessment.created_at.isoformat(),
-
             "user_name": request.user.first_name or request.user.email,
             "postcode": assessment.postcode,
             "suburb": assessment.suburb,
-
             "income_weekly": income_weekly,
             "target_rent_weekly": target_rent_weekly,
             "avg_rent_weekly": avg_rent_weekly,
-
             "breakdown": breakdown,
-            "categories": categories,
 
+            # ✅ ADD THESE BACK
             "gaps": gaps,
             "recommendations": recommendations,
 
-            "previous_assessments": previous_list,
             "steps": steps,
-            "activity": activity,
-
+            "previous_assessments": previous_list,
+            "risk_level": assessment.risk_level,
             "is_premium": True
         }, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
 
 
 

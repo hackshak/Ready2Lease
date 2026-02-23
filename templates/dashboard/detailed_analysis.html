@@ -195,12 +195,16 @@ body{
 
 
 
+
+
+
 <script>
 function $(id){return document.getElementById(id);}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
 let scoreInterval=null;
 let currentController=null;
+let hasLoadedInitial=false;
 
 /* Animate Score */
 function animateScore(newScore){
@@ -222,53 +226,66 @@ function animateScore(newScore){
   },15);
 }
 
-/* Load Assessments */
+/* Load All Assessments */
 async function loadAssessments(){
-  const res=await fetch("/api/detailed-readiness/",{
-    credentials:"same-origin"
-  });
-  if(!res.ok) return;
 
-  const data=await res.json();
-  const list=$("assessmentList");
-  list.innerHTML="";
-
-  if(!data.previous_assessments?.length){
-    list.innerHTML="<p style='color:#9fb0ff'>No assessments found.</p>";
-    return;
-  }
-
-  data.previous_assessments.forEach(a=>{
-    const div=document.createElement("div");
-    div.className="assessment-item";
-    div.dataset.id=a.id;
-    div.innerHTML=`
-      <strong>Score: ${a.score}</strong>
-      <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
-      <button>Detailed Analysis</button>
-    `;
-
-    div.querySelector("button").addEventListener("click",()=>{
-      loadDetailed(a.id);
+  try{
+    const res=await fetch("/api/detailed-readiness/",{
+      credentials:"same-origin"
     });
 
-    list.appendChild(div);
-  });
+    if(!res.ok){
+      console.error("Failed to fetch assessments");
+      return;
+    }
 
-  // Load first (latest) once
-  loadDetailed(data.previous_assessments[0].id);
+    const data=await res.json();
+    const list=$("assessmentList");
+    list.innerHTML="";
+
+    if(!data.previous_assessments?.length){
+      list.innerHTML="<p style='color:#9fb0ff'>No assessments found.</p>";
+      return;
+    }
+
+    data.previous_assessments.forEach(a=>{
+      const div=document.createElement("div");
+      div.className="assessment-item";
+      div.dataset.id=a.id;
+
+      div.innerHTML=`
+        <strong>Score: ${a.score}</strong>
+        <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
+        <button type="button">Detailed Analysis</button>
+      `;
+
+      div.querySelector("button").addEventListener("click",()=>{
+        loadDetailed(a.id);
+      });
+
+      list.appendChild(div);
+    });
+
+    // Load first only once
+    if(!hasLoadedInitial){
+      hasLoadedInitial=true;
+      loadDetailed(data.previous_assessments[0].id);
+    }
+
+  }catch(e){
+    console.error(e);
+  }
 }
 
-/* Load Detailed (Fully Safe) */
+/* Load Single Assessment */
 async function loadDetailed(id){
 
   // Highlight active
   document.querySelectorAll(".assessment-item")
     .forEach(el=>{
-      el.classList.toggle("active",Number(el.dataset.id)===id);
+      el.classList.toggle("active",Number(el.dataset.id)===Number(id));
     });
 
-  // Abort previous request
   if(currentController){
     currentController.abort();
   }
@@ -276,27 +293,38 @@ async function loadDetailed(id){
   currentController=new AbortController();
 
   try{
-    const res=await fetch(`/api/detailed-readiness/${id}/`,{
-      credentials:"same-origin",
-      signal: currentController.signal
-    });
 
-    if(!res.ok) return;
+    // ✅ FIXED URL (Query Param, not path param)
+    const res=await fetch(
+      `/api/detailed-readiness/?assessment_id=${id}`,
+      {
+        credentials:"same-origin",
+        signal: currentController.signal
+      }
+    );
+
+    if(!res.ok){
+      console.error("Failed to load detailed assessment");
+      return;
+    }
 
     const data=await res.json();
-
     const score=data.score ?? 0;
 
     animateScore(score);
 
     const deg=Math.round(score/100*360);
-    const color=score>=80?"var(--good)":score>=55?"var(--mid)":"var(--bad)";
+    const color=
+      score>=80?"var(--good)":
+      score>=55?"var(--mid)":
+      "var(--bad)";
 
     $("scoreRing").style.background=
       `radial-gradient(circle,#121c36 60%,transparent 61%),
        conic-gradient(${color} 0deg,${color} ${deg}deg,rgba(255,255,255,.08) ${deg}deg)`;
 
     $("riskLevel").textContent=data.risk_level ?? "—";
+
     $("lastAssessment").textContent=
       data.last_assessment
         ? new Date(data.last_assessment).toLocaleDateString()
@@ -332,6 +360,7 @@ async function loadDetailed(id){
         <div>${cat.value}%</div>
       `;
       br.appendChild(row);
+
       requestAnimationFrame(()=>{
         row.querySelector(".bar-fill").style.width=
           clamp(cat.value,0,100)+"%";
@@ -375,11 +404,8 @@ async function loadDetailed(id){
       rec.innerHTML="<p style='color:#9fb0ff'>No recommendations available.</p>";
     }
 
-  } catch(e){
-    if(e.name==="AbortError"){
-      // expected when switching quickly
-      return;
-    }
+  }catch(e){
+    if(e.name==="AbortError") return;
     console.error(e);
   }
 }
