@@ -209,12 +209,12 @@
 
             <li id="authButton">
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'api-logout' %}">
+                    <a href="{% url 'logout' %}">
                         <i class="fas fa-right-from-bracket"></i>
                         <span>Logout</span>
                     </a>
                 {% else %}
-                 <a href="{% url 'api-logout' %}">
+                 <a href="{% url 'login' %}">
                         <i class="fas fa-right-from-bracket"></i>
                         <span>Login</span>
                 </a>

@@ -1,43 +1,42 @@
-<!-- Navbar HTML -->
-<nav class="navbar"  id="home">
-    <div class="container">
-        <!-- Logo -->
-        <a href="{% url 'home' %}" class="logo">
-            <!-- <img src="../static/images/Main_Logo.png" alt=""> -->
-        </a>
+{% load static %}
 
-        <!-- Hamburger menu (for mobile) -->
-        <button class="hamburger" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+<nav class="navbar">
+    <div class="nav-container">
+        
+        <div class="logo_hamburgerGap">
 
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/Main_Logo.png' %}" alt="Ready2Lease Logo">
+            </a>
+            
+            <!-- Hamburger -->
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+        </div>
         <!-- Nav Links -->
-        <div class="nav-links">
-            <ul class="nav-items">
+        <div class="nav-menu">
+            <ul class="nav-links">
                 <li><a href="{% url 'home' %}#how-it-works">How It Works</a></li>
                 <li><a href="{% url 'home' %}#contact">Contact</a></li>
                 <li><a href="{% url 'home' %}#pricing">Pricing</a></li>
                 <li><a href="{% url 'home' %}#faq">Faq</a></li>
                 <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
             </ul>
-            <div class="nav-buttons">
-                {% if request.user.is_authenticated %}
-                    <a href="#" id="logoutBtn" style="
-                padding:10px 16px;
-                background-color: #FACC15;
-                color:white;
-                border-radius:10px;
-                text-decoration:none;
-                margin-left:15px
-                ">Logout</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="nav-btn-login">Login</a>
-                    <a href="{% url 'signup' %}" class="nav-btn-signup">Sign Up</a>
-                {% endif %}
-            </div>
 
+       <div class="nav-buttons">
+            {% if request.user.is_authenticated %}
+             <a  href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a>
+            {% endif %}
         </div>
+        </div>
+
     </div>
 </nav>
