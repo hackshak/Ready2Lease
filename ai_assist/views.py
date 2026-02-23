@@ -2,10 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
+from rest_framework import status
 
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
 
 from .models import AIAssistMessage
 from .serializers import AIAssistMessageSerializer
@@ -24,20 +24,20 @@ def require_premium(user):
 
 
 # ==========================================================
-# PAGE VIEW
+# PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
 # ==========================================================
 
 class AIAssistPageView(LoginRequiredMixin, TemplateView):
     template_name = "ai_assist/ai_assist.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        if not require_premium(request.user):
-            return redirect("dashboard_home")
-        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_premium"] = require_premium(self.request.user)
+        return context
 
 
 # ==========================================================
-# LIST USER ASSESSMENTS (PREMIUM REQUIRED)
+# LIST USER ASSESSMENTS (FUNCTIONALITY → PREMIUM ONLY)
 # ==========================================================
 
 class UserAssessmentsView(ListAPIView):
@@ -45,6 +45,7 @@ class UserAssessmentsView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+
         if not require_premium(self.request.user):
             return Assessment.objects.none()
 
@@ -54,7 +55,7 @@ class UserAssessmentsView(ListAPIView):
 
 
 # ==========================================================
-# AI CHAT VIEW (PREMIUM REQUIRED)
+# AI CHAT VIEW (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class AIAssistChatView(APIView):
@@ -65,7 +66,7 @@ class AIAssistChatView(APIView):
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
-                status=403
+                status=status.HTTP_403_FORBIDDEN
             )
 
         user_message = request.data.get("message", "").strip()
@@ -73,10 +74,16 @@ class AIAssistChatView(APIView):
         history = request.data.get("history", [])
 
         if not user_message:
-            return Response({"detail": "Message required"}, status=400)
+            return Response(
+                {"detail": "Message required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if not assessment_id:
-            return Response({"detail": "Assessment selection required"}, status=400)
+            return Response(
+                {"detail": "Assessment selection required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             assessment = Assessment.objects.get(
@@ -84,7 +91,10 @@ class AIAssistChatView(APIView):
                 user=request.user
             )
         except Assessment.DoesNotExist:
-            return Response({"detail": "Invalid assessment"}, status=400)
+            return Response(
+                {"detail": "Invalid assessment"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Generate AI response (no DB save)
         ai_reply = generate_ai_response(

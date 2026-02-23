@@ -19,33 +19,37 @@ def require_premium(user):
 
 
 # ==========================================================
-# TEMPLATE VIEWS (PREMIUM REQUIRED)
+# TEMPLATE VIEWS (VISIBLE TO ALL LOGGED-IN USERS)
 # ==========================================================
 
 def dashboard_home(request):
-
     if not request.user.is_authenticated:
         return redirect("login")
 
-    if not require_premium(request.user):
-        return redirect("dashboard_home")
-
-    return render(request, "dashboard/dashboard_home.html")
+    return render(
+        request,
+        "dashboard/dashboard_home.html",
+        {
+            "is_premium": require_premium(request.user)
+        }
+    )
 
 
 def detailed_analysis(request):
-
     if not request.user.is_authenticated:
         return redirect("login")
 
-    if not require_premium(request.user):
-        return redirect("dashboard_home")
-
-    return render(request, "dashboard/detailed_analysis.html")
+    return render(
+        request,
+        "dashboard/detailed_analysis.html",
+        {
+            "is_premium": require_premium(request.user)
+        }
+    )
 
 
 # ==========================================================
-# DETAILED READINESS ANALYSIS (PREMIUM REQUIRED)
+# DETAILED READINESS ANALYSIS (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class DetailedReadinessAnalysisView(APIView):
@@ -55,7 +59,10 @@ class DetailedReadinessAnalysisView(APIView):
 
         if not require_premium(request.user):
             return Response(
-                {"detail": "Premium required."},
+                {
+                    "detail": "Premium required.",
+                    "is_premium": False
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -214,7 +221,7 @@ class DetailedReadinessAnalysisView(APIView):
 
 
 # ==========================================================
-# CATEGORY SCORES VIEW (NOW FULLY PREMIUM)
+# CATEGORY SCORES VIEW (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class CalculateCategoryScoresView(APIView):
@@ -224,7 +231,10 @@ class CalculateCategoryScoresView(APIView):
 
         if not require_premium(request.user):
             return Response(
-                {"detail": "Premium required."},
+                {
+                    "detail": "Premium required.",
+                    "is_premium": False
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -247,7 +257,8 @@ class CalculateCategoryScoresView(APIView):
                 "created_at": assessment.created_at.isoformat(),
                 "categories": categories,
                 "readiness_score": assessment.readiness_score,
-                "risk_level": assessment.risk_level
+                "risk_level": assessment.risk_level,
+                "is_premium": True
             }, status=status.HTTP_200_OK)
 
         assessments = (
@@ -271,5 +282,6 @@ class CalculateCategoryScoresView(APIView):
 
         return Response({
             "assessments": data,
-            "count": len(data)
+            "count": len(data),
+            "is_premium": True
         }, status=status.HTTP_200_OK)

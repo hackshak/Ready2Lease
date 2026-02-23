@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -23,20 +23,20 @@ def require_premium(user):
 
 
 # ==========================================================
-# PAGE VIEW
+# PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
 # ==========================================================
 
 class ActionPlanPageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/action_plan.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        if not require_premium(request.user):
-            return redirect("dashboard_home")
-        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_premium"] = require_premium(self.request.user)
+        return context
 
 
 # ==========================================================
-# TASKS VIEW (PER ASSESSMENT)
+# TASKS VIEW (PREMIUM FUNCTIONALITY)
 # ==========================================================
 
 class ActionPlanTasksView(APIView):
@@ -87,7 +87,7 @@ class ActionPlanTasksView(APIView):
 
 
 # ==========================================================
-# UPLOAD DOCUMENT (PER ASSESSMENT)
+# UPLOAD DOCUMENT (PREMIUM ONLY)
 # ==========================================================
 
 class UploadDocumentView(APIView):
@@ -154,7 +154,7 @@ class UploadDocumentView(APIView):
 
 
 # ==========================================================
-# ADD REFERENCE (PER ASSESSMENT)
+# ADD REFERENCE (PREMIUM ONLY)
 # ==========================================================
 
 class AddReferenceView(APIView):
@@ -210,7 +210,7 @@ class AddReferenceView(APIView):
 
 
 # ==========================================================
-# SAVE COVER LETTER (PER ASSESSMENT)
+# SAVE COVER LETTER (PREMIUM ONLY)
 # ==========================================================
 
 class SaveCoverLetterView(APIView):
@@ -264,7 +264,7 @@ class SaveCoverLetterView(APIView):
 
 
 # ==========================================================
-# DOCUMENTS HOME PAGE
+# DOCUMENTS HOME PAGE (VISIBLE TO ALL LOGGED-IN USERS)
 # ==========================================================
 
 class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
@@ -277,17 +277,24 @@ class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
             .filter(user=self.request.user)
             .order_by("-created_at")
         )
+        context["is_premium"] = require_premium(self.request.user)
         return context
 
 
 # ==========================================================
-# DOCUMENT CHECKLIST API
+# DOCUMENT CHECKLIST API (PREMIUM ONLY)
 # ==========================================================
 
 class DocumentChecklistView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         assessment = get_object_or_404(
             Assessment,
@@ -304,7 +311,7 @@ class DocumentChecklistView(APIView):
 
 
 # ==========================================================
-# DELETE DOCUMENT
+# DELETE DOCUMENT (PREMIUM ONLY)
 # ==========================================================
 
 class DeleteDocumentView(APIView):
@@ -312,6 +319,12 @@ class DeleteDocumentView(APIView):
 
     @transaction.atomic
     def delete(self, request, assessment_id, doc_type, object_id):
+
+        if not require_premium(request.user):
+            return Response(
+                {"detail": "Premium required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         assessment = get_object_or_404(
             Assessment,
