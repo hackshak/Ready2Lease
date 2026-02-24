@@ -161,25 +161,37 @@ body{
     font-size:14px;
 }
 
-/* .btn-upgrade{
-    background:#c6a24a;
-    border:none;
-    width:100%;
-    padding:18px;
-    border-radius:14px;
-    font-weight:600;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
+.btn-upgrade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 14px 26px;
+    font-size: 16px;
+    font-weight: 600;
     text-decoration: none;
-} */
 
-/* .btn-upgrade:hover{
-    background:#b8953e;
-} */
+    color: #ffffff;
+    background: linear-gradient(135deg, #d4af37, #d4af70);
+    border-radius: 50px;
 
-.btn-upgrade i{
-    margin-right:8px;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+    transition: all 0.3s ease;
+}
+
+.btn-upgrade i {
+    font-size: 15px;
+}
+
+.btn-upgrade:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(79, 70, 229, 0.35);
+}
+
+.btn-upgrade:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.25);
 }
 
 .small-text{

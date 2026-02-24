@@ -18,7 +18,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def create_checkout_session(request):
     # Prevent paying twice
     if request.user.is_premium:
-        return HttpResponse("You already have Premium access.")
+        return redirect("already_premium")
 
     try:
         session = stripe.checkout.Session.create(
@@ -99,3 +99,8 @@ def payment_success(request):
 
 def payment_cancel(request):
     return render(request, "payments/payment_cancel.html")
+
+
+@login_required
+def already_premium_view(request):
+    return render(request, "payments/already_premium.html")

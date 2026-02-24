@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .premium-wrapper {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: #f8fafc;
+    }
+
+    .premium-card {
+        max-width: 500px;
+        width: 100%;
+        background: #ffffff;
+        padding: 40px 30px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .premium-icon {
+        font-size: 50px;
+        margin-bottom: 20px;
+        color: #10b981;
+    }
+
+    .premium-card h1 {
+        font-size: 26px;
+        margin-bottom: 15px;
+        color: #111827;
+    }
+
+    .premium-card p {
+        font-size: 15px;
+        color: #6b7280;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .btn-dashboard {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #d4a017;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .btn-dashboard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79,70,229,0.25);
+    }
+
+    @media (max-width: 600px) {
+        .premium-card {
+            padding: 30px 20px;
+        }
+
+        .premium-card h1 {
+            font-size: 22px;
+        }
+    }
+</style>
+
+<div class="premium-wrapper">
+    <div class="premium-card">
+        <div class="premium-icon">
+            <i class="fa-solid fa-crown"></i>
+        </div>
+
+        <h1>You Already Have Premium Access 🎉</h1>
+
+        <p>
+            Thank you for being a Premium member. You already have full access 
+            to all premium features and benefits.
+        </p>
+
+        <a href="{% url 'dashboard_home' %}" class="btn-dashboard">
+            Go to Dashboard
+        </a>
+    </div>
+</div>
+
+{% include "footer.html" %}
+{% endblock content %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .privacy-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: #f4f6f9;
+    }
+
+    .privacy-container {
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .privacy-container h1 {
+        text-align: left;
+        margin-bottom: 30px;
+        font-size: 32px;
+        color: #222;
+    }
+
+    .policy-box {
+        background: #ffffff;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        text-align: left;
+    }
+
+    .policy-box h2 {
+        margin-bottom: 12px;
+        font-size: 20px;
+        color: #111;
+    }
+
+    .policy-box p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #555;
+    }
+
+    /* Responsive Improvements */
+    @media (max-width: 768px) {
+
+        .privacy-wrapper {
+            padding: 30px 15px;
+            align-items: flex-start; /* better for mobile scroll */
+        }
+
+        .privacy-container h1 {
+            font-size: 26px;
+        }
+
+        .policy-box {
+            padding: 20px;
+        }
+
+        .policy-box h2 {
+            font-size: 18px;
+        }
+
+        .policy-box p {
+            font-size: 14px;
+        }
+    }
+
+</style>
+
+
+<div class="privacy-wrapper">
+    <div class="privacy-container">
+
+        <h1>Privacy Policy</h1>
+
+        <div class="policy-box">
+            <h2>Information We Collect</h2>
+            <p>
+                Ready2Lease collects information you provide when using our rental readiness assessment platform, including:
+
+                Personal information (name, email address)
+                Employment and income information
+                Rental history and references
+                Property search preferences
+                Documents you choose to upload or indicate
+            </p>
+        </div>
+
+        <div class="policy-box">
+            <h2>How We Use Your Information</h2>
+            <p>
+                We use the information you provide to:
+
+                Calculate your rental readiness score
+                Generate personalized recommendations and insights
+                Create professional application documents (premium reports)
+                Improve our services and user experience
+                Send service-related communications
+            </p>
+        </div>
+
+        <div class="policy-box">
+            <h2>Data Security</h2>
+            <p>
+                We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
+            </p>
+        </div>
+
+        <div class="policy-box">
+            <h2>Contact Us</h2>
+            <p>
+                If you have any questions about this Privacy Policy, please contact us at support@ready2lease.com.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+{% include "footer.html" %}
+{% endblock content %}

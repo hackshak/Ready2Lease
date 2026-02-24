@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,143 +6,132 @@
     <title>ReadyRent Dashboard</title>
     <!-- Use official Font Awesome kit -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: #f4f5f7;
+    }
 
-       body {
-            margin: 0;
-            min-height: 100vh;
-            background: #f4f5f7;
-        }
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        /* width: 250px; */
+        width: 70px;
+        background: #111a33;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: width 0.3s ease;
+        z-index: 999;
+    }
 
-        /* Sidebar */
-     .sidebar {
-            position: fixed;      /* FIXED */
-            top: 0;
-            left: 0;
-            height: 100vh;        /* FULL HEIGHT */
-            width: 250px;
-            background: white;
-            color: black;
-            border-right: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;     /* sidebar scroll if links are many */
-            overflow-x: hidden;
-            transition: width 0.3s ease;
-            z-index: 999;
-        }
+    /* .sidebar.collapsed {
+        width: 70px;
+    } */
+     .sidebar:not(.collapsed) {
+        width: 250px; /* expanded width */
+    }
 
-        .sidebar.collapsed {
-            width: 70px;
-        }
+    /* Toggle button */
+    .toggle-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        cursor: pointer;
+        font-size: 20px;
+        color: white;
+        z-index: 100;
+    }
 
-        /* Toggle button */
-        .toggle-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px; /* top-right corner inside sidebar */
-            cursor: pointer;
-            font-size: 20px;
-            color: black;
-            z-index: 100;
-        }
+    /* Sidebar List */
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
 
-        /* Logo */
-        .sidebar .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 10px 20px 10px; /* leave space for toggle button */
-            font-size: 24px;
-            font-weight: bold;
-            color: black;
-        }
+    .sidebar ul li {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        border-radius: 8px;
+        margin: 5px 10px;
+    }
 
-        .sidebar .logo i {
-            margin-right: 10px;
-            color: #198754; /* green tick */
-        }
+    .sidebar ul li:hover {
+        background: #000000;
+        color: white;
+    }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-            flex: 1;
-        }
+    .sidebar ul li i {
+        width: 25px;
+        text-align: center;
+        font-size: 18px;
+    }
 
-        .sidebar ul li {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            border-radius: 8px;
-        }
+    .sidebar ul li a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        width: 100%;
+    }
 
-        .sidebar ul li:hover {
-            background: #121c36;
-            color: white;
-        }
+    .sidebar ul li span {
+        margin-left: 15px;
+        font-size: 16px;
+        transition: opacity 0.3s ease;
+    }
 
-        .sidebar ul li i {
-            width: 25px;
-            text-align: center;
-            font-size: 18px;
-        }
-.sidebar ul li a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-}
-        .sidebar ul li span {
-            margin-left: 15px;
-            font-size: 16px;
-        }
+    /* Hide text when collapsed */
+    .sidebar.collapsed ul li span {
+        display: none;
+    }
 
-        .sidebar.collapsed ul li span {
-            display: none;
-        }
+    /* Dashboard content */
+    .dashboard-content {
+        margin-left: 70px; /* default collapsed margin */
+        min-height: 100vh;
+        padding: 0;
+        background: #0b1020;
+        transition: margin-left 0.3s ease;
+    }
 
-        .sidebar.collapsed .logo span {
-            display: none;
-        }
+    /* When expanded */
+    .sidebar:not(.collapsed) ~ .dashboard-content {
+        margin-left: 250px;
+    }
 
-        /* Dashboard content */
-.dashboard-content {
-    margin-left: 250px;
-    min-height: 100vh;
-    padding: 0;
-    background: #0b1020;
-    transition: margin-left 0.3s ease;
-}
+    .locked {
+        opacity: 0.5;
+    }
 
 
-
-        .sidebar.collapsed ~ .dashboard-content{
-        margin-left: 70px;
-        }
-        .locked{
-            opacity: 0.5;
-        }
-    </style>
+</style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar collapsed" id="sidebar">
         <!-- Toggle button -->
         <div class="toggle-btn" id="toggleBtn"><i class="fas fa-bars"></i></div>
 
-        <!-- Logo with tick icon -->
-        <div class="logo"><span style="color: #C9A24D; font-size: 40px;">&#10003;</span><span>ReadyRent</span></div>
 
         <!-- Navigation -->
         <ul>
