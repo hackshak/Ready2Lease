@@ -224,7 +224,7 @@ async function loadAssessment(id=null){
   try{
     const res=await fetch(url,{credentials:'same-origin'});
     if(!res.ok){
-      alert("Failed to load assessment");
+      // alert("Failed to load assessment");
       return;
     }
     const data=await res.json();

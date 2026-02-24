@@ -29,7 +29,8 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("dashboard_home")
+            messages.success(request, "Login successful!")
+            return redirect("home")
         else:
             messages.error(request, "Invalid credentials")
 
@@ -55,6 +56,7 @@ def signup_view(request):
         )
 
         login(request, user)
+        messages.success(request, "Signup successful! Welcome 🎉")
         return redirect("dashboard_home")
 
     return render(request, "users/register.html")
@@ -67,6 +69,7 @@ def signup_view(request):
 @login_required
 def logout_view(request):
     logout(request)
+    messages.success(request, "Logged out successfully.")
     return redirect("login")
 
 

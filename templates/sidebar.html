@@ -124,9 +124,215 @@
     }
 
 
+
+
+/* ============================= */
+/* Overlay */
+/* ============================= */
+.premium-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ============================= */
+/* Modal Container */
+/* ============================= */
+.premium-modal {
+    width: 480px;
+    max-width: 92%;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    color: #ffffff;
+    animation: scaleUp 0.35s ease;
+}
+
+/* ============================= */
+/* Badge */
+/* ============================= */
+.premium-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ============================= */
+/* Headings */
+/* ============================= */
+.premium-modal h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.premium-subtext {
+    font-size: 15px;
+    opacity: 0.85;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* ============================= */
+/* Feature List */
+/* ============================= */
+.premium-features {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.feature-item {
+    padding: 8px 0;
+    font-size: 14px;
+    opacity: 0.9;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+.premium-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-upgrade {
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+}
+
+.btn-upgrade:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(99,102,241,0.6);
+}
+
+.btn-cancel {
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ============================= */
+/* Animations */
+/* ============================= */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ============================= */
+/* Mobile Responsive */
+/* ============================= */
+@media (max-width: 480px) {
+    .premium-modal {
+        padding: 30px 20px;
+    }
+
+    .premium-buttons {
+        flex-direction: column;
+    }
+
+    .btn-upgrade {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 </style>
 </head>
 <body>
+
+
+
+{% if user.is_authenticated and not is_premium %}
+<div id="premiumModalOverlay" class="premium-overlay">
+    <div class="premium-modal">
+
+        <div class="premium-badge">
+            🔒 Premium Access
+        </div>
+
+        <h2>Unlock Full Dashboard Insights</h2>
+
+        <p class="premium-subtext">
+            Upgrade to Premium to access detailed readiness analysis,
+            risk signals, AI-powered recommendations and more.
+        </p>
+
+        <div class="premium-features">
+            <div class="feature-item">✔ Detailed Score Breakdown</div>
+            <div class="feature-item">✔ Risk Analysis & Alerts</div>
+            <div class="feature-item">✔ AI Action Plan</div>
+            <div class="feature-item">✔ Approval Probability Insights</div>
+        </div>
+
+        <div class="premium-buttons">
+            <button onclick="closePremiumModal()" class="btn-cancel">
+                Maybe Later
+            </button>
+
+            <a href="{% url 'upgrade_page' %}" class="btn-upgrade">
+                Upgrade Now →
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+
+
+
+
 
     <div class="sidebar collapsed" id="sidebar">
         <!-- Toggle button -->
@@ -225,6 +431,7 @@
 
 
 <script>
+    
 const isPremiumUser = {{ request.user.is_premium|yesno:"true,false" }};
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -323,6 +530,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+
+
+
+function closePremiumModal() {
+    const modal = document.getElementById("premiumModalOverlay");
+    if (modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto"; // restore scroll
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("premiumModalOverlay");
+    if (modal) {
+        document.body.style.overflow = "hidden";
+    }
+});
+
 </script>
 
 

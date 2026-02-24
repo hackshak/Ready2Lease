@@ -219,6 +219,7 @@
 .pricing-cards-wrapper {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
     gap: 40px; /* slightly larger gap */
 }
@@ -245,6 +246,7 @@
 /* Free card border */
 .pricing-free {
     border: 2px solid #facc15; /* yellow border */
+    height: 400px;
 }
 
 /* Premium card background and text */

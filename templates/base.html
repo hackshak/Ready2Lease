@@ -40,10 +40,73 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        #messageModalWrapper {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: auto;
+        }
+
+        .message-modal {
+            min-width: 300px;
+            max-width: 400px;
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+            /* FIXED animation */
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideDown 0.4s ease forwards,
+                    fadeOut 0.5s ease 4s forwards;
+        }
+
+        /* Success */
+        .message-modal.success {
+            background-color: #28a745;
+        }
+
+        /* Error */
+        .message-modal.error {
+            background-color: #dc3545;
+        }
+
+        /* Smooth slide from top */
+        @keyframes slideDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fade out upward */
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
 
 </style>
 </head>
 <body>
+
+{% if messages %}
+<div id="messageModalWrapper">
+    {% for message in messages %}
+        <div class="message-modal {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
     <!-- Header / Navigation -->
     {% include "navbar.html" %}
 
@@ -64,5 +127,13 @@
 
     <!-- Extra page-specific JS -->
     {% block extra_js %}{% endblock %}
+    <script>
+    setTimeout(function () {
+        const wrapper = document.getElementById("messageModalWrapper");
+        if (wrapper) {
+            wrapper.remove();
+        }
+    }, 9000);
+</script>
 </body>
 </html>
