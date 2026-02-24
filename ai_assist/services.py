@@ -5,20 +5,21 @@ from action_plan.models import CompletedTask
 
 def generate_ai_response(user, history, assessment):
     """
-    Generate AI response using selected assessment.
+    Generate AI response using google-genai SDK
     """
 
-    client = genai.Client(api_key=settings.GEMINI_API_KEY)
+    try:
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
-    # Get completed tasks for user
-    completed_tasks = list(
-        CompletedTask.objects
-        .filter(user=user)
-        .values_list("task_key", flat=True)
-    )
+        # Get completed tasks
+        completed_tasks = list(
+            CompletedTask.objects
+            .filter(user=user)
+            .values_list("task_key", flat=True)
+        )
 
-    # Build prompt using selected assessment
-    prompt = f"""
+        # Build prompt
+        prompt = f"""
 You are a rental readiness expert assistant for a SaaS platform called ReadyRent.
 
 Selected Assessment Details:
@@ -39,25 +40,22 @@ Your Responsibilities:
 Conversation History:
 """
 
-    # Append conversation history
-    for msg in history:
-        role = "Assistant" if msg["role"] == "assistant" else "User"
-        prompt += f"\n{role}: {msg['content']}"
+        for msg in history:
+            role = "Assistant" if msg["role"] == "assistant" else "User"
+            prompt += f"\n{role}: {msg['content']}"
 
-    prompt += "\nAssistant:"
+        prompt += "\nAssistant:"
 
-    try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-1.5-flash",   # IMPORTANT: use 1.5
             contents=prompt
         )
 
-        # Some Gemini responses may return None text in rare cases
-        if hasattr(response, "text") and response.text:
+        if response and response.text:
             return response.text
 
-        return "I'm unable to generate a response at the moment. Please try again."
+        return "I'm unable to generate a response at the moment."
 
     except Exception as e:
         print("Gemini Error:", e)
-        return "Sorry, the AI assistant is temporarily unavailable. Please try again."
+        return "AI temporarily unavailable."
