@@ -1,14 +1,17 @@
 from django.conf import settings
-from google import genai
+from openai import OpenAI
 
 
 class CoverLetterGeneratorService:
     """
-    AI-based cover letter generator using Google GenAI SDK.
+    AI-based cover letter generator using DeepSeek API.
     """
 
     def __init__(self):
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.client = OpenAI(
+            api_key=settings.DEEPSEEK_API_KEY,
+            base_url="https://api.deepseek.com"
+        )
 
     def build_prompt(self, base_inputs: dict, tone: str, property_address: str = None):
 
@@ -22,9 +25,9 @@ class CoverLetterGeneratorService:
         property_section = ""
         if property_address:
             property_section = f"""
-            The applicant is applying for property at: {property_address}.
-            Include a personalized sentence explaining interest in this property.
-            """
+The applicant is applying for property at: {property_address}.
+Include a personalized sentence explaining interest in this property.
+"""
 
         return f"""
 You are a rental application expert.
@@ -53,12 +56,16 @@ Requirements:
 
         prompt = self.build_prompt(base_inputs, tone, property_address)
 
-        response = self.client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
+        response = self.client.chat.completions.create(
+            model="deepseek-chat",   # DeepSeek model
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=900
         )
 
-        if not response or not response.text:
+        if not response.choices:
             raise Exception("Failed to generate cover letter.")
 
-        return response.text.strip()
+        return response.choices[0].message.content.strip()

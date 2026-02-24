@@ -1,15 +1,18 @@
-from google import genai
+from openai import OpenAI
 from django.conf import settings
 from action_plan.models import CompletedTask
 
 
 def generate_ai_response(user, history, assessment):
     """
-    Generate AI response using google-genai SDK
+    Generate AI response using DeepSeek API
     """
 
     try:
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        client = OpenAI(
+            api_key=settings.DEEPSEEK_API_KEY,
+            base_url="https://api.deepseek.com"  # IMPORTANT
+        )
 
         # Get completed tasks
         completed_tasks = list(
@@ -18,8 +21,8 @@ def generate_ai_response(user, history, assessment):
             .values_list("task_key", flat=True)
         )
 
-        # Build prompt
-        prompt = f"""
+        # Build system message
+        system_prompt = f"""
 You are a rental readiness expert assistant for a SaaS platform called ReadyRent.
 
 Selected Assessment Details:
@@ -36,26 +39,33 @@ Your Responsibilities:
 - Provide practical, actionable advice
 - Help improve rental approval chances
 - Keep responses structured and easy to understand
-
-Conversation History:
 """
 
+        # Build messages list (chat format)
+        messages = [
+            {"role": "system", "content": system_prompt}
+        ]
+
+        # Add conversation history
         for msg in history:
-            role = "Assistant" if msg["role"] == "assistant" else "User"
-            prompt += f"\n{role}: {msg['content']}"
+            messages.append({
+                "role": msg["role"],  # must be "user" or "assistant"
+                "content": msg["content"]
+            })
 
-        prompt += "\nAssistant:"
-
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",   # IMPORTANT: use 1.5
-            contents=prompt
+        # Call DeepSeek model
+        response = client.chat.completions.create(
+            model="deepseek-chat",  # recommended model
+            messages=messages,
+            temperature=0.7,
+            max_tokens=800
         )
 
-        if response and response.text:
-            return response.text
+        if response.choices:
+            return response.choices[0].message.content
 
         return "I'm unable to generate a response at the moment."
 
     except Exception as e:
-        print("Gemini Error:", e)
+        print("DeepSeek Error:", e)
         return "AI temporarily unavailable."

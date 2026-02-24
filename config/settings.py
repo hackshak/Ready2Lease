@@ -19,7 +19,8 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 GEOAPIFY_API_KEY = os.getenv("GEOAPIFY_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+
 # Payments Related secret variables
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")

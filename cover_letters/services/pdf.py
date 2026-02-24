@@ -7,13 +7,17 @@ class CoverLetterPDFService:
 
     def generate_pdf(self, letter):
 
-        # Convert line breaks to HTML
-        formatted_content = (letter.final_content or "").replace("\n", "<br>")
+        paragraphs = [
+            p.strip() for p in (letter.final_content or "").split("\n")
+            if p.strip()
+        ]
 
         html_string = render_to_string(
             "cover_letters/pdf.html",
             {
-                "content": formatted_content
+                "paragraphs": paragraphs,
+                "user": letter.user,
+                "date": letter.created_at.strftime("%d %B %Y"),
             }
         )
 
