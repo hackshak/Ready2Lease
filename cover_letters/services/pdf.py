@@ -7,15 +7,10 @@ class CoverLetterPDFService:
 
     def generate_pdf(self, letter):
 
-        paragraphs = [
-            p.strip() for p in (letter.final_content or "").split("\n")
-            if p.strip()
-        ]
-
         html_string = render_to_string(
             "cover_letters/pdf.html",
             {
-                "paragraphs": paragraphs,
+                "content": letter.final_content,
                 "user": letter.user,
                 "date": letter.created_at.strftime("%d %B %Y"),
             }
