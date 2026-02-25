@@ -279,7 +279,7 @@
     top: 15px;    /* inside card, not outside */
     right: 15px;  /* inside card */
     background-color: #facc15;
-    color: #000;
+    color:white;
     font-size: 12px;
     font-weight: 600;
     padding: 5px 12px;
@@ -348,7 +348,7 @@
     display: inline-block;
     padding: 12px 28px;
     background-color: #facc15;
-    color: #000;
+    color: white;
     font-weight: 600;
     text-decoration: none;
     border-radius: 6px;
@@ -444,7 +444,7 @@
 
 /* Icon */
 .feature-box .feature-icon {
-    font-size: 1.5rem; /* smaller icon */
+    font-size: 1.1rem; /* smaller icon */
     color: #fbbf24;
     margin-bottom: 12px;
     transition: transform 0.3s ease;
@@ -476,7 +476,7 @@
 
 .btn-unlock {
     background-color: #fbbf24;
-    color: black;
+    color: white;
     padding: 18px 30px;
     border-radius: 6px;
     font-weight: 600;

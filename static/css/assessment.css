@@ -78,10 +78,10 @@ label {
     color: #555;
 }
 
-input[type="text"],
-input[type="number"],
-select,
-textarea {
+.assessment-container input[type="text"],
+.assessment-container input[type="number"],
+.assessment-container select,
+.assessment-container textarea {
     width: 100%;
     padding: 12px 15px;
     margin-bottom: 20px;
