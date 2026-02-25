@@ -175,6 +175,7 @@ select:focus{
 
 </div>
 
+<!-- {% if is_premium %} -->
 <div class="card">
   <h2>⚠ Risk Signals</h2>
   <div id="riskSignals"></div>
@@ -199,6 +200,8 @@ select:focus{
     <div class="item"><div class="label">Income Weekly</div><div class="value" id="incomeWeekly"></div></div>
   </div>
 </div>
+<!-- {% endif %} -->
+
 
 </div>
 
@@ -218,7 +221,7 @@ async function loadAssessment(id=null){
   if(isLoading) return;
   isLoading = true;
 
-  let url='/api/detailed-readiness/';
+  let url='/api/free-readiness/';
   if(id) url+=`?assessment_id=${id}`;
 
   try{

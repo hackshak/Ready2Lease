@@ -1,11 +1,19 @@
 from django.urls import path
 from . import views
 
-
-
 urlpatterns = [
-    path("dashboard/home/", views.dashboard_home, name="dashboard_home"),
 
+    path("dashboard/home/", views.dashboard_home, name="dashboard_home"),
+    path("detailed-analysis/", views.detailed_analysis, name="detailed-analysis"),
+
+    # FREE API
+    path(
+        "api/free-readiness/",
+        views.FreeReadinessView.as_view(),
+        name="free-readiness"
+    ),
+
+    # PREMIUM API
     path(
         "api/detailed-readiness/",
         views.DetailedReadinessAnalysisView.as_view(),
@@ -18,13 +26,7 @@ urlpatterns = [
         name="detailed-readiness-detail"
     ),
 
-    path(
-        "detailed-analysis/",
-        views.detailed_analysis,
-        name="detailed-analysis"
-    ),
-
-    # Scoring endpoints
+    # Premium scoring
     path(
         'api/calculate-detailed-analysis/',
         views.CalculateCategoryScoresView.as_view(),
@@ -37,4 +39,3 @@ urlpatterns = [
         name='calculate_scores'
     ),
 ]
-
