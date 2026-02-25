@@ -1,13 +1,13 @@
 /* ---------------- HERO SECTION ---------------- */
 .hero {
     position: relative;
-    height: 100vh;
+    min-height: 100vh; /* allow growth */
     background: url("../images/heroSection_image.jpeg") center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 20px;
+    padding: 30px 20px 80px; /* balanced spacing */
 }
 
 .hero-overlay {
@@ -22,7 +22,25 @@
     max-width: 800px;
     z-index: 2;
 }
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    margin-bottom: 18px;
 
+    background-color: #e6ac00;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 50px;
+    letter-spacing: 0.3px;
+}
+
+.eyebrow i {
+    font-size: 13px;
+}
 .hero-content h1 {
     font-size: 48px;
     margin-bottom: 20px;
@@ -38,11 +56,11 @@
 .hero-btn {
     display: inline-block;
     padding: 18px 30px;
-    background-color: #facc15;
-    color: #000;
+    color: white;
     font-weight: 600;
     text-decoration: none;
     border-radius: 6px;
+    background-color: #facc15;
     transition: 0.3s ease;
 }
 
@@ -535,7 +553,9 @@
     font-size: 18px;
     transition: color 0.3s ease;
 }
-
+.faq-question > span {
+    color: #A0A0A0;
+}
 .faq-question i {
     transition: transform 0.3s ease;
     font-size: 15px;
