@@ -49,15 +49,21 @@ def signup_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
+        # split name
+        name_parts = full_name.split()
+        first_name = name_parts[0]
+        last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
+
         user = User.objects.create_user(
             email=email,
             password=password,
-            full_name=full_name
+            first_name=first_name,
+            last_name=last_name,
         )
 
         login(request, user)
         messages.success(request, "Signup successful! Welcome 🎉")
-        return redirect("dashboard_home")
+        return redirect("home")
 
     return render(request, "users/register.html")
     

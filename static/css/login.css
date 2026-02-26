@@ -40,6 +40,32 @@
     margin-bottom: 35px;
 }
 
+
+/* Password Wrapper */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 45px; /* space for icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #777;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #fbbf24;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;

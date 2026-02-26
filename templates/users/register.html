@@ -24,9 +24,15 @@
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group password-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <span class="toggle-password">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-signup">Sign Up</button>
@@ -39,8 +45,25 @@
     </div>
 </section>
 
-{% block extra_js %}
-<script src="{% static 'js/login_sign_logout.js' %}"></script>
-{% endblock %}
+<script>
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const toggleButtons = document.querySelectorAll(".toggle-password");
+
+    toggleButtons.forEach(function (toggle) {
+        toggle.addEventListener("click", function () {
+            const input = this.parentElement.querySelector("input");
+            const icon = this.querySelector("i");
+
+            const type = input.getAttribute("type") === "password" ? "text" : "password";
+            input.setAttribute("type", type);
+
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+    });
+});
+</script>
 
 {% endblock content %}
