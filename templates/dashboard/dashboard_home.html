@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
 
-
 <style>
 :root{
   --bg:#0b1020;
@@ -58,10 +57,6 @@ h2{margin:0 0 12px;font-size:15px;}
 .label{font-size:11px;color:var(--muted);}
 .value{font-size:15px;font-weight:700;margin-top:5px;}
 
-/* =========================
-   DARK SELECT DROPDOWN FIX
-========================= */
-
 select{
   background: rgba(17,26,51,.85);
   color: var(--text);
@@ -76,18 +71,15 @@ select{
   cursor:pointer;
 }
 
-/* Dropdown options */
 select option{
   background: #111a33;
   color: #e9eefc;
 }
 
-/* Hover state (where supported) */
 select option:hover{
   background: rgba(108,125,255,.2);
 }
 
-/* Focus */
 select:focus{
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(108,125,255,.3);
@@ -101,13 +93,15 @@ select:focus{
     radial-gradient(circle at center,#111a33 60%,transparent 61%),
     conic-gradient(var(--good) 0deg,var(--good) var(--deg),rgba(255,255,255,.08) var(--deg));
 }
-.ring.low{background:
-  radial-gradient(circle at center,#111a33 60%,transparent 61%),
-  conic-gradient(var(--bad) 0deg,var(--bad) var(--deg),rgba(255,255,255,.08) var(--deg));
+.ring.low{
+  background:
+    radial-gradient(circle at center,#111a33 60%,transparent 61%),
+    conic-gradient(var(--bad) 0deg,var(--bad) var(--deg),rgba(255,255,255,.08) var(--deg));
 }
-.ring.mid{background:
-  radial-gradient(circle at center,#111a33 60%,transparent 61%),
-  conic-gradient(var(--mid) 0deg,var(--mid) var(--deg),rgba(255,255,255,.08) var(--deg));
+.ring.mid{
+  background:
+    radial-gradient(circle at center,#111a33 60%,transparent 61%),
+    conic-gradient(var(--mid) 0deg,var(--mid) var(--deg),rgba(255,255,255,.08) var(--deg));
 }
 
 .track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;}
@@ -174,7 +168,8 @@ select:focus{
 
 </div>
 
-<!-- {% if is_premium %} -->
+<div id="premiumSections">
+
 <div class="card">
   <h2>⚠ Risk Signals</h2>
   <div id="riskSignals"></div>
@@ -199,17 +194,14 @@ select:focus{
     <div class="item"><div class="label">Income Weekly</div><div class="value" id="incomeWeekly"></div></div>
   </div>
 </div>
-<!-- {% endif %} -->
-
 
 </div>
 
-
-
-
-
+</div>
 
 <script>
+const USER_IS_PREMIUM = {{ is_premium|yesno:"true,false" }};
+
 function $(id){return document.getElementById(id);}
 function formatAUD(n){return "$"+Math.round(n||0).toLocaleString();}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
@@ -220,15 +212,15 @@ async function loadAssessment(id=null){
   if(isLoading) return;
   isLoading = true;
 
-  let url='/api/free-readiness/';
+  let url = USER_IS_PREMIUM
+      ? '/api/detailed-readiness/'
+      : '/api/free-readiness/';
+
   if(id) url+=`?assessment_id=${id}`;
 
   try{
     const res=await fetch(url,{credentials:'same-origin'});
-    if(!res.ok){
-      // alert("Failed to load assessment");
-      return;
-    }
+    if(!res.ok){ return; }
     const data=await res.json();
     render(data);
   }catch(e){
@@ -239,6 +231,12 @@ async function loadAssessment(id=null){
 }
 
 function render(data){
+
+  if(!data.is_premium){
+    $("premiumSections").style.display="none";
+  }else{
+    $("premiumSections").style.display="block";
+  }
 
   $("welcomeLine").textContent="Hi "+data.user_name+" 👋";
 
@@ -253,47 +251,50 @@ function render(data){
   $("approvalProb").textContent=data.approval_probability+"%";
   $("competRank").textContent="Top "+data.competitiveness_percentile+"%";
 
-  $("postcodeVal").textContent=data.postcode;
-  $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
-  $("targetRent").textContent=formatAUD(data.target_rent_weekly);
-  $("incomeWeekly").textContent=formatAUD(data.income_weekly);
-
   if(data.next_best_action){
     $("nextActionContent").innerHTML="<b>"+data.next_best_action.title+"</b><br>"+data.next_best_action.suggestion;
   }
 
-  const riskEl=$("riskSignals");
-  riskEl.innerHTML="";
-  if(data.risk_signals.length===0){
-    riskEl.innerHTML="<div class='sub'>No major risks detected.</div>";
-  }else{
-    data.risk_signals.forEach(r=>{
+  if(data.is_premium){
+
+    $("postcodeVal").textContent=data.postcode;
+    $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
+    $("targetRent").textContent=formatAUD(data.target_rent_weekly);
+    $("incomeWeekly").textContent=formatAUD(data.income_weekly);
+
+    const riskEl=$("riskSignals");
+    riskEl.innerHTML="";
+    if(data.risk_signals.length===0){
+      riskEl.innerHTML="<div class='sub'>No major risks detected.</div>";
+    }else{
+      data.risk_signals.forEach(r=>{
+        const div=document.createElement("div");
+        div.className="riskItem";
+        div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
+        riskEl.appendChild(div);
+      });
+    }
+
+    const breakEl=$("breakdownList");
+    breakEl.innerHTML="";
+    data.breakdown.forEach(b=>{
       const div=document.createElement("div");
-      div.className="riskItem";
-      div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
-      riskEl.appendChild(div);
+      div.innerHTML=
+        "<div style='font-size:12px;margin-bottom:4px'>"+
+        b.key.replace("_"," ")+" ("+b.value+")</div>"+
+        "<div class='track'><div class='fill' style='width:"+b.value+"%'></div></div><br>";
+      breakEl.appendChild(div);
+    });
+
+    const stepsEl=$("stepsList");
+    stepsEl.innerHTML="";
+    data.steps.forEach(s=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
+      stepsEl.appendChild(div);
     });
   }
-
-  const breakEl=$("breakdownList");
-  breakEl.innerHTML="";
-  data.breakdown.forEach(b=>{
-    const div=document.createElement("div");
-    div.innerHTML=
-      "<div style='font-size:12px;margin-bottom:4px'>"+
-      b.key.replace("_"," ")+" ("+b.value+")</div>"+
-      "<div class='track'><div class='fill' style='width:"+b.value+"%'></div></div><br>";
-    breakEl.appendChild(div);
-  });
-
-  const stepsEl=$("stepsList");
-  stepsEl.innerHTML="";
-  data.steps.forEach(s=>{
-    const div=document.createElement("div");
-    div.className="item";
-    div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
-    stepsEl.appendChild(div);
-  });
 
   populateAssessmentDropdown(data.previous_assessments,data.assessment_id);
 }
@@ -301,7 +302,6 @@ function render(data){
 function populateAssessmentDropdown(list,activeId){
   const select=$("assessmentSelect");
 
-  // Clear only once
   if(select.options.length !== list.length){
     select.innerHTML="";
     list.forEach(a=>{
