@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 
@@ -40,6 +42,9 @@ def login_view(request):
 
 
 # Signup Page
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect("dashboard-home")
@@ -49,7 +54,24 @@ def signup_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        # split name
+        # 🔐 Email format validation
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return redirect("signup")
+
+        # 🔐 Check duplicate email
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "An account with this email already exists.")
+            return redirect("signup")
+
+        # 🔐 Password validation
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+            return redirect("signup")
+
+        # Split name
         name_parts = full_name.split()
         first_name = name_parts[0]
         last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
