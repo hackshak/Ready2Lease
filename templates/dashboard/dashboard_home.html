@@ -117,7 +117,30 @@ select:focus{
 .nextAction{
   background:linear-gradient(135deg,rgba(108,125,255,.15),rgba(139,92,246,.12));
   border:1px solid rgba(255,255,255,.15);
-  padding:16px;border-radius:var(--radius);
+  padding:16px;
+  border-radius:var(--radius);
+  display:flex;
+  flex-direction:column;
+  height:300px;
+}
+
+.nextActionScroll{
+  overflow-y:auto;
+  margin-top:10px;
+  padding-right:6px;
+  flex:1;
+}
+.nextActionScroll::-webkit-scrollbar{
+  width:6px;
+}
+
+.nextActionScroll::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.25);
+  border-radius:6px;
+}
+
+.nextActionScroll::-webkit-scrollbar-track{
+  background:transparent;
 }
 </style>
 
@@ -162,8 +185,10 @@ select:focus{
 </div>
 
 <div class="nextAction" id="nextActionCard">
-  <h2>🔥 Next Best Action</h2>
-  <div id="nextActionContent">—</div>
+  <h2>🔥 Next Best Actions</h2>
+  <div class="nextActionScroll">
+    <div id="nextActionContent">—</div>
+  </div>
 </div>
 
 </div>
@@ -252,7 +277,11 @@ function render(data){
   $("competRank").textContent="Top "+data.competitiveness_percentile+"%";
 
   if(data.next_best_action){
-    $("nextActionContent").innerHTML="<b>"+data.next_best_action.title+"</b><br>"+data.next_best_action.suggestion;
+    $("nextActionContent").innerHTML = "";
+    data.next_best_action.forEach(a=>{
+      $("nextActionContent").innerHTML += 
+        "<b>"+a.title+"</b><br>"+a.suggestion+"<br><br>";
+    });
   }
 
   if(data.is_premium){
@@ -263,17 +292,17 @@ function render(data){
     $("incomeWeekly").textContent=formatAUD(data.income_weekly);
 
     const riskEl=$("riskSignals");
-    riskEl.innerHTML="";
-    if(data.risk_signals.length===0){
-      riskEl.innerHTML="<div class='sub'>No major risks detected.</div>";
-    }else{
-      data.risk_signals.forEach(r=>{
-        const div=document.createElement("div");
-        div.className="riskItem";
-        div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
-        riskEl.appendChild(div);
-      });
-    }
+      riskEl.innerHTML="";
+      if(data.risk_signals.length===0){
+        riskEl.innerHTML="<div class='sub'>No significant risks detected.</div>";
+      }else{
+        data.risk_signals.forEach(r=>{
+          const div=document.createElement("div");
+          div.className="riskItem";
+          div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
+          riskEl.appendChild(div);
+        });
+      }
 
     const breakEl=$("breakdownList");
     breakEl.innerHTML="";

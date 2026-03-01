@@ -332,34 +332,58 @@ class DeleteDocumentView(APIView):
             user=request.user
         )
 
+        task_key = None
+
+        # ----------------------------------------
+        # DOCUMENTS
+        # ----------------------------------------
         if doc_type in ["id_document", "payslip", "bank_statement"]:
+
             doc = get_object_or_404(
                 UserDocument,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
+
+            # Map document type to task key
+            task_key = f"upload_{doc.document_type}"
+
             doc.file.delete(save=False)
             doc.delete()
 
+        # ----------------------------------------
+        # REFERENCE LETTER
+        # ----------------------------------------
         elif doc_type == "reference_letter":
+
             ref = get_object_or_404(
                 ReferenceLetter,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
+
+            task_key = "add_reference_letter"
+
             if ref.file:
                 ref.file.delete(save=False)
             ref.delete()
 
+        # ----------------------------------------
+        # COVER LETTER
+        # ----------------------------------------
         elif doc_type == "cover_letter":
+
             cover = get_object_or_404(
                 CoverLetter,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
+
+            task_key = "improve_cover_letter"
+
             cover.delete()
 
         else:
@@ -368,7 +392,26 @@ class DeleteDocumentView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # ----------------------------------------
+        # REMOVE COMPLETED TASK (IMPORTANT FIX)
+        # ----------------------------------------
+        if task_key:
+            CompletedTask.objects.filter(
+                user=request.user,
+                assessment=assessment,
+                task_key=task_key
+            ).delete()
+
+        # ----------------------------------------
+        # RETURN UPDATED SCORE
+        # ----------------------------------------
         return Response(
-            {"detail": "Deleted successfully"},
+            {
+                "detail": "Deleted successfully",
+                "final_score": ActionPlanService.get_final_score_for_assessment(
+                    request.user,
+                    assessment
+                )
+            },
             status=status.HTTP_200_OK
         )

@@ -133,28 +133,34 @@ def build_readiness_response(request, premium=False):
     approval_probability = min(95, max(25, final_score))
     competitiveness_percentile = min(95, max(10, int(final_score * 0.9)))
 
-    risk_signals = [
-        {
-            "category": c["category"],
-            "reason": c["explanation"]
-        }
-        for c in categories
-        if c["risk_level"] == "High"
-    ]
+    # ✅ Improved Risk Logic (High + Medium, sorted by lowest score)
+    risk_signals = sorted(
+        [
+            {
+                "category": c["category"],
+                "reason": c["explanation"],
+                "risk_level": c["risk_level"],
+                "score": c["score"]
+            }
+            for c in categories
+            if c["risk_level"] in ["High", "Medium"]
+        ],
+        key=lambda x: x["score"]
+    )
 
     gaps, recommendations = generate_gap_analysis(
         assessment,
         {c["category"]: c["score"] for c in categories}
     )
 
-    next_best_action = None
-    if recommendations:
-        top = recommendations[0]
-        next_best_action = {
-            "title": top["category"].replace("_", " ").title(),
-            "suggestion": top["suggestion"],
-            "priority": top["priority"]
-        }
+    next_best_action = []
+
+    for r in recommendations:
+        next_best_action.append({
+            "title": r["category"].replace("_", " ").title(),
+            "suggestion": r["suggestion"],
+            "priority": r["priority"]
+        })
 
     now = timezone.now()
     previous_list = []
@@ -206,6 +212,9 @@ def build_readiness_response(request, premium=False):
         "risk_level": assessment.risk_level,
         "is_premium": premium
     }, status=status.HTTP_200_OK)
+
+
+
 
 
 # ==========================================================
