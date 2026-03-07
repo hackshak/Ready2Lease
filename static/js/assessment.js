@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             Try Again
                         </button>
 
-                        <a href="/pricing/" 
+                        <a href="{% url 'create_checkout_session' %}" 
                             style="padding:10px 20px; background:#0e0e0e; color:white; border-radius:8px; text-decoration:none; margin-left:10px;">
                             Upgrade to Premium
                         </a>

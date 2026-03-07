@@ -8,7 +8,6 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
 <style>
-/* ====== YOUR ORIGINAL CSS (UNCHANGED) ====== */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
 body { margin: 0; min-height: 100vh; background: #f4f5f7; }
@@ -94,25 +93,170 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
 
 .locked { opacity: 0.5; }
 
-/* ====== REST OF YOUR ORIGINAL CSS (UNCHANGED) ====== */
-/* (Premium modal styles kept exactly same) */
 
+/* Premium Overlay */
 /* ============================= */
-/* Overlay */
-/* ============================= */
-.premium-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-    animation: fadeIn 0.3s ease-in-out;
+
+.premium-overlay{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:rgba(11,16,32,.75);
+    backdrop-filter:blur(12px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:999999;
+    animation:fadeIn .35s ease;
 }
 
-/* (All premium modal CSS unchanged — omitted here for brevity but INCLUDED below fully) */
+/* ============================= */
+/* Modal Card */
+/* ============================= */
+
+.premium-modal{
+    width:420px;
+    max-width:90%;
+    background:rgba(17,26,51,.85);
+    backdrop-filter:blur(14px);
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+    padding:28px 26px;
+    text-align:center;
+    color:#e9eefc;
+    position:relative;
+}
+
+/* ============================= */
+/* Badge */
+/* ============================= */
+
+.premium-badge{
+    display:inline-block;
+    padding:6px 14px;
+    font-size:11px;
+    border-radius:999px;
+    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
+    color:white;
+    margin-bottom:12px;
+    font-weight:600;
+}
+
+/* ============================= */
+/* Title */
+/* ============================= */
+
+.premium-modal h2{
+    margin:6px 0 10px;
+    font-size:20px;
+    font-weight:700;
+}
+
+/* ============================= */
+/* Subtext */
+/* ============================= */
+
+.premium-subtext{
+    font-size:13px;
+    color:#a9b4d6;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+/* ============================= */
+/* Feature List */
+/* ============================= */
+
+.premium-features{
+    text-align:left;
+    margin-bottom:24px;
+}
+
+.feature-item{
+    font-size:13px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    margin-bottom:8px;
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+
+.premium-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.btn-cancel{
+    flex:1;
+    border:none;
+    background:rgba(255,255,255,.08);
+    color:#e9eefc;
+    padding:10px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.25s;
+}
+
+.btn-cancel:hover{
+    background:rgba(255,255,255,.14);
+}
+
+.btn-upgrade{
+    flex:1;
+    text-decoration:none;
+    text-align:center;
+    padding:10px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
+    color:white;
+    font-size:13px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.btn-upgrade:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(108,125,255,.35);
+}
+
+/* ============================= */
+/* Animation */
+/* ============================= */
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:scale(.95);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+/* ============================= */
+/* Mobile */
+/* ============================= */
+
+@media(max-width:480px){
+
+    .premium-modal{
+        padding:22px 18px;
+    }
+
+    .premium-buttons{
+        flex-direction:column;
+    }
+
+}
+
 </style>
 </head>
 <body>
@@ -136,7 +280,7 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
             <button onclick="closePremiumModal()" class="btn-cancel">
                 Maybe Later
             </button>
-            <a href="{% url 'upgrade_page' %}" class="btn-upgrade">
+            <a href="{% url 'create_checkout_session' %}" class="btn-upgrade">
                 Upgrade Now →
             </a>
         </div>
