@@ -266,7 +266,7 @@ function render(data){
   $("welcomeLine").textContent="Hi "+data.user_name+" 👋";
 
   const score=clamp(data.score,0,100);
-  $("scoreValue").textContent=score;
+  $("scoreValue").textContent=score + "%";
   $("scoreRing").style.setProperty("--deg",(score/100)*360+"deg");
 
   if(score<40) $("scoreRing").className="ring low";

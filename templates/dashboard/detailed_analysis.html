@@ -210,7 +210,7 @@ function animateScore(newScore){
   if(scoreInterval) clearInterval(scoreInterval);
 
   const el=$("scoreValue");
-  el.textContent="0";
+  el.textContent="0%";
 
   let current=0;
   const step=Math.max(1,Math.ceil(newScore/25));
@@ -221,7 +221,7 @@ function animateScore(newScore){
       current=newScore;
       clearInterval(scoreInterval);
     }
-    el.textContent=current;
+    el.textContent=current + "%";
   },15);
 }
 
@@ -253,7 +253,7 @@ async function loadAssessments(){
       div.dataset.id=a.id;
 
       div.innerHTML=`
-        <strong>Score: ${a.score}</strong>
+        <strong>Score: ${a.score}%</strong>
         <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
         <button type="button">Detailed Analysis</button>
       `;

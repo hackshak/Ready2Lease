@@ -12,6 +12,7 @@ from decimal import Decimal, InvalidOperation
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
 import re
+from .gap_analysis import generate_gap_analysis
 
 
 
@@ -181,11 +182,20 @@ class AssessmentSubmitView(APIView):
         assessment = Assessment.objects.create(**data)
 
         # --------- Scoring ----------
-        score = 0
+        earned_points = 0
+        total_possible = 0
+
         strengths = []
         weaknesses = []
 
-        # --- STEP 1: Budget vs location ---
+        category_scores = {}
+
+        # -------------------------------
+        # 1️⃣ Budget vs location
+        # -------------------------------
+        budget_points = 0
+        budget_max = 20
+
         try:
             monthly_budget = float(assessment.monthly_rent_budget or 0)
 
@@ -203,7 +213,7 @@ class AssessmentSubmitView(APIView):
             median_rent = suburb_median_rent.get(assessment.suburb or "", 2500)
 
             if monthly_budget <= median_rent:
-                score += 20
+                budget_points = 20
                 strengths.append("Budget aligns with desired suburb")
             else:
                 weaknesses.append("Budget exceeds typical rent in desired suburb")
@@ -211,14 +221,32 @@ class AssessmentSubmitView(APIView):
         except (ValueError, TypeError):
             weaknesses.append("Budget not provided")
 
-        # --- STEP 2: Employment ---
+        earned_points += budget_points
+        total_possible += budget_max
+        category_scores["budget"] = int((budget_points / budget_max) * 100)
+
+        # -------------------------------
+        # 2️⃣ Employment
+        # -------------------------------
+        employment_points = 0
+        employment_max = 20
+
         if assessment.employment_status in ["full_time", "self_employed"]:
-            score += 20
+            employment_points = 20
             strengths.append("Stable employment")
         else:
             weaknesses.append("Employment stability could be improved")
 
-        # --- Time in role ---
+        earned_points += employment_points
+        total_possible += employment_max
+        category_scores["employment"] = int((employment_points / employment_max) * 100)
+
+        # -------------------------------
+        # 3️⃣ Time in role
+        # -------------------------------
+        tenure_points = 0
+        tenure_max = 5
+
         try:
             parts = (assessment.time_in_role or "").split()
             number = int(parts[0])
@@ -232,7 +260,7 @@ class AssessmentSubmitView(APIView):
                 months_in_role = number
 
             if months_in_role >= 12:
-                score += 5
+                tenure_points = 5
                 strengths.append("Tenured in current role")
             else:
                 weaknesses.append("Short tenure in current role")
@@ -240,14 +268,31 @@ class AssessmentSubmitView(APIView):
         except (ValueError, IndexError):
             weaknesses.append("Time in role not provided")
 
-        # --- Rental history ---
+        earned_points += tenure_points
+        total_possible += tenure_max
+
+        # -------------------------------
+        # 4️⃣ Rental history
+        # -------------------------------
+        rental_points = 0
+        rental_max = 10
+
         if assessment.rental_history in ["rented_locally", "owned_home"]:
-            score += 10
+            rental_points = 10
             strengths.append("Positive rental history")
         else:
             weaknesses.append("Limited rental history")
 
-        # --- Income vs rent ---
+        earned_points += rental_points
+        total_possible += rental_max
+        category_scores["rental_history"] = int((rental_points / rental_max) * 100)
+
+        # -------------------------------
+        # 5️⃣ Income vs rent
+        # -------------------------------
+        income_points = 0
+        income_max = 20
+
         try:
             household_income_annual = float(assessment.household_income or 0)
 
@@ -262,52 +307,89 @@ class AssessmentSubmitView(APIView):
                 rent_ratio = monthly_rent / (household_income_annual / 12)
 
                 if rent_ratio <= 0.3:
-                    score += 20
+                    income_points = 20
                     strengths.append("Affordable rent relative to income")
                 else:
                     weaknesses.append("Rent is high relative to income")
-            else:
-                weaknesses.append("Income not provided")
 
         except (ValueError, TypeError):
             weaknesses.append("Income information incomplete")
 
-        # --- Documents ---
+        earned_points += income_points
+        total_possible += income_max
+        category_scores["income"] = int((income_points / income_max) * 100)
+
+        # -------------------------------
+        # 6️⃣ Documents
+        # -------------------------------
+        docs_points = 0
+        docs_max = 20
+
         num_docs = len(assessment.documents) if isinstance(assessment.documents, list) else 0
-        score += min(num_docs * 5, 20)
+        docs_points = min(num_docs * 5, 20)
 
         if num_docs >= 3:
             strengths.append("Well-prepared documents")
         else:
             weaknesses.append("Insufficient documents for application")
 
-        # --- Proof of income ---
+        earned_points += docs_points
+        total_possible += docs_max
+        category_scores["documents"] = int((docs_points / docs_max) * 100)
+
+        # -------------------------------
+        # 7️⃣ Proof of income
+        # -------------------------------
+        proof_points = 0
+        proof_max = 5
+
         if (assessment.proof_of_income or "").lower() != "none":
-            score += 5
+            proof_points = 5
             strengths.append("Proof of income provided")
         else:
             weaknesses.append("No proof of income provided")
 
-        # --- Household composition ---
+        earned_points += proof_points
+        total_possible += proof_max
+
+        # -------------------------------
+        # 8️⃣ Household composition
+        # -------------------------------
+        household_points = 0
+        household_max = 5
+
         adults = assessment.moving_with_adults or 0
         children = assessment.moving_with_children or 0
         pets = assessment.moving_with_pets or 0
         total_people = adults + children
 
         if total_people <= 4 and pets <= 2:
-            score += 5
+            household_points = 5
             strengths.append("Household size manageable")
         else:
             weaknesses.append("Household size may impact readiness")
 
-        # --- Context issues ---
+        earned_points += household_points
+        total_possible += household_max
+        category_scores["household"] = int((household_points / household_max) * 100)
+
+        # -------------------------------
+        # Context issues penalty
+        # -------------------------------
         if assessment.context_issues:
             weaknesses.append("History/context issues reported")
-            score -= 5
+            earned_points -= 5
 
-        # --------- Clamp score ----------
+        # -------------------------------
+        # Final percentage score
+        # -------------------------------
+        score = int((earned_points / total_possible) * 100)
+
         score = max(0, min(score, 100))
 
+        # -------------------------------
+        # Risk level
+        # -------------------------------
         if score >= 70:
             risk_level = "Low"
         elif score >= 40:
@@ -315,16 +397,31 @@ class AssessmentSubmitView(APIView):
         else:
             risk_level = "High"
 
-        # --------- Save results ----------
+        # -------------------------------
+        # GAP ANALYSIS
+        # -------------------------------
+        gaps, recommendations = generate_gap_analysis(
+            assessment,
+            category_scores
+        )
+
+        # -------------------------------
+        # Save results
+        # -------------------------------
         assessment.readiness_score = score
         assessment.risk_level = risk_level
         assessment.strengths = strengths
         assessment.weaknesses = weaknesses
+        assessment.gap_analysis = gaps
+        assessment.recommendations = recommendations
+
         assessment.save(update_fields=[
             "readiness_score",
             "risk_level",
             "strengths",
-            "weaknesses"
+            "weaknesses",
+            "gap_analysis",
+            "recommendations"
         ])
 
         serializer = AssessmentSerializer(assessment)

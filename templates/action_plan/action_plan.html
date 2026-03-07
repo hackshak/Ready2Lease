@@ -334,7 +334,7 @@ async function loadTasks(){
     const ring=document.getElementById("scoreRing");
     ring.className="ap-ring "+(score>=80?"good":score>=55?"mid":"bad");
 
-    document.getElementById("finalScore").innerText=score;
+    document.getElementById("finalScore").innerText=score + "%";
     ring.style.setProperty("--deg",(score/100)*360+"deg");
 
     const container=document.getElementById("apSteps");
