@@ -1,17 +1,13 @@
+# services.py
+
 from django.conf import settings
-from openai import OpenAI
+from google import genai
 
 
 class CoverLetterGeneratorService:
-    """
-    AI-based cover letter generator using DeepSeek API.
-    """
 
     def __init__(self):
-        self.client = OpenAI(
-            api_key=settings.DEEPSEEK_API_KEY,
-            base_url="https://api.deepseek.com"
-        )
+        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
     def build_prompt(self, base_inputs: dict, tone: str, property_address: str = None):
 
@@ -37,35 +33,31 @@ Write a professional landlord-friendly rental cover letter.
 Tone: {tone_map.get(tone, tone_map["professional"])}
 
 Applicant Information:
-- Name: {base_inputs.get("name")}
-- Employment: {base_inputs.get("employment_info")}
-- Income: {base_inputs.get("income")}
-- Rental History: {base_inputs.get("rental_history")}
-- Additional Notes: {base_inputs.get("custom_note")}
+Name: {base_inputs.get("name")}
+Employment: {base_inputs.get("employment_info")}
+Income: {base_inputs.get("income")}
+Rental History: {base_inputs.get("rental_history")}
+Additional Notes: {base_inputs.get("custom_note")}
 
 {property_section}
 
 Requirements:
-- Emphasize reliability and financial stability.
-- Keep it between 250-400 words.
-- No placeholders.
-- Return only the final letter.
+- Emphasize reliability and financial stability
+- Keep it between 250-400 words
+- No placeholders
+- Return only the final letter
 """
 
-    def generate_letter(self, base_inputs: dict, tone: str, property_address: str = None):
+    def generate_letter(self, base_inputs, tone, property_address=None):
 
         prompt = self.build_prompt(base_inputs, tone, property_address)
 
-        response = self.client.chat.completions.create(
-            model="deepseek-chat",   # DeepSeek model
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=900
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[{"role": "user", "parts": [{"text": prompt}]}],
         )
 
-        if not response.choices:
-            raise Exception("Failed to generate cover letter.")
-
-        return response.choices[0].message.content.strip()
+        try:
+            return response.candidates[0].content.parts[0].text.strip()
+        except Exception:
+            raise Exception("Gemini returned empty response")
