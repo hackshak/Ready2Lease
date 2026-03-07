@@ -1,11 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
 from .models import Assessment
 from .serializers import AssessmentSerializer
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.http import JsonResponse
 from django.conf import settings
@@ -27,6 +24,7 @@ class AssessmentPageView(TemplateView):
 
 
 
+
 def location_autocomplete(request):
     query = request.GET.get("q", "").strip()
 
@@ -39,7 +37,7 @@ def location_autocomplete(request):
         "text": query,
         "limit": 8,
         "format": "json",
-        "type": "postcode",  # Only postcode-level results
+        "filter": "countrycode:au",
         "apiKey": settings.GEOAPIFY_API_KEY
     }
 
@@ -51,19 +49,24 @@ def location_autocomplete(request):
 
     results = []
 
+    # Australian state abbreviations
+    STATE_MAP = {
+        "New South Wales": "NSW",
+        "Victoria": "VIC",
+        "Queensland": "QLD",
+        "South Australia": "SA",
+        "Western Australia": "WA",
+        "Tasmania": "TAS",
+        "Northern Territory": "NT",
+        "Australian Capital Territory": "ACT",
+    }
+
     for item in data.get("results", []):
-        if item.get("result_type") != "postcode":
-            continue
 
         postcode = item.get("postcode")
-        country_code = item.get("country_code")
-
-        if not postcode:
-            continue
-
-
         city = item.get("city") or ""
         state = item.get("state") or ""
+
         suburb = (
             item.get("suburb") or
             item.get("district") or
@@ -74,16 +77,21 @@ def location_autocomplete(request):
         lat = item.get("lat")
         lon = item.get("lon")
 
-        if suburb:
-            label = f"{suburb}, {city} - {postcode}"
-        else:
-            label = f"{city}, {state} - {postcode}"
+        # Convert state name → abbreviation
+        state_short = STATE_MAP.get(state, state)
+
+        location_name = suburb if suburb else city
+
+        if not location_name:
+            continue
+
+        label = f"{location_name} {state_short} {postcode or ''}".strip()
 
         results.append({
             "label": label,
             "postcode": postcode,
             "city": city,
-            "state": state,
+            "state": state_short,
             "suburb": suburb,
             "lat": lat,
             "lon": lon
