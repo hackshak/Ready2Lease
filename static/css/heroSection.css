@@ -2,7 +2,7 @@
 .hero {
     position: relative;
     min-height: 100vh; /* allow growth */
-    background: url("../images/heroSection_image.jpeg") center/cover no-repeat;
+    background: url("../images/hero.png") center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
