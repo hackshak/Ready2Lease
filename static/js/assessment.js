@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
             resultDiv.innerHTML = `
                 <div style="padding: 30px; border-radius: 12px; text-align: center;">
                     <h2 style="font-size: 28px; margin-bottom: 15px;">
-                        Readiness Score: ${result.readiness_score ?? 0}
+                        Readiness Score: ${result.readiness_score ?? 0}%
                     </h2>
 
                     <p style="font-size: 18px; margin-bottom: 10px;">
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             Try Again
                         </button>
 
-                        <a href="{% url 'create_checkout_session' %}" 
+                        <a href="${CHECKOUT_URL}" 
                             style="padding:10px 20px; background:#0e0e0e; color:white; border-radius:8px; text-decoration:none; margin-left:10px;">
                             Upgrade to Premium
                         </a>

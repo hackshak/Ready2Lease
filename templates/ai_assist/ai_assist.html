@@ -304,7 +304,7 @@ async function loadAssessments(){
     box.innerHTML = `
       <h4>${a.suburb || "Assessment"}</h4>
       <div class="assessment-meta">
-        Score: ${a.readiness_score} <br>
+        Score: ${a.readiness_score}%<br>
         Risk: ${a.risk_level}
       </div>
     `;
@@ -322,7 +322,7 @@ function selectAssessment(assessment, element){
     .forEach(b=>b.classList.remove("active"));
   element.classList.add("active");
 
-  document.getElementById("scoreValue").innerText = assessment.readiness_score;
+  document.getElementById("scoreValue").innerText = assessment.readiness_score + "%";
   const deg = (assessment.readiness_score / 100) * 360;
   document.getElementById("scoreRing")
     .style.setProperty("--deg", deg+"deg");
