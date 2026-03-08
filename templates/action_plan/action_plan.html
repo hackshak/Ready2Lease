@@ -424,6 +424,7 @@ async function handleUpload(type,docType,points){
     const data = await res.json();
 
     showSuccess(points);
+    await loadAssessments();
     loadTasks();
 }
 
