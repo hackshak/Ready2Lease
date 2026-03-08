@@ -26,7 +26,7 @@ class ActionPlanService:
         )
 
     # ------------------------------------------------
-    # All document tasks
+    # All possible tasks
     # ------------------------------------------------
     @staticmethod
     def get_all_possible_tasks(assessment):
@@ -38,7 +38,7 @@ class ActionPlanService:
                 "description": "Upload a recent payslip to strengthen income proof.",
                 "weight": TASK_WEIGHTS["upload_payslip"],
                 "type": "document",
-                "document_type": "payslip"
+                "document_type": "payslip",
             },
             {
                 "key": "upload_bank_statement",
@@ -46,37 +46,43 @@ class ActionPlanService:
                 "description": "Provide a bank statement to improve financial credibility.",
                 "weight": TASK_WEIGHTS["upload_bank_statement"],
                 "type": "document",
-                "document_type": "bank_statement"
+                "document_type": "bank_statement",
             },
             {
                 "key": "add_reference_letter",
                 "title": "Upload Reference Letter",
                 "description": "Upload a landlord or employer reference letter.",
                 "weight": TASK_WEIGHTS["add_reference_letter"],
-                "type": "reference"
+                "type": "reference",
             },
             {
                 "key": "improve_cover_letter",
                 "title": "Upload Cover Letter",
                 "description": "Upload your rental cover letter.",
                 "weight": TASK_WEIGHTS["improve_cover_letter"],
-                "type": "cover_letter"
+                "type": "cover_letter",
             },
         ]
 
     # ------------------------------------------------
-    # Scale tasks to fill score gap
+    # Scale tasks to fill readiness score gap
     # ------------------------------------------------
     @staticmethod
     def scale_task_points(assessment, tasks):
 
+        if not tasks:
+            return []
+
         base_score = assessment.readiness_score or 0
         missing_points = max(0, 100 - base_score)
 
-        if not tasks or missing_points == 0:
-            return tasks
+        total_weight = sum(t.get("weight", 0) for t in tasks)
 
-        total_weight = sum(t["weight"] for t in tasks)
+        # If no missing points or invalid weights
+        if missing_points == 0 or total_weight == 0:
+            for task in tasks:
+                task["points"] = 0
+            return tasks
 
         scaled = []
         assigned = 0
@@ -91,14 +97,14 @@ class ActionPlanService:
                 points = int((task["weight"] / total_weight) * missing_points)
 
             assigned += points
-            t["points"] = points
+            t["points"] = max(points, 0)
 
             scaled.append(t)
 
         return scaled
 
     # ------------------------------------------------
-    # Visible tasks (not yet completed)
+    # Tasks visible to the user
     # ------------------------------------------------
     @staticmethod
     def generate_tasks_for_assessment(assessment):
@@ -177,12 +183,12 @@ class ActionPlanService:
 
         for task in tasks:
             if task["key"] in completed:
-                improvement += task["points"]
+                improvement += task.get("points", 0)
 
         return improvement
 
     # ------------------------------------------------
-    # Final score
+    # Final readiness score
     # ------------------------------------------------
     @staticmethod
     def get_final_score_for_assessment(user, assessment):
@@ -192,6 +198,7 @@ class ActionPlanService:
 
         base_score = assessment.readiness_score or 0
 
+        # Free users do not get improvement scoring
         if not getattr(user, "is_premium", False):
             return base_score
 
@@ -199,4 +206,6 @@ class ActionPlanService:
             assessment
         )
 
-        return min(base_score + improvement, 100)
+        final_score = base_score + improvement
+
+        return min(final_score, 100)

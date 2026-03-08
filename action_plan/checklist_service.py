@@ -5,10 +5,6 @@ from .models import UserDocument, ReferenceLetter, CoverLetter
 class ChecklistService:
 
     DOCUMENTS_META = {
-        "id_document": {
-            "title": "ID Document",
-            "description": "Used to verify your identity."
-        },
         "payslip": {
             "title": "Payslip",
             "description": "Shows proof of income stability."
@@ -70,7 +66,7 @@ class ChecklistService:
         # ---------------------------------------------
         # Standard Documents
         # ---------------------------------------------
-        for doc_type in ["id_document", "payslip", "bank_statement"]:
+        for doc_type in ["payslip", "bank_statement"]:
 
             doc = docs_map.get(doc_type)
 
