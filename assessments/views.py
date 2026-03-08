@@ -376,7 +376,7 @@ class AssessmentSubmitView(APIView):
         # -------------------------------
         # Context issues penalty
         # -------------------------------
-        if assessment.context_issues:
+        if assessment.context_issues not in [None, "", "None"]:
             weaknesses.append("History/context issues reported")
             earned_points -= 5
 
