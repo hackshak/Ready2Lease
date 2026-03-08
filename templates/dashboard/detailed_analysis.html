@@ -3,9 +3,7 @@
 
 {% block content %}
 
-
 <style>
-/* (Your CSS unchanged — kept exactly same for safety) */
 :root{
   --bg:#0b1225;
   --panel:#121c36;
@@ -180,8 +178,16 @@ body{
     </div>
 
     <div class="card"><h2>Category Breakdown</h2><div id="breakdownList"></div></div>
-    <div class="card"><h2>Gap Analysis</h2><div id="gapsList"></div></div>
-    <div class="card"><h2>Improvement Recommendations</h2><div id="recommendationsList"></div></div>
+
+    <div class="card" id="gapCard">
+      <h2>Gap Analysis</h2>
+      <div id="gapsList"></div>
+    </div>
+
+    <div class="card" id="recommendationCard">
+      <h2>Improvement Recommendations</h2>
+      <div id="recommendationsList"></div>
+    </div>
 
   </div>
 
@@ -190,12 +196,6 @@ body{
     <div id="assessmentList"></div>
   </div>
 </div>
-
-
-
-
-
-
 
 <script>
 function $(id){return document.getElementById(id);}
@@ -228,185 +228,147 @@ function animateScore(newScore){
 /* Load All Assessments */
 async function loadAssessments(){
 
-  try{
-    const res=await fetch("/api/detailed-readiness/",{
-      credentials:"same-origin"
+  const res=await fetch("/api/detailed-readiness/",{
+    credentials:"same-origin"
+  });
+
+  const data=await res.json();
+  const list=$("assessmentList");
+  list.innerHTML="";
+
+  data.previous_assessments.forEach(a=>{
+    const div=document.createElement("div");
+    div.className="assessment-item";
+    div.dataset.id=a.id;
+
+    div.innerHTML=`
+      <strong>Score: ${a.score}%</strong>
+      <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
+      <button type="button">Detailed Analysis</button>
+    `;
+
+    div.querySelector("button").addEventListener("click",()=>{
+      loadDetailed(a.id);
     });
 
-    if(!res.ok){
-      console.error("Failed to fetch assessments");
-      return;
-    }
+    list.appendChild(div);
+  });
 
-    const data=await res.json();
-    const list=$("assessmentList");
-    list.innerHTML="";
-
-    if(!data.previous_assessments?.length){
-      list.innerHTML="<p style='color:#9fb0ff'>No assessments found.</p>";
-      return;
-    }
-
-    data.previous_assessments.forEach(a=>{
-      const div=document.createElement("div");
-      div.className="assessment-item";
-      div.dataset.id=a.id;
-
-      div.innerHTML=`
-        <strong>Score: ${a.score}%</strong>
-        <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
-        <button type="button">Detailed Analysis</button>
-      `;
-
-      div.querySelector("button").addEventListener("click",()=>{
-        loadDetailed(a.id);
-      });
-
-      list.appendChild(div);
-    });
-
-    // Load first only once
-    if(!hasLoadedInitial){
-      hasLoadedInitial=true;
-      loadDetailed(data.previous_assessments[0].id);
-    }
-
-  }catch(e){
-    console.error(e);
+  if(!hasLoadedInitial){
+    hasLoadedInitial=true;
+    loadDetailed(data.previous_assessments[0].id);
   }
 }
 
 /* Load Single Assessment */
 async function loadDetailed(id){
 
-  // Highlight active
   document.querySelectorAll(".assessment-item")
     .forEach(el=>{
       el.classList.toggle("active",Number(el.dataset.id)===Number(id));
     });
 
-  if(currentController){
-    currentController.abort();
+  const res=await fetch(`/api/detailed-readiness/?assessment_id=${id}`,{
+    credentials:"same-origin"
+  });
+
+  const data=await res.json();
+  const score=data.score ?? 0;
+
+  animateScore(score);
+
+  /* Hide gap + recommendations if score 100 */
+  if(score===100){
+    $("gapCard").style.display="none";
+    $("recommendationCard").style.display="none";
+  }else{
+    $("gapCard").style.display="block";
+    $("recommendationCard").style.display="block";
   }
 
-  currentController=new AbortController();
+  const deg=Math.round(score/100*360);
+  const color=
+    score>=80?"var(--good)":
+    score>=55?"var(--mid)":
+    "var(--bad)";
 
-  try{
+  $("scoreRing").style.background=
+    `radial-gradient(circle,#121c36 60%,transparent 61%),
+     conic-gradient(${color} 0deg,${color} ${deg}deg,rgba(255,255,255,.08) ${deg}deg)`;
 
-    // ✅ FIXED URL (Query Param, not path param)
-    const res=await fetch(
-      `/api/detailed-readiness/?assessment_id=${id}`,
-      {
-        credentials:"same-origin",
-        signal: currentController.signal
-      }
-    );
+  $("riskLevel").textContent=data.risk_level ?? "—";
 
-    if(!res.ok){
-      console.error("Failed to load detailed assessment");
-      return;
-    }
+  $("lastAssessment").textContent=
+    data.last_assessment
+      ? new Date(data.last_assessment).toLocaleDateString()
+      : "—";
 
-    const data=await res.json();
-    const score=data.score ?? 0;
+  if(data.score_prev !== undefined){
+    const diff=score-data.score_prev;
+    $("scoreTrend").textContent=
+      diff>0?`+${diff}`:diff;
+  } else {
+    $("scoreTrend").textContent="—";
+  }
 
-    animateScore(score);
+  $("incomeRent").textContent=
+    data.income_weekly && data.target_rent_weekly
+      ? (data.income_weekly/data.target_rent_weekly).toFixed(2)
+      : "—";
 
-    const deg=Math.round(score/100*360);
-    const color=
-      score>=80?"var(--good)":
-      score>=55?"var(--mid)":
-      "var(--bad)";
+  $("statusText").textContent=
+    score>=80?"Strong Approval Odds":
+    score>=55?"Moderate Competitiveness":
+    "High Risk";
 
-    $("scoreRing").style.background=
-      `radial-gradient(circle,#121c36 60%,transparent 61%),
-       conic-gradient(${color} 0deg,${color} ${deg}deg,rgba(255,255,255,.08) ${deg}deg)`;
+  /* Breakdown */
+  const br=$("breakdownList");
+  br.innerHTML="";
+  data.breakdown?.forEach(cat=>{
+    const row=document.createElement("div");
+    row.className="bar-row";
+    row.innerHTML=`
+      <div>${cat.key.replace(/_/g," ")}</div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <div>${cat.value}%</div>
+    `;
+    br.appendChild(row);
 
-    $("riskLevel").textContent=data.risk_level ?? "—";
-
-    $("lastAssessment").textContent=
-      data.last_assessment
-        ? new Date(data.last_assessment).toLocaleDateString()
-        : "—";
-
-    if(data.score_prev !== undefined){
-      const diff=score-data.score_prev;
-      $("scoreTrend").textContent=
-        diff>0?`+${diff}`:diff;
-    } else {
-      $("scoreTrend").textContent="—";
-    }
-
-    $("incomeRent").textContent=
-      data.income_weekly && data.target_rent_weekly
-        ? (data.income_weekly/data.target_rent_weekly).toFixed(2)
-        : "—";
-
-    $("statusText").textContent=
-      score>=80?"Strong Approval Odds":
-      score>=55?"Moderate Competitiveness":
-      "High Risk";
-
-    /* Breakdown */
-    const br=$("breakdownList");
-    br.innerHTML="";
-    data.breakdown?.forEach(cat=>{
-      const row=document.createElement("div");
-      row.className="bar-row";
-      row.innerHTML=`
-        <div>${cat.key.replace(/_/g," ")}</div>
-        <div class="bar-track"><div class="bar-fill"></div></div>
-        <div>${cat.value}%</div>
-      `;
-      br.appendChild(row);
-
-      requestAnimationFrame(()=>{
-        row.querySelector(".bar-fill").style.width=
-          clamp(cat.value,0,100)+"%";
-      });
+    requestAnimationFrame(()=>{
+      row.querySelector(".bar-fill").style.width=
+        clamp(cat.value,0,100)+"%";
     });
+  });
 
-    /* Gaps */
-    const gaps=$("gapsList");
-    gaps.innerHTML="";
-    if(data.gaps && Object.keys(data.gaps).length>0){
-      Object.entries(data.gaps).forEach(([k,v])=>{
-        const div=document.createElement("div");
-        div.className="item-box";
-        div.innerHTML=`
-          <strong>${k.replace(/_/g," ")}</strong>
-          <p style="color:#9fb0ff;font-size:13px">${v}</p>
-        `;
-        gaps.appendChild(div);
-      });
-    } else {
-      gaps.innerHTML="<p style='color:#9fb0ff'>No gaps detected.</p>";
-    }
+  /* Gaps */
+  const gaps=$("gapsList");
+  gaps.innerHTML="";
+  Object.entries(data.gaps || {}).forEach(([k,v])=>{
+    const div=document.createElement("div");
+    div.className="item-box";
+    div.innerHTML=`
+      <strong>${k.replace(/_/g," ")}</strong>
+      <p style="color:#9fb0ff;font-size:13px">${v}</p>
+    `;
+    gaps.appendChild(div);
+  });
 
-    /* Recommendations */
-    const rec=$("recommendationsList");
-    rec.innerHTML="";
-    if(data.recommendations?.length){
-      data.recommendations.forEach(r=>{
-        const div=document.createElement("div");
-        div.className="item-box";
-        div.innerHTML=`
-          <strong>${r.category.replace(/_/g," ")}</strong>
-          <p style="color:#9fb0ff;font-size:13px">${r.suggestion}</p>
-          <span class="priority ${r.priority}">
-            ${r.priority.toUpperCase()}
-          </span>
-        `;
-        rec.appendChild(div);
-      });
-    } else {
-      rec.innerHTML="<p style='color:#9fb0ff'>No recommendations available.</p>";
-    }
+  /* Recommendations */
+  const rec=$("recommendationsList");
+  rec.innerHTML="";
+  data.recommendations?.forEach(r=>{
+    const div=document.createElement("div");
+    div.className="item-box";
+    div.innerHTML=`
+      <strong>${r.category.replace(/_/g," ")}</strong>
+      <p style="color:#9fb0ff;font-size:13px">${r.suggestion}</p>
+      <span class="priority ${r.priority}">
+        ${r.priority.toUpperCase()}
+      </span>
+    `;
+    rec.appendChild(div);
+  });
 
-  }catch(e){
-    if(e.name==="AbortError") return;
-    console.error(e);
-  }
 }
 
 document.addEventListener("DOMContentLoaded",loadAssessments);

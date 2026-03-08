@@ -2,6 +2,8 @@
 {% load static %}
 {% block content %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 :root{
   --bg:#0b1020;
@@ -66,18 +68,12 @@ select{
   font-size:13px;
   outline:none;
   appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
   cursor:pointer;
 }
 
 select option{
   background: #111a33;
   color: #e9eefc;
-}
-
-select option:hover{
-  background: rgba(108,125,255,.2);
 }
 
 select:focus{
@@ -130,17 +126,17 @@ select:focus{
   padding-right:6px;
   flex:1;
 }
-.nextActionScroll::-webkit-scrollbar{
-  width:6px;
+
+.successCard{
+  text-align:center;
+  padding:30px;
+  font-size:14px;
 }
 
-.nextActionScroll::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,.25);
-  border-radius:6px;
-}
-
-.nextActionScroll::-webkit-scrollbar-track{
-  background:transparent;
+.successCard h2{
+  font-size:18px;
+  margin-bottom:10px;
+  color:var(--good);
 }
 </style>
 
@@ -149,7 +145,7 @@ select:focus{
 <div class="card">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
     <div>
-      <h2 id="welcomeLine">Hi —</h2>
+      <h2 id="welcomeLine">Hi — 👋</h2>
       <div class="sub">Track and improve your rental approval strength.</div>
     </div>
 
@@ -187,7 +183,7 @@ select:focus{
 <div class="nextAction" id="nextActionCard">
   <h2>🔥 Next Best Actions</h2>
   <div class="nextActionScroll">
-    <div id="nextActionContent">—</div>
+    <div id="nextActionContent"></div>
   </div>
 </div>
 
@@ -203,6 +199,16 @@ select:focus{
 <div class="card">
   <h2>Category Breakdown</h2>
   <div id="breakdownList"></div>
+</div>
+
+<div class="card">
+  <h2>Application Strength Radar</h2>
+  <div style="height:280px">
+      <canvas id="strengthRadar"></canvas>
+  </div>
+  <div class="sub">
+    Visual overview of your rental application strengths.
+  </div>
 </div>
 
 <div class="card">
@@ -225,48 +231,109 @@ select:focus{
 </div>
 
 <script>
+
 const USER_IS_PREMIUM = {{ is_premium|yesno:"true,false" }};
 
 function $(id){return document.getElementById(id);}
 function formatAUD(n){return "$"+Math.round(n||0).toLocaleString();}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
+let radarChart = null;
 let isLoading = false;
 
+function formatDate(dateString){
+  const d = new Date(dateString);
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+}
+
 async function loadAssessment(id=null){
+
   if(isLoading) return;
-  isLoading = true;
+  isLoading=true;
 
   let url = USER_IS_PREMIUM
       ? '/api/detailed-readiness/'
       : '/api/free-readiness/';
 
-  if(id) url+=`?assessment_id=${id}`;
+  if(id) url += `?assessment_id=${id}`;
 
   try{
-    const res=await fetch(url,{credentials:'same-origin'});
-    if(!res.ok){ return; }
-    const data=await res.json();
+    const res = await fetch(url,{credentials:'same-origin'});
+    const data = await res.json();
     render(data);
   }catch(e){
     console.error(e);
   }finally{
-    isLoading = false;
+    isLoading=false;
   }
+}
+
+function renderRadarChart(breakdown){
+
+  if(!breakdown || breakdown.length===0) return;
+
+  const labels = breakdown.map(b=>b.key.replaceAll("_"," "));
+  const values = breakdown.map(b=>b.value);
+
+  const ctx = document.getElementById("strengthRadar");
+
+  if(radarChart){
+    radarChart.destroy();
+  }
+
+  radarChart = new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:labels,
+      datasets:[{
+        data:values,
+        backgroundColor:"rgba(108,125,255,0.2)",
+        borderColor:"#6c7dff",
+        borderWidth:2,
+        pointBackgroundColor:"#8b5cf6"
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      scales:{
+        r:{
+          suggestedMin:0,
+          suggestedMax:100,
+          angleLines:{color:"rgba(255,255,255,.15)"},
+          grid:{color:"rgba(255,255,255,.1)"},
+          pointLabels:{color:"#e9eefc"},
+          ticks:{backdropColor:"transparent",color:"#a9b4d6"}
+        }
+      },
+      plugins:{legend:{display:false}}
+    }
+  });
+
 }
 
 function render(data){
 
-  if(!data.is_premium){
-    $("premiumSections").style.display="none";
-  }else{
-    $("premiumSections").style.display="block";
+  // Reset UI
+  $("nextActionCard").innerHTML = `
+    <h2>🔥 Next Best Actions</h2>
+    <div class="nextActionScroll">
+      <div id="nextActionContent"></div>
+    </div>
+  `;
+
+  $("premiumSections").style.display="block";
+  $("riskSignals").innerHTML="";
+  $("breakdownList").innerHTML="";
+  $("stepsList").innerHTML="";
+
+  if(radarChart){
+    radarChart.destroy();
   }
 
-  $("welcomeLine").textContent="Hi "+data.user_name+" 👋";
+  const score = clamp(data.score,0,100);
 
-  const score=clamp(data.score,0,100);
-  $("scoreValue").textContent=score + "%";
+  $("scoreValue").textContent = score + "%";
   $("scoreRing").style.setProperty("--deg",(score/100)*360+"deg");
 
   if(score<40) $("scoreRing").className="ring low";
@@ -276,79 +343,90 @@ function render(data){
   $("approvalProb").textContent=data.approval_probability+"%";
   $("competRank").textContent="Top "+data.competitiveness_percentile+"%";
 
-  if(data.next_best_action){
-    $("nextActionContent").innerHTML = "";
-    data.next_best_action.forEach(a=>{
-      $("nextActionContent").innerHTML += 
-        "<b>"+a.title+"</b><br>"+a.suggestion+"<br><br>";
-    });
-  }
+  if(score===100){
 
-  if(data.is_premium){
+    $("nextActionCard").innerHTML=`
+      <div class="successCard">
+        <h2>🎉 Perfect Readiness Score</h2>
+        <div class="sub">Your rental application profile is fully optimized.</div>
+      </div>
+    `;
 
-    $("postcodeVal").textContent=data.postcode;
-    $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
-    $("targetRent").textContent=formatAUD(data.target_rent_weekly);
-    $("incomeWeekly").textContent=formatAUD(data.income_weekly);
+    $("premiumSections").style.display="none";
 
-    const riskEl=$("riskSignals");
-      riskEl.innerHTML="";
-      if(data.risk_signals.length===0){
-        riskEl.innerHTML="<div class='sub'>No significant risks detected.</div>";
-      }else{
-        data.risk_signals.forEach(r=>{
-          const div=document.createElement("div");
-          div.className="riskItem";
-          div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
-          riskEl.appendChild(div);
-        });
-      }
+  }else{
 
-    const breakEl=$("breakdownList");
-    breakEl.innerHTML="";
-    data.breakdown.forEach(b=>{
-      const div=document.createElement("div");
-      div.innerHTML=
+    if(data.next_best_action){
+      data.next_best_action.forEach(a=>{
+        $("nextActionContent").innerHTML +=
+          "<b>"+a.title+"</b><br>"+a.suggestion+"<br><br>";
+      });
+    }
+
+    if(data.is_premium){
+
+      $("postcodeVal").textContent=data.postcode;
+      $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
+      $("targetRent").textContent=formatAUD(data.target_rent_weekly);
+      $("incomeWeekly").textContent=formatAUD(data.income_weekly);
+
+      data.risk_signals.forEach(r=>{
+        const div=document.createElement("div");
+        div.className="riskItem";
+        div.innerHTML="<b>"+r.category.replace("_"," ")+"</b><br>"+r.reason;
+        $("riskSignals").appendChild(div);
+      });
+
+      data.breakdown.forEach(b=>{
+        const div=document.createElement("div");
+        div.innerHTML=
         "<div style='font-size:12px;margin-bottom:4px'>"+
         b.key.replace("_"," ")+" ("+b.value+")</div>"+
         "<div class='track'><div class='fill' style='width:"+b.value+"%'></div></div><br>";
-      breakEl.appendChild(div);
-    });
+        $("breakdownList").appendChild(div);
+      });
 
-    const stepsEl=$("stepsList");
-    stepsEl.innerHTML="";
-    data.steps.forEach(s=>{
-      const div=document.createElement("div");
-      div.className="item";
-      div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
-      stepsEl.appendChild(div);
-    });
+      renderRadarChart(data.breakdown);
+
+      data.steps.forEach(s=>{
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
+        $("stepsList").appendChild(div);
+      });
+
+    }
   }
 
   populateAssessmentDropdown(data.previous_assessments,data.assessment_id);
 }
 
 function populateAssessmentDropdown(list,activeId){
+
   const select=$("assessmentSelect");
 
   if(select.options.length !== list.length){
+
     select.innerHTML="";
+
     list.forEach(a=>{
       const opt=document.createElement("option");
       opt.value=a.id;
-      opt.textContent=a.created_at+" • Score "+a.score;
+      opt.textContent=formatDate(a.created_at)+" • "+a.score+"% Ready";
       select.appendChild(opt);
     });
 
     select.addEventListener("change",function(){
       loadAssessment(this.value);
     });
+
   }
 
-  select.value = activeId;
+  select.value=activeId;
 }
 
 document.addEventListener("DOMContentLoaded",()=>loadAssessment());
+
 </script>
 
 {% endblock %}
