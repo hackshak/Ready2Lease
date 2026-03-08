@@ -67,7 +67,7 @@
 
 .ap-grid{
     display:grid;
-    grid-template-columns:1.3fr 1fr;
+    grid-template-columns:1fr;
     gap:28px;
 }
 
@@ -414,12 +414,14 @@ async function handleUpload(type,docType,points){
     if(type==="reference") url=`/add-reference/${selectedAssessment}/`;
     if(type==="cover_letter") url=`/save-cover-letter/${selectedAssessment}/`;
 
-    await fetch(url,{
-        method:"POST",
-        credentials:"same-origin",
-        headers:{"X-CSRFToken":getCSRFToken()},
-        body:formData
+    const res = await fetch(url,{
+    method:"POST",
+    credentials:"same-origin",
+    headers:{"X-CSRFToken":getCSRFToken()},
+    body:formData
     });
+
+    const data = await res.json();
 
     showSuccess(points);
     loadTasks();

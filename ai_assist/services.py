@@ -23,7 +23,7 @@ def generate_ai_response(user, history, assessment):
 
         # Build system message
         system_prompt = f"""
-You are a rental readiness expert assistant for a SaaS platform called ReadyRent.
+You are a rental readiness expert assistant for a SaaS platform called Ready2Lease.
 
 Selected Assessment Details:
 - Readiness Score: {assessment.readiness_score}

@@ -9,23 +9,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 
 from assessments.models import Assessment
-from .services import ActionPlanService, TASK_POINTS
+from .services import ActionPlanService, TASK_WEIGHTS
 from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
 from .checklist_service import ChecklistService
 
 
-# ==========================================================
-# HELPER
-# ==========================================================
 
+# HELPER
 def require_premium(user):
     return getattr(user, "is_premium", False)
 
 
-# ==========================================================
-# PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
-# ==========================================================
 
+# PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
 class ActionPlanPageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/action_plan.html"
 
@@ -35,10 +31,7 @@ class ActionPlanPageView(LoginRequiredMixin, TemplateView):
         return context
 
 
-# ==========================================================
 # TASKS VIEW (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class ActionPlanTasksView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -86,10 +79,7 @@ class ActionPlanTasksView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ==========================================================
 # UPLOAD DOCUMENT (PREMIUM ONLY)
-# ==========================================================
-
 class UploadDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -119,7 +109,7 @@ class UploadDocumentView(APIView):
 
         task_key = f"upload_{doc_type}"
 
-        if task_key not in TASK_POINTS:
+        if task_key not in TASK_WEIGHTS:
             return Response(
                 {"detail": "Invalid document type"},
                 status=status.HTTP_400_BAD_REQUEST
@@ -141,8 +131,7 @@ class UploadDocumentView(APIView):
         CompletedTask.objects.get_or_create(
             user=request.user,
             assessment=assessment,
-            task_key=task_key,
-            defaults={"points_awarded": TASK_POINTS[task_key]}
+            task_key=task_key
         )
 
         return Response({
@@ -153,10 +142,7 @@ class UploadDocumentView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ==========================================================
 # ADD REFERENCE (PREMIUM ONLY)
-# ==========================================================
-
 class AddReferenceView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -187,19 +173,17 @@ class AddReferenceView(APIView):
         ReferenceLetter.objects.create(
             user=request.user,
             assessment=assessment,
-            text_content=text,
+            # text_content=text,
             file=file
         )
 
         task_key = "add_reference_letter"
 
-        if task_key in TASK_POINTS:
-            CompletedTask.objects.get_or_create(
-                user=request.user,
-                assessment=assessment,
-                task_key=task_key,
-                defaults={"points_awarded": TASK_POINTS[task_key]}
-            )
+        CompletedTask.objects.get_or_create(
+            user=request.user,
+            assessment=assessment,
+            task_key=task_key
+        )
 
         return Response({
             "final_score": ActionPlanService.get_final_score_for_assessment(
@@ -209,10 +193,8 @@ class AddReferenceView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ==========================================================
-# SAVE COVER LETTER (PREMIUM ONLY)
-# ==========================================================
 
+# SAVE COVER LETTER (PREMIUM ONLY)
 class SaveCoverLetterView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -247,13 +229,11 @@ class SaveCoverLetterView(APIView):
 
         task_key = "improve_cover_letter"
 
-        if task_key in TASK_POINTS:
-            CompletedTask.objects.get_or_create(
-                user=request.user,
-                assessment=assessment,
-                task_key=task_key,
-                defaults={"points_awarded": TASK_POINTS[task_key]}
-            )
+        CompletedTask.objects.get_or_create(
+            user=request.user,
+            assessment=assessment,
+            task_key=task_key
+        )
 
         return Response({
             "final_score": ActionPlanService.get_final_score_for_assessment(
@@ -263,10 +243,7 @@ class SaveCoverLetterView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ==========================================================
 # DOCUMENTS HOME PAGE (VISIBLE TO ALL LOGGED-IN USERS)
-# ==========================================================
-
 class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/documents.html"
 
@@ -281,10 +258,8 @@ class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
         return context
 
 
-# ==========================================================
-# DOCUMENT CHECKLIST API (PREMIUM ONLY)
-# ==========================================================
 
+# DOCUMENT CHECKLIST API (PREMIUM ONLY)
 class DocumentChecklistView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -310,10 +285,8 @@ class DocumentChecklistView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-# ==========================================================
-# DELETE DOCUMENT (PREMIUM ONLY)
-# ==========================================================
 
+# DELETE DOCUMENT (PREMIUM ONLY)
 class DeleteDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -346,7 +319,6 @@ class DeleteDocumentView(APIView):
                 assessment=assessment
             )
 
-            # Map document type to task key
             task_key = f"upload_{doc.document_type}"
 
             doc.file.delete(save=False)
@@ -392,9 +364,6 @@ class DeleteDocumentView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # ----------------------------------------
-        # REMOVE COMPLETED TASK (IMPORTANT FIX)
-        # ----------------------------------------
         if task_key:
             CompletedTask.objects.filter(
                 user=request.user,
@@ -402,9 +371,6 @@ class DeleteDocumentView(APIView):
                 task_key=task_key
             ).delete()
 
-        # ----------------------------------------
-        # RETURN UPDATED SCORE
-        # ----------------------------------------
         return Response(
             {
                 "detail": "Deleted successfully",
