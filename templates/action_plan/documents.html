@@ -29,22 +29,47 @@ body{background:var(--bg);color:var(--text);}
 h1{margin:0 0 8px;font-size:22px;}
 .sub{color:var(--muted);font-size:13px;margin-bottom:15px;}
 
+.assessmentSelectWrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.assessmentLabel{
+  font-size:12px;
+  color:var(--muted);
+}
+
 select{
+  width:100%;
   background:#0f1730;
   border:1px solid var(--border);
   color:var(--text);
-  padding:10px;
+  padding:12px;
   border-radius:10px;
   font-size:13px;
+  outline:none;
+  transition:.2s;
+}
+
+select:hover{
+  border-color:var(--primary);
+}
+
+select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(108,125,255,.25);
 }
 
 .progressWrap{margin-top:20px;}
+
 .track{
   height:12px;
   border-radius:999px;
   background: rgba(255,255,255,.10);
   overflow:hidden;
 }
+
 .fill{
   height:100%;
   width:0%;
@@ -90,7 +115,11 @@ button{
   border:1px solid var(--border);
 }
 
-.actions{display:flex;gap:8px;flex-wrap:wrap;}
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
 
 .toast{
   position:fixed;
@@ -104,23 +133,35 @@ button{
   opacity:0;
   transition:.2s;
 }
+
 .toast.show{opacity:1;}
 </style>
 
 <div class="wrap">
 
   <div class="card">
+
     <h1>Documents Checklist & Tracker</h1>
     <p class="sub">Select an assessment to manage required documents.</p>
 
-    <select id="assessmentSelect">
-      <option value="">-- Select Assessment --</option>
-      {% for assessment in assessments %}
-        <option value="{{ assessment.id }}">
-          Assessment #{{ assessment.id }} - {{ assessment.created_at|date:"M d, Y" }}
-        </option>
-      {% endfor %}
-    </select>
+    <div class="assessmentSelectWrap">
+
+      <label class="assessmentLabel">
+        Choose Assessment
+      </label>
+
+      <select id="assessmentSelect">
+        <option value="">Select an assessment...</option>
+
+        {% for assessment in assessments %}
+          <option value="{{ assessment.id }}">
+            📅 Assessment from {{ assessment.created_at|date:"F d, Y" }}
+          </option>
+        {% endfor %}
+
+      </select>
+
+    </div>
 
     <div class="progressWrap" id="progressSection" style="display:none;">
       <p id="progressText"></p>
@@ -128,6 +169,7 @@ button{
         <div class="fill" id="progressBar"></div>
       </div>
     </div>
+
   </div>
 
   <div class="grid" id="documentsContainer"></div>
@@ -136,10 +178,8 @@ button{
 
 <div class="toast" id="toast"></div>
 
-
-
-
 <script>
+
 let selectedAssessment = null;
 const csrfToken = "{{ csrf_token }}";
 
@@ -164,6 +204,7 @@ function loadChecklist(){
   .then(data=>{
 
     document.getElementById("progressSection").style.display="block";
+
     document.getElementById("progressText").innerText =
       `${data.completed} / ${data.total} Completed (${data.percentage}%)`;
 
@@ -174,6 +215,7 @@ function loadChecklist(){
     container.innerHTML="";
 
     data.checklist.forEach(item=>{
+
       const card=document.createElement("div");
       card.className="docCard"+(item.uploaded?" completed":"");
 
@@ -202,7 +244,6 @@ function loadChecklist(){
       }
       else{
 
-        // ALL DOCUMENT TYPES NOW USE FILE UPLOAD
         actions.innerHTML+=`
           <input type="file"
             onchange="uploadFile('${item.key}',this.files[0])">
@@ -210,7 +251,9 @@ function loadChecklist(){
       }
 
       container.appendChild(card);
+
     });
+
   });
 }
 
@@ -223,8 +266,8 @@ function uploadFile(type,file){
 
   const formData=new FormData();
 
-  // Decide endpoint based on type
   if(type==="reference_letter"){
+
     formData.append("file",file);
 
     fetch(`/add-reference/${selectedAssessment}/`,{
@@ -238,6 +281,7 @@ function uploadFile(type,file){
 
   }
   else if(type==="cover_letter"){
+
     formData.append("file",file);
 
     fetch(`/save-cover-letter/${selectedAssessment}/`,{
@@ -251,7 +295,7 @@ function uploadFile(type,file){
 
   }
   else{
-    // ID / Payslip / Bank Statement
+
     formData.append("document_type",type);
     formData.append("file",file);
 
@@ -263,10 +307,13 @@ function uploadFile(type,file){
       showToast("Uploaded");
       loadChecklist();
     });
+
   }
+
 }
 
 function deleteDoc(type,id){
+
   fetch(`/checklist/${selectedAssessment}/delete/${type}/${id}/`,{
     method:"DELETE",
     headers:{"X-CSRFToken":csrfToken}
@@ -274,7 +321,9 @@ function deleteDoc(type,id){
     showToast("Deleted");
     loadChecklist();
   });
+
 }
+
 </script>
 
 {% endblock %}
