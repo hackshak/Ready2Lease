@@ -31,6 +31,7 @@ class ActionPlanPageView(LoginRequiredMixin, TemplateView):
         return context
 
 
+
 # TASKS VIEW (PREMIUM FUNCTIONALITY)
 class ActionPlanTasksView(APIView):
     permission_classes = [IsAuthenticated]
@@ -77,6 +78,7 @@ class ActionPlanTasksView(APIView):
                 assessment
             ),
         }, status=status.HTTP_200_OK)
+
 
 
 # UPLOAD DOCUMENT (PREMIUM ONLY)
@@ -134,12 +136,19 @@ class UploadDocumentView(APIView):
             task_key=task_key
         )
 
+        # 🔧 FIX: recalculate and persist score
+        new_score = ActionPlanService.get_final_score_for_assessment(
+            request.user,
+            assessment
+        )
+
+        assessment.readiness_score = new_score
+        assessment.save(update_fields=["readiness_score"])
+
         return Response({
-            "final_score": ActionPlanService.get_final_score_for_assessment(
-                request.user,
-                assessment
-            )
+            "final_score": new_score
         }, status=status.HTTP_200_OK)
+
 
 
 # ADD REFERENCE (PREMIUM ONLY)
@@ -173,7 +182,6 @@ class AddReferenceView(APIView):
         ReferenceLetter.objects.create(
             user=request.user,
             assessment=assessment,
-            # text_content=text,
             file=file
         )
 
@@ -185,11 +193,17 @@ class AddReferenceView(APIView):
             task_key=task_key
         )
 
+        # 🔧 FIX: persist new score
+        new_score = ActionPlanService.get_final_score_for_assessment(
+            request.user,
+            assessment
+        )
+
+        assessment.readiness_score = new_score
+        assessment.save(update_fields=["readiness_score"])
+
         return Response({
-            "final_score": ActionPlanService.get_final_score_for_assessment(
-                request.user,
-                assessment
-            )
+            "final_score": new_score
         }, status=status.HTTP_200_OK)
 
 
@@ -235,12 +249,19 @@ class SaveCoverLetterView(APIView):
             task_key=task_key
         )
 
+        # 🔧 FIX: persist score
+        new_score = ActionPlanService.get_final_score_for_assessment(
+            request.user,
+            assessment
+        )
+
+        assessment.readiness_score = new_score
+        assessment.save(update_fields=["readiness_score"])
+
         return Response({
-            "final_score": ActionPlanService.get_final_score_for_assessment(
-                request.user,
-                assessment
-            )
+            "final_score": new_score
         }, status=status.HTTP_200_OK)
+
 
 
 # DOCUMENTS HOME PAGE (VISIBLE TO ALL LOGGED-IN USERS)
@@ -307,9 +328,6 @@ class DeleteDocumentView(APIView):
 
         task_key = None
 
-        # ----------------------------------------
-        # DOCUMENTS
-        # ----------------------------------------
         if doc_type in ["id_document", "payslip", "bank_statement"]:
 
             doc = get_object_or_404(
@@ -324,9 +342,6 @@ class DeleteDocumentView(APIView):
             doc.file.delete(save=False)
             doc.delete()
 
-        # ----------------------------------------
-        # REFERENCE LETTER
-        # ----------------------------------------
         elif doc_type == "reference_letter":
 
             ref = get_object_or_404(
@@ -342,9 +357,6 @@ class DeleteDocumentView(APIView):
                 ref.file.delete(save=False)
             ref.delete()
 
-        # ----------------------------------------
-        # COVER LETTER
-        # ----------------------------------------
         elif doc_type == "cover_letter":
 
             cover = get_object_or_404(
@@ -371,13 +383,19 @@ class DeleteDocumentView(APIView):
                 task_key=task_key
             ).delete()
 
+        # 🔧 FIX: recalculate score after deletion
+        new_score = ActionPlanService.get_final_score_for_assessment(
+            request.user,
+            assessment
+        )
+
+        assessment.readiness_score = new_score
+        assessment.save(update_fields=["readiness_score"])
+
         return Response(
             {
                 "detail": "Deleted successfully",
-                "final_score": ActionPlanService.get_final_score_for_assessment(
-                    request.user,
-                    assessment
-                )
+                "final_score": new_score
             },
             status=status.HTTP_200_OK
         )
