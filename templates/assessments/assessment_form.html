@@ -18,9 +18,7 @@
     <form id="assessmentForm" method="post">
         {% csrf_token %}
 
-        <!-- ========================= -->
         <!-- Step 1 -->
-        <!-- ========================= -->
         <div class="form-step form-step-active">
             <h2>Let's start with the basics</h2>
 
@@ -34,7 +32,6 @@
                 <option value="">Select location</option>
             </select>
 
-            <!-- Hidden structured fields -->
             <input type="hidden" id="selectedPostcode" name="postcode" required>
             <input type="hidden" id="selectedCity" name="city" required>
             <input type="hidden" id="selectedSuburb" name="suburb">
@@ -47,9 +44,7 @@
             <button type="button" class="btn-next">Next</button>
         </div>
 
-        <!-- ========================= -->
         <!-- Step 2 -->
-        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 2: Employment & Rental History</h2>
 
@@ -79,9 +74,7 @@
             <button type="button" class="btn-next">Next</button>
         </div>
 
-        <!-- ========================= -->
         <!-- Step 3 -->
-        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 3: Income & Documents</h2>
 
@@ -122,16 +115,41 @@
             <button type="button" class="btn-next">Next</button>
         </div>
 
-        <!-- ========================= -->
         <!-- Step 4 -->
-        <!-- ========================= -->
         <div class="form-step">
             <h2>Step 4: Household & Context</h2>
 
             <label>Moving With:</label>
-            <input type="number" name="moving_with_adults" placeholder="Adults" required min="0">
-            <input type="number" name="moving_with_children" placeholder="Children" required min="0">
-            <input type="number" name="moving_with_pets" placeholder="Pets" required min="0">
+
+            <!-- Adults -->
+            <label style="margin-top: 10px;">Adults</label>
+            <div class="counter-input">
+                <input type="number" name="moving_with_adults" required min="0" value="0">
+                <div class="counter-buttons">
+                    <button type="button" class="minus">−</button>
+                    <button type="button" class="plus">+</button>
+                </div>
+            </div>
+
+            <!-- Children -->
+            <label>Children</label>
+            <div class="counter-input">
+                <input type="number" name="moving_with_children" required min="0" value="0">
+                <div class="counter-buttons">
+                    <button type="button" class="minus">−</button>
+                    <button type="button" class="plus">+</button>
+                </div>
+            </div>
+
+            <!-- Pets -->
+            <label>Pets</label>
+            <div class="counter-input">
+                <input type="number" name="moving_with_pets" required min="0" value="0">
+                <div class="counter-buttons">
+                    <button type="button" class="minus">−</button>
+                    <button type="button" class="plus">+</button>
+                </div>
+            </div>
 
             <label>Context / History Issues</label>
             <textarea name="context_issues" required placeholder="If none, write 'None'"></textarea>
@@ -146,10 +164,30 @@
 </div>
 {% endblock content %}
 
-
 {% block extra_js %}
+
 <script>
-    const CHECKOUT_URL = "{% url 'create_checkout_session' %}";
+const CHECKOUT_URL = "{% url 'create_checkout_session' %}";
+
+document.querySelectorAll(".counter-input").forEach(counter => {
+
+    const input = counter.querySelector("input");
+    const plus = counter.querySelector(".plus");
+    const minus = counter.querySelector(".minus");
+
+    plus.addEventListener("click", () => {
+        input.value = parseInt(input.value || 0) + 1;
+    });
+
+    minus.addEventListener("click", () => {
+        if(input.value > 0){
+            input.value = parseInt(input.value) - 1;
+        }
+    });
+
+});
+
 </script>
+
 <script src="{% static 'js/assessment.js' %}"></script>
 {% endblock %}
