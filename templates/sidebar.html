@@ -305,7 +305,7 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
         <li><a href="{% url 'cover_letter_list' %}"><i class="fa-brands fa-square-letterboxd"></i><span>Cover Letter</span></a></li>
         <li><a href="{% url 'document_home' %}"><i class="fa-brands fa-readme"></i><span>Documents</span></a></li>
         <li><a href="{% url 'application_page' %}"><i class="fas fa-user-cog"></i><span>Applications</span></a></li>
-        <li><a href="#"><i class="fa-solid fa-receipt"></i><span>Reports</span></a></li>
+        <li><a href="{% url 'reports' %}"><i class="fa-solid fa-receipt"></i><span>Reports</span></a></li>
         <li id="authButton">
             {% if request.user.is_authenticated %}
                 <a href="{% url 'logout' %}">

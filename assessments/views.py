@@ -13,11 +13,34 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
 import re
 from .gap_analysis import generate_gap_analysis
+from rest_framework.generics import ListAPIView
+from rest_framework.generics import RetrieveAPIView
 
 
 
 
 
+
+
+
+class AssessmentListAPIView(ListAPIView):
+    serializer_class = AssessmentSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return Assessment.objects.filter(user=user).order_by("-created_at")
+
+
+
+
+
+
+
+class AssessmentDetailAPIView(RetrieveAPIView):
+    queryset = Assessment.objects.all()
+    serializer_class = AssessmentSerializer
+
+    
+    
 
 class AssessmentPageView(TemplateView):
     template_name = "assessments/assessment_form.html"

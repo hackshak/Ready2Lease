@@ -1,0 +1,442 @@
+{% extends "sidebar.html" %}
+
+{% block content %}
+
+<style>
+
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --text:#e9eefc;
+  --muted:#a9b4d6;
+  --border:rgba(255,255,255,.10);
+  --shadow:0 14px 30px rgba(0,0,0,.35);
+  --radius:18px;
+
+  --good:#28d17c;
+  --mid:#f7c948;
+  --bad:#ff5a7a;
+
+  --primary:#6c7dff;
+  --primary2:#8b5cf6;
+}
+
+/* FIX TEXT COLORS */
+
+.wrap, .card, .reportItem, .reportMeta{
+  color:var(--text);
+}
+
+.sub, .cardSub, .reportDate{
+  color:var(--muted);
+}
+
+.wrap{
+  margin:0 auto;
+  padding:24px 18px 60px;
+  max-width:1200px;
+}
+
+.pageHeader h1{
+  font-size:22px;
+  margin:0;
+}
+
+.sub{
+  font-size:13px;
+  margin-top:4px;
+}
+
+.card{
+  border:1px solid var(--border);
+  background: rgba(17,26,51,.75);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.cardTitle{
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.cardSub{
+  font-size:12px;
+  margin-bottom:15px;
+}
+
+.hero{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:20px;
+  margin-top:15px;
+}
+
+@media(max-width:900px){
+  .hero{
+    grid-template-columns:1fr;
+  }
+}
+
+/* UPDATED DROPDOWN */
+
+select{
+  background: rgba(17,26,51,.95);
+  color: var(--text);
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:12px;
+  font-size:13px;
+  outline:none;
+  width:100%;
+  cursor:pointer;
+}
+
+select option{
+  background:#111a33;
+  color:#e9eefc;
+}
+
+select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(108,125,255,.25);
+}
+
+/* BUTTON */
+
+button{
+  margin-top:12px;
+  padding:10px 14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  color:white;
+  font-size:13px;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+/* SCORE RING */
+
+.ring{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  background:
+    radial-gradient(circle at center,#111a33 60%,transparent 61%),
+    conic-gradient(var(--good) 0deg,var(--good) var(--deg),rgba(255,255,255,.08) var(--deg));
+}
+
+.scoreText{
+  font-size:30px;
+  font-weight:700;
+}
+
+/* REPORT LIST */
+
+.reportList{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.reportItem{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:1px solid var(--border);
+  padding:14px;
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  transition:.2s;
+}
+
+.reportItem:hover{
+  background:rgba(255,255,255,.06);
+}
+
+.reportMeta{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:12px;
+}
+
+.reportId{
+  font-weight:600;
+}
+
+.downloadBtn{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);
+  padding:7px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.emptyState{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+</style>
+
+
+<div class="wrap">
+
+<div class="pageHeader">
+<h1>Tenant Reports</h1>
+<div class="sub">Generate and manage your tenant readiness dossiers</div>
+</div>
+
+
+<div class="hero">
+
+<div class="card">
+
+<div class="cardTitle">Generate Tenant Dossier</div>
+<div class="cardSub">Select an assessment to generate a full professional tenant report</div>
+
+<select id="assessmentSelect"></select>
+
+<button onclick="generateReport()">
+Generate Tenant Dossier
+</button>
+
+</div>
+
+
+<div class="card" style="text-align:center">
+
+<div class="cardTitle">Assessment Score</div>
+<div class="cardSub">Preview of selected assessment readiness</div>
+
+<div class="ring" id="scoreRing" style="--deg:0deg">
+<div class="scoreText" id="scoreText">--</div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="cardTitle">Previous Reports</div>
+<div class="cardSub">Download your previously generated tenant dossiers</div>
+
+<div id="reportList" class="reportList"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* KEEPING ALL YOUR ORIGINAL LOGIC */
+
+function getCookie(name) {
+
+let cookieValue = null;
+
+if (document.cookie && document.cookie !== "") {
+
+const cookies = document.cookie.split(";");
+
+for (let i = 0; i < cookies.length; i++) {
+
+const cookie = cookies[i].trim();
+
+if (cookie.substring(0, name.length + 1) === (name + "=")) {
+
+cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+break;
+
+}
+
+}
+
+}
+
+return cookieValue;
+
+}
+
+const API_ASSESSMENTS = "/api/assessment/list/";
+const API_REPORTS = "/list/";
+const API_GENERATE = "/generate/";
+
+
+async function loadAssessments(){
+
+let res = await fetch(API_ASSESSMENTS);
+let data = await res.json();
+
+let select = document.getElementById("assessmentSelect");
+
+select.innerHTML = "";
+
+/* UPDATED DROPDOWN LISTING */
+
+data.forEach(a=>{
+
+let option = document.createElement("option");
+
+let date = a.created_at.slice(0,10);
+
+let score = a.readiness_score ? ` • Score ${a.readiness_score}` : "";
+
+option.value = a.id;
+
+option.textContent =
+`${a.full_name} — ${date}${score}`;
+
+select.appendChild(option);
+
+});
+
+if(data.length > 0){
+select.value = data[0].id;
+loadAssessmentScore();
+}
+
+}
+
+
+document.getElementById("assessmentSelect").addEventListener(
+"change",
+loadAssessmentScore
+);
+
+
+async function loadAssessmentScore(){
+
+let id = document.getElementById("assessmentSelect").value;
+
+if(!id) return;
+
+let res = await fetch("/api/assessment/" + id + "/");
+
+let data = await res.json();
+
+updateScoreRing(data.readiness_score);
+
+}
+
+
+
+async function loadReports(){
+
+let res = await fetch(API_REPORTS);
+
+let reports = await res.json();
+
+let container = document.getElementById("reportList");
+
+container.innerHTML="";
+
+if(reports.length === 0){
+
+container.innerHTML = `<div class="emptyState">No reports generated yet</div>`;
+
+return;
+
+}
+
+reports.forEach(r=>{
+
+let assessmentName = r.assessment_name || "Assessment";
+let assessmentDate = r.assessment_date ? r.assessment_date.slice(0,10) : "";
+let score = r.score ? `Score ${r.score}` : "";
+
+container.innerHTML += `
+
+<div class="reportItem">
+
+<div class="reportMeta">
+
+<div class="reportId">${assessmentName}</div>
+
+<div class="reportDate">
+Assessment: ${assessmentDate}
+</div>
+
+<div class="reportDate">
+Report Generated: ${r.created_at.slice(0,10)} • ${score}
+</div>
+
+</div>
+
+<button class="downloadBtn" onclick="downloadReport('${r.pdf_file}')">
+Download
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+async function generateReport(){
+
+let id = document.getElementById("assessmentSelect").value;
+
+let res = await fetch(API_GENERATE + id + "/",{
+method:"POST",
+headers:{
+"X-CSRFToken": getCookie("csrftoken")
+}
+});
+
+let data = await res.json();
+
+updateScoreRing(data.score);
+
+loadReports();
+
+window.open(data.pdf);
+
+}
+
+
+function updateScoreRing(score){
+
+let ring = document.getElementById("scoreRing");
+
+let deg = (score / 100) * 360;
+
+ring.style.setProperty("--deg",deg+"deg");
+
+document.getElementById("scoreText").innerText = score+"%";
+
+}
+
+
+function downloadReport(url){
+window.open(url);
+}
+
+loadAssessments();
+loadReports();
+
+</script>
+
+{% endblock content %}

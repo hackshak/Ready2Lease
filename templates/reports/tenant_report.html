@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+
+/* ================= PAGE ================= */
+
+@page {
+size:A4;
+margin:40px;
+
+@bottom-left{
+content:"Ready2Lease";
+font-size:11px;
+color:#777;
+}
+
+@bottom-center{
+content:"Report ID: {{report.report_id}}";
+font-size:11px;
+color:#777;
+}
+
+@bottom-right{
+content:"Page " counter(page);
+font-size:11px;
+color:#777;
+}
+}
+
+body{
+font-family:Arial, Helvetica, sans-serif;
+color:#1a1a1a;
+margin:0;
+}
+
+/* ================= GENERAL ================= */
+
+.page{
+page-break-after:always;
+}
+
+.center{text-align:center;}
+
+.logo{
+font-size:32px;
+font-weight:bold;
+}
+
+.subtitle{
+letter-spacing:3px;
+font-size:12px;
+color:#c9a54c;
+}
+
+.divider{
+height:1px;
+background:#111;
+margin:30px 0;
+}
+
+.sectionTitle{
+border-bottom:2px solid #c9a54c;
+padding-bottom:6px;
+margin-bottom:20px;
+}
+
+.small{
+font-size:12px;
+color:#777;
+}
+
+/* ================= GRID ================= */
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.card{
+border:1px solid #e5e5e5;
+padding:20px;
+border-radius:8px;
+background:#fafafa;
+}
+
+/* ================= SCORE ================= */
+
+.scoreBox{
+background:#111;
+color:#fff;
+padding:30px;
+border-radius:10px;
+width:260px;
+}
+
+.score{
+font-size:42px;
+font-weight:bold;
+}
+
+.profile{
+margin-top:10px;
+font-size:12px;
+background:#c9a54c;
+color:#111;
+display:inline-block;
+padding:3px 8px;
+border-radius:4px;
+}
+
+/* ================= KPI CARDS ================= */
+
+.kpiGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.kpi{
+border:1px solid #eee;
+padding:15px;
+border-radius:8px;
+background:#fafafa;
+}
+
+/* ================= HIGHLIGHTS ================= */
+
+.highlight{
+background:#e5f2e9;
+padding:6px 10px;
+border-radius:4px;
+display:inline-block;
+margin-right:10px;
+margin-top:6px;
+font-size:12px;
+}
+
+/* ================= MARKET BAR ================= */
+
+.marketWrapper{
+position:relative;
+}
+
+.marketBar{
+display:flex;
+height:30px;
+border-radius:6px;
+overflow:hidden;
+}
+
+.marketBar div{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+}
+
+.risk{background:#e8bcbc;}
+.average{background:#f2dfa0;}
+.strong{background:#bcd4f6;}
+.elite{background:#c6e8c6;}
+
+.scoreMarker{
+position:absolute;
+top:-6px;
+height:40px;
+width:3px;
+background:#111;
+left:{{score}}%;
+}
+
+/* ================= STRATEGIC CARD ================= */
+
+.strategy{
+background:#111;
+color:#fff;
+padding:25px;
+border-radius:8px;
+margin-top:20px;
+}
+
+/* ================= TIMELINE ================= */
+
+.timeline{
+position:relative;
+margin-top:20px;
+}
+
+.timelineItem{
+position:relative;
+padding-left:60px;
+margin-bottom:35px;
+}
+
+.timelineLine{
+position:absolute;
+left:22px;
+top:0;
+bottom:0;
+width:2px;
+background:#ddd;
+}
+
+.timelineDot{
+position:absolute;
+left:16px;
+width:12px;
+height:12px;
+border-radius:50%;
+top:4px;
+}
+
+.dotToday{background:#e74c3c;}
+.dotWeek{background:#f1c40f;}
+.dotNext{background:#3498db;}
+
+.timelineLabel{
+font-size:11px;
+font-weight:bold;
+margin-bottom:4px;
+}
+
+.labelToday{color:#e74c3c;}
+.labelWeek{color:#f1c40f;}
+.labelNext{color:#3498db;}
+
+/* ================= QR ================= */
+
+.qrCard{
+border:3px solid #111;
+padding:40px;
+border-radius:10px;
+display:inline-block;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- COVER PAGE -->
+
+<div class="page center">
+
+<div style="margin-top:160px">
+
+<div class="logo">Ready2Lease</div>
+
+<div class="divider"></div>
+
+<h1>TENANT READINESS DOSSIER</h1>
+
+<div class="subtitle">OFFICIAL ASSESSMENT PROFILE</div>
+
+<div class="divider"></div>
+
+<p class="small">Prepared For</p>
+
+<h2>{{assessment.full_name}}</h2>
+
+<p class="small">{{report.report_id}}</p>
+
+<p class="small">{{report.created_at}}</p>
+
+<div style="margin-top:40px">
+
+<img src="{{qr_code_url}}" width="80">
+
+<p class="small">Scan to verify</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TABLE OF CONTENTS -->
+
+<div class="page">
+
+<h2 class="sectionTitle">Table of Contents</h2>
+
+<p>Executive Summary .............. 3</p>
+<p>Category Breakdown: ID & Income ........ 4</p>
+<p>Category Breakdown: History & References ... 5</p>
+<p>Competitive Analysis ............ 6</p>
+<p>Customized Action Plan .......... 7</p>
+<p>Verification & Disclaimer ....... 8</p>
+
+</div>
+
+
+<!-- EXECUTIVE SUMMARY -->
+
+<div class="page">
+
+<h2 class="sectionTitle">Executive Summary</h2>
+
+<div class="grid">
+
+<div class="scoreBox">
+
+<div>READINESS SCORE</div>
+
+<div class="score">{{score}} /100</div>
+
+<div class="profile">{{profile}}</div>
+
+</div>
+
+<div class="kpiGrid">
+
+<div class="kpi">
+<strong>{{strength_count}}</strong><br>
+Key Strengths
+</div>
+
+<div class="kpi">
+<strong>{{risk_count}}</strong><br>
+Risk Areas
+</div>
+
+<div class="kpi">
+<strong>{{actions|length}}</strong><br>
+Priority Actions
+</div>
+
+</div>
+
+</div>
+
+<h3 style="margin-top:30px">Key Highlights</h3>
+
+{% for h in highlights %}
+<span class="highlight">{{h}}</span>
+{% endfor %}
+
+<h3 style="margin-top:30px">Critical Risks</h3>
+
+<ul>
+{% for r in risks %}
+<li>{{r}}</li>
+{% endfor %}
+</ul>
+
+</div>
+
+
+<!-- CATEGORY ANALYSIS -->
+
+<div class="page">
+
+<h2 class="sectionTitle">Category Analysis</h2>
+
+<div class="card">
+
+<strong>Identity Documentation</strong>
+
+<ul>
+{% for d in assessment.documents %}
+<li>{{d|title|cut:"_"}}</li>
+{% endfor %}
+</ul>
+
+</div>
+
+<div class="card" style="margin-top:20px">
+
+<strong>Financial Stability</strong>
+
+<p>Weekly Income: ${{assessment.household_income}}</p>
+<p>Target Rent: ${{assessment.monthly_rent_budget}}</p>
+<p>Rent Coverage: {{rent_coverage}}%</p>
+
+</div>
+
+</div>
+
+
+<!-- COMPETITIVE ANALYSIS -->
+
+<div class="page">
+
+<h2 class="sectionTitle">Competitive Analysis</h2>
+
+<h3>Market Position</h3>
+
+<div class="marketWrapper">
+
+<div class="marketBar">
+
+<div class="risk">Risk</div>
+<div class="average">Average</div>
+<div class="strong">Strong</div>
+<div class="elite">Elite</div>
+
+</div>
+
+<div class="scoreMarker"></div>
+
+</div>
+
+<div class="grid" style="margin-top:25px">
+
+<div class="card">
+<strong>Estimated Rank</strong>
+<p>You likely fall into the Top 50% of applicants.</p>
+</div>
+
+<div class="card">
+<strong>Improvement Potential</strong>
+<p>Completing recommended actions could boost your score.</p>
+</div>
+
+</div>
+
+<div class="strategy">
+
+<strong>Strategic Advice</strong>
+
+<p style="margin-top:10px">
+Submit your application quickly and include a strong cover letter to stand out.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- ACTION PLAN -->
+
+<div class="page">
+
+<h2 class="sectionTitle">Customized Action Plan</h2>
+
+<div class="timeline">
+
+<div class="timelineLine"></div>
+
+{% for action in actions %}
+
+<div class="timelineItem">
+
+{% if action.timeline == "today" %}
+<div class="timelineDot dotToday"></div>
+<div class="timelineLabel labelToday">TODAY</div>
+
+{% elif action.timeline == "this_week" %}
+<div class="timelineDot dotWeek"></div>
+<div class="timelineLabel labelWeek">THIS WEEK</div>
+
+{% else %}
+<div class="timelineDot dotNext"></div>
+<div class="timelineLabel labelNext">NEXT WEEK</div>
+{% endif %}
+
+<strong>{{action.title}}</strong>
+
+<p>{{action.description}}</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<!-- VERIFICATION -->
+
+<div class="page center">
+
+<h2 class="sectionTitle">Verified Report</h2>
+
+<div class="qrCard">
+
+<img src="{{qr_code_url}}" width="120">
+
+<p class="small">{{report.report_id}}</p>
+
+</div>
+
+<div style="margin-top:40px">
+
+<h3>Legal Disclaimer</h3>
+
+<p class="small">
+
+This document is a readiness assessment generated by Ready2Lease.It does not guarantee rental approval.The scores and assessments are based on the data provided by the applicant. Ready2Lease is not a real estate agency or Financial institution.
+<br>
+For Verification of the data contained herein,please use the QR code above or contact the applicant directly for original documentation.
+
+</p>
+
+</div>
+
+</div>
+
+</body>
+</html>

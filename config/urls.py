@@ -29,7 +29,8 @@ urlpatterns = [
     path("ai-assist/", include("ai_assist.urls")),
     path('', include('applications.urls')),
     path("", include("cover_letters.urls")),
-    path('payments/',include('payments.urls'))
+    path('payments/',include('payments.urls')),
+    path("", include("reports.urls"))
 ]
 
 if settings.DEBUG:
