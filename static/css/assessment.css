@@ -172,3 +172,65 @@ button {
         margin-right: 0;
     }
 }
+
+
+/* ============================= */
+/* STEP 4 COUNTER INPUT FIX */
+/* ============================= */
+
+.counter-input{
+    position:relative;
+    /* margin-bottom:20px; */
+}
+
+/* adjust space for buttons */
+
+.counter-input input{
+    padding-right:100px;
+}
+
+/* remove default number arrows */
+
+.counter-input input::-webkit-inner-spin-button,
+.counter-input input::-webkit-outer-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+}
+
+.counter-input input[type=number]{
+    -moz-appearance:textfield;
+}
+
+/* button container */
+
+.counter-buttons{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-83%);
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* button styling */
+
+.counter-buttons button{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:1px solid #ccc;
+    background:#fff;
+    cursor:pointer;
+    font-size:16px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* hover */
+
+.counter-buttons button:hover{
+    background:#f2f2f2;
+}
