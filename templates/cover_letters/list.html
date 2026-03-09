@@ -18,55 +18,72 @@
 }
 
 .wrap{
-  max-width:1200px;
+  max-width:1250px;
   margin:auto;
-  padding:30px 20px;
+  padding:32px 24px;
 }
+
+/* TOPBAR */
 
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:25px;
+  margin-bottom:30px;
 }
 
 .topbar h2{
   color:white;
+  font-size:22px;
+  font-weight:600;
 }
 
 .generate-btn{
   background:linear-gradient(135deg,var(--primary),var(--primary2));
   border:0;
-  padding:10px 16px;
+  padding:11px 18px;
   border-radius:12px;
   color:white;
   font-weight:600;
   cursor:pointer;
-  box-shadow:0 8px 20px rgba(108,125,255,.3);
+  box-shadow:0 10px 25px rgba(108,125,255,.35);
+  transition:.25s;
 }
+
+.generate-btn:hover{
+  transform:translateY(-2px);
+}
+
+/* GRID */
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:22px;
 }
+
+/* CARD */
 
 .card{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:var(--radius);
-  padding:18px;
+  padding:20px;
   box-shadow:var(--shadow);
-  transition:.2s;
+  transition:.25s;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .card:hover{
-  transform:translateY(-4px);
+  transform:translateY(-5px);
+  border-color:rgba(255,255,255,.18);
 }
 
 .card h3{
   margin:0 0 6px;
-  font-size:14px;
+  font-size:16px;
   color:white;
 }
 
@@ -75,21 +92,51 @@
   font-size:12px;
 }
 
-.card .meta{
-  margin-top:10px;
-  font-size:11px;
-  color:var(--muted);
+/* BUTTON ROW */
+
+.card-actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
 }
 
-.card a{
-  display:inline-block;
-  margin-top:12px;
-  font-size:12px;
+.btn-view{
+  flex:1;
+  text-align:center;
   text-decoration:none;
+  font-size:13px;
+  font-weight:500;
   color:white;
   background:rgba(255,255,255,.08);
-  padding:6px 10px;
-  border-radius:8px;
+  padding:8px;
+  border-radius:10px;
+}
+
+.btn-view:hover{
+  background:rgba(255,255,255,.14);
+}
+
+.btn-edit{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:500;
+  color:white;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  padding:8px;
+  border-radius:10px;
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+  text-align:center;
+  padding:50px;
+  color:var(--muted);
+  border:1px dashed var(--border);
+  border-radius:var(--radius);
+  font-size:14px;
 }
 
 /* ================= MODAL ================= */
@@ -107,14 +154,14 @@
 
 .modal-content{
   background:var(--panel2);
-  width:720px;
-  max-height:90vh;
-  overflow:auto;
+  width:820px;
   padding:28px;
   border-radius:var(--radius);
   border:1px solid var(--border);
   box-shadow:var(--shadow);
 }
+
+/* HEADER */
 
 .modal-header{
   display:flex;
@@ -125,7 +172,7 @@
 
 .modal-header h3{
   margin:0;
-  font-size:16px;
+  font-size:17px;
   color:white;
 }
 
@@ -135,10 +182,12 @@
   color:var(--muted);
 }
 
+/* FORM GRID */
+
 .form-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
 }
 
 .form-group{
@@ -152,18 +201,10 @@
   margin-bottom:6px;
 }
 
-/* Inputs */
-.modal input,
-.modal textarea{
-  padding:10px 12px;
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--border);
-  border-radius:10px;
-  color:white;
-  font-size:12px;
-}
+/* INPUTS */
 
-/* Select Styling Fix */
+.modal input,
+.modal textarea,
 .modal select{
   padding:10px 12px;
   background:rgba(255,255,255,.05);
@@ -171,29 +212,13 @@
   border-radius:10px;
   color:white;
   font-size:12px;
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  cursor:pointer;
 }
 
-/* Custom arrow */
-.modal select {
-  background-image: linear-gradient(45deg, transparent 50%, white 50%),
-                    linear-gradient(135deg, white 50%, transparent 50%);
-  background-position: calc(100% - 16px) calc(50% - 4px),
-                       calc(100% - 10px) calc(50% - 4px);
-  background-size: 6px 6px, 6px 6px;
-  background-repeat: no-repeat;
+.modal textarea{
+  min-height:70px;
+  resize:none;
 }
 
-/* Dropdown options */
-.modal select option{
-  background-color:#111a33;
-  color:#ffffff;
-}
-
-/* Focus */
 .modal input:focus,
 .modal textarea:focus,
 .modal select:focus{
@@ -202,26 +227,22 @@
   box-shadow:0 0 0 2px rgba(108,125,255,.25);
 }
 
-.modal textarea{
-  min-height:80px;
-  resize:vertical;
-}
-
 .full-width{
   grid-column:1 / -1;
 }
 
+/* SUBMIT BUTTON */
+
 .generate-submit{
-  margin-top:24px;
+  margin-top:22px;
   width:100%;
-  padding:12px;
+  padding:13px;
   border-radius:12px;
   border:0;
   font-weight:600;
   background:linear-gradient(135deg,var(--primary),var(--primary2));
   color:white;
   cursor:pointer;
-  transition:.2s;
 }
 
 .generate-submit.loading{
@@ -229,14 +250,19 @@
   pointer-events:none;
 }
 
-.empty-state{
-  text-align:center;
-  padding:40px;
-  color:var(--muted);
-  border:1px dashed var(--border);
-  border-radius:var(--radius);
+@media(max-width:900px){
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .modal-content{
+    width:92%;
+  }
+
 }
 </style>
+
 
 <div class="wrap">
 
@@ -251,10 +277,13 @@
 
 </div>
 
+
 <!-- Modal -->
+
 <div class="modal" id="generateModal">
+
   <div class="modal-content">
-    
+
     <div class="modal-header">
       <h3>Generate Landlord-Friendly Cover Letter</h3>
       <span class="close" onclick="closeModal()">✕</span>
@@ -262,14 +291,20 @@
 
     <div class="form-grid">
 
-      <div class="form-group">
+      <div class="form-group full-width">
         <label>Property Address</label>
-        <input id="property_address">
+        <input id="property_address" required>
+      </div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input id="name" required>
       </div>
 
       <div class="form-group">
         <label>Tone</label>
-        <select id="tone">
+        <select id="tone" required>
+          <option value="">Select</option>
           <option value="professional">Professional</option>
           <option value="friendly">Friendly</option>
           <option value="confident">Confident</option>
@@ -279,7 +314,7 @@
 
       <div class="form-group">
         <label>Employment Type</label>
-        <select id="employment_type">
+        <select id="employment_type" required>
           <option value="">Select</option>
           <option value="full_time">Full Time</option>
           <option value="part_time">Part Time</option>
@@ -288,9 +323,19 @@
         </select>
       </div>
 
+      <div class="form-group full-width">
+        <label>Employment Details</label>
+        <textarea id="employment_info" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Income Details</label>
+        <textarea id="income" required></textarea>
+      </div>
+
       <div class="form-group">
         <label>Rental History Type</label>
-        <select id="rental_history_type">
+        <select id="rental_history_type" required>
           <option value="">Select</option>
           <option value="first_time">First Time Renter</option>
           <option value="rented_before">Rented Before</option>
@@ -299,28 +344,13 @@
       </div>
 
       <div class="form-group full-width">
-        <label>Full Name</label>
-        <input id="name">
-      </div>
-
-      <div class="form-group full-width">
-        <label>Employment Details</label>
-        <textarea id="employment_info"></textarea>
-      </div>
-
-      <div class="form-group full-width">
-        <label>Income Details</label>
-        <textarea id="income"></textarea>
-      </div>
-
-      <div class="form-group full-width">
         <label>Rental History</label>
-        <textarea id="rental_history"></textarea>
+        <textarea id="rental_history" required></textarea>
       </div>
 
       <div class="form-group full-width">
         <label>Additional Notes</label>
-        <textarea id="custom_note"></textarea>
+        <textarea id="custom_note" required></textarea>
       </div>
 
     </div>
@@ -330,9 +360,12 @@
     </button>
 
   </div>
+
 </div>
 
+
 <script>
+
 const csrfToken = "{{ csrf_token }}";
 
 function openModal(){
@@ -344,49 +377,108 @@ function closeModal(){
 }
 
 function loadLetters(){
+
   fetch("/api/cover-letters/")
   .then(res=>res.json())
   .then(data=>{
+
     const grid=document.getElementById("lettersGrid");
     grid.innerHTML="";
 
     if(data.length===0){
+
       grid.innerHTML=`<div class="empty-state">
         You haven’t generated any cover letters yet.
       </div>`;
+
       return;
     }
 
     data.forEach(letter=>{
+
       grid.innerHTML += `
         <div class="card">
-          <h3>${letter.property_address || "No Property"}</h3>
-          <small>${new Date(letter.created_at).toLocaleDateString()}</small>
-          <div class="meta">
-            ${letter.employment_type || ""} 
-            ${letter.rental_history_type ? " • "+letter.rental_history_type : ""}
-            ${letter.score ? "<br>Score: "+letter.score : ""}
+
+          <div>
+
+            <h3>${letter.property_address || "No Property"}</h3>
+
+            <small>${new Date(letter.created_at).toLocaleDateString()}</small>
+
           </div>
-          <a href="/cover-letters/${letter.id}/">View / Edit</a>
+
+          <div class="card-actions">
+
+            <a class="btn-view" href="/cover-letters/${letter.id}/">
+              View
+            </a>
+
+            <a class="btn-edit" href="/cover-letters/${letter.id}/">
+              Edit
+            </a>
+
+          </div>
+
         </div>
       `;
+
     });
+
   });
+
 }
 
+function validateForm(){
+
+  const fields = [
+    "property_address",
+    "name",
+    "tone",
+    "employment_type",
+    "employment_info",
+    "income",
+    "rental_history_type",
+    "rental_history",
+    "custom_note"
+  ];
+
+  for(let id of fields){
+
+    const el = document.getElementById(id);
+
+    if(!el.value.trim()){
+      alert("Please fill out all fields before generating the cover letter.");
+      return false;
+    }
+
+  }
+
+  return true;
+
+}
 
 function generateLetter(){
+
+  if(!validateForm()){
+    return;
+  }
+
   const btn=document.getElementById("generateBtn");
+
   btn.classList.add("loading");
   btn.innerText="Generating...";
 
   fetch("/api/cover-letters/generate/",{
+
     method:"POST",
+
     headers:{
       "Content-Type":"application/json",
       "X-CSRFToken":csrfToken
     },
+
     body:JSON.stringify({
+
       property_address:document.getElementById("property_address").value,
       tone:document.getElementById("tone").value,
       employment_type:document.getElementById("employment_type").value,
@@ -396,38 +488,55 @@ function generateLetter(){
       income:document.getElementById("income").value,
       rental_history:document.getElementById("rental_history").value,
       custom_note:document.getElementById("custom_note").value
+
     })
+
   })
+
   .then(res => {
       if (!res.ok) {
           throw new Error("Server error");
       }
       return res.json();
   })
+
   .then(data=>{
+
       btn.classList.remove("loading");
       btn.innerText="Generate Cover Letter";
 
       if(data && data.id){
+
           document.getElementById("generateModal").style.display="none";
+
           loadLetters();
 
-          // reset form
           document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
               .forEach(el => el.value="");
+
       } else {
+
           alert(data.error || "Error generating letter");
+
       }
+
   })
+
   .catch(error=>{
+
       btn.classList.remove("loading");
       btn.innerText="Generate Cover Letter";
+
       alert("Something went wrong. Please try again.");
+
       console.error(error);
+
   });
+
 }
 
 document.addEventListener("DOMContentLoaded", loadLetters);
+
 </script>
 
 {% endblock content %}

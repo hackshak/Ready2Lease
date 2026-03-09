@@ -17,18 +17,12 @@ from .services.generator import CoverLetterGeneratorService
 from .services.pdf import CoverLetterPDFService
 
 
-# ==========================================================
 # HELPER
-# ==========================================================
-
 def require_premium(user):
     return getattr(user, "is_premium", False)
 
 
-# ==========================================================
 # TEMPLATE VIEWS (VISIBLE TO ALL LOGGED-IN USERS)
-# ==========================================================
-
 @login_required
 def cover_letter_list_view(request):
     # ✅ Page visible to all logged-in users
@@ -60,10 +54,7 @@ def cover_letter_editor_view(request, pk):
     )
 
 
-# ==========================================================
 # API: LIST LETTERS (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class CoverLetterListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -93,10 +84,7 @@ class CoverLetterListAPI(APIView):
         return Response(data)
 
 
-# ==========================================================
 # API: GENERATE NEW LETTER (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class GenerateCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -155,10 +143,7 @@ class GenerateCoverLetterAPI(APIView):
         })
 
 
-# ==========================================================
 # API: GET LETTER DETAIL (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class CoverLetterDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -180,10 +165,7 @@ class CoverLetterDetailAPI(APIView):
         return Response(serializer.data)
 
 
-# ==========================================================
 # API: SAVE EDITED CONTENT (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class SaveCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -215,10 +197,7 @@ class SaveCoverLetterAPI(APIView):
         return Response({"success": True})
 
 
-# ==========================================================
 # API: EXPORT PDF (PREMIUM FUNCTIONALITY)
-# ==========================================================
-
 class ExportCoverLetterPDFAPI(APIView):
     permission_classes = [IsAuthenticated]
 
