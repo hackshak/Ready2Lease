@@ -1,0 +1,187 @@
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.blog-hero{
+padding:80px 20px;
+text-align:center;
+background:#0E0E0E;
+color:white;
+}
+
+.blog-hero h1{
+font-size:60px;
+margin-bottom:10px;
+}
+
+.blog-hero p{
+color:#cbd5f5;
+}
+
+.blog-section{
+padding:70px 0;
+background:#f8fafc;
+}
+
+.blog-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+gap:40px;
+}
+
+.blog-card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+transition:all 0.35s ease;
+}
+
+.blog-card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 40px rgba(0,0,0,0.08);
+}
+
+.blog-image{
+position:relative;
+height:240px;
+overflow:hidden;
+}
+
+.blog-image img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:transform 0.6s ease;
+}
+
+.blog-card:hover .blog-image img{
+transform:scale(1.08);
+}
+
+.blog-category{
+position:absolute;
+top:18px;
+left:18px;
+background:#d4a017;
+color:white;
+font-size:13px;
+font-weight:600;
+padding:6px 14px;
+border-radius:50px;
+}
+
+.blog-content{
+padding:25px;
+}
+
+.blog-meta{
+display:flex;
+gap:18px;
+font-size:14px;
+color:#6b7280;
+margin-bottom:12px;
+}
+.blog-date {
+    background-color: #d4a017;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+
+.blog-title{
+font-weight:700;
+margin:10px 0 12px 0;
+line-height:1.3;
+}
+
+.blog-title a{
+text-decoration:none;
+color:#111827;
+transition:color 0.3s ease;
+font-size:22px;
+}
+
+.blog-title a:hover{
+color:#d4a017;
+}
+
+.blog-description{
+color:#4b5563;
+font-size:13px;
+line-height:1.6;
+margin-bottom:20px;
+}
+
+.read-more{
+display:inline-flex;
+align-items:center;
+gap:6px;
+font-weight:600;
+color:#d4a017;
+text-decoration:none;
+transition:all 0.3s ease;
+}
+
+.read-more:hover{
+gap:12px;
+}
+
+/* PAGINATION */
+.pagination{
+margin-top:60px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:30px;
+font-weight:600;
+}
+
+.page-btn{
+padding:12px 28px;
+border:2px solid #d4a017;
+border-radius:8px;
+text-decoration:none;
+color:#d4a017;
+transition:all 0.3s ease;
+}
+
+.page-btn:hover{
+background:#d4a017;
+color:white;
+}
+
+.page-btn.disabled{
+border-color:#d4a017;
+color:#9ca3af;
+pointer-events:none;
+}
+
+.page-number{
+font-size:18px;
+font-weight:600;
+color:#111827;
+}
+
+
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.blog-grid{
+grid-template-columns:1fr;
+}
+
+.blog-title{
+font-size:22px;
+}
+
+.blog-hero h1{
+font-size:32px;
+}
+
+}
