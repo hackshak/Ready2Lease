@@ -30,7 +30,9 @@ urlpatterns = [
     path('', include('applications.urls')),
     path("", include("cover_letters.urls")),
     path('payments/',include('payments.urls')),
-    path("", include("reports.urls"))
+    path("", include("reports.urls")),
+    path("", include("blog.urls"))
+
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<!-- BLOG HEADER -->
+
+<section class="blog-header">
+
+<div class="blog-header-inner">
+
+<span class="header-category">
+{{ blog.category.name }}
+</span>
+
+<h1 class="blog-title">
+{{ blog.title }}
+</h1>
+
+<div class="blog-meta">
+
+<span class="meta-item">
+<i class="fa-regular fa-user"></i>
+Ready2Lease Team
+</span>
+
+<span class="meta-item">
+<i class="fa-regular fa-calendar"></i>
+{{ blog.created_at|date:"F d, Y" }}
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- BLOG CONTENT -->
+
+<section class="blog-content-section">
+
+<div class="container blog-container">
+
+<a href="{% url 'blog_list' %}" class="back-btn">
+<i class="fa-solid fa-arrow-left"></i>
+<span>Back to All Blogs</span>
+</a>
+
+
+<article class="blog-article">
+
+<img src="{{ blog.image.url }}" class="blog-main-image">
+
+<div class="blog-body">
+
+{{ blog.content|safe }}
+
+</div>
+
+
+
+<!-- KEY TAKEAWAYS -->
+
+<div class="takeaways-box">
+
+<h3>
+<i class="fa-solid fa-lightbulb"></i>
+Key Takeaways
+</h3>
+
+<ul>
+
+<li>Preparation is your biggest advantage.</li>
+
+<li>Identify risks before the agent does.</li>
+
+<li>Professional presentation sets you apart.</li>
+
+</ul>
+
+</div>
+
+</article>
+
+
+
+<!-- RELATED BLOGS -->
+
+<div class="related-section">
+
+<h2 class="related-heading">Related Articles</h2>
+
+<div class="related-grid">
+
+{% for related in related_blogs %}
+
+<div class="related-blog">
+
+<img src="{{ related.image.url }}">
+
+<div class="related-content">
+
+<a href="{% url 'blog_detail' related.slug %}">
+{{ related.title }}
+</a>
+
+<span class="related-blog-date">
+<i class="fa-regular fa-calendar"></i>
+{{ related.created_at|date:"M d, Y" }}
+</span>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<p class="no-related">
+No related articles available at the moment.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+</div>
+</section>
+
+{% include "footer.html" %}
+{% endblock %}

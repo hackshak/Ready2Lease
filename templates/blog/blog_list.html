@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="blog-hero">
+    <div class="container">
+        <h1>Expert Rental Advice</h1>
+        <p>Strategies, templates, and insights to help you secure your next home.</p>
+    </div>
+</section>
+
+
+<section class="blog-section">
+<div class="container">
+
+<div class="blog-grid">
+
+{% for blog in blogs %}
+
+<article class="blog-card">
+
+<div class="blog-image">
+
+<img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+
+<span class="blog-category">
+{{ blog.category.name }}
+</span>
+
+</div>
+
+
+<div class="blog-content">
+
+<div class="blog-meta">
+
+<span class="blog-date">
+<i class="fa-regular fa-calendar"></i>
+{{ blog.created_at|date:"F d, Y" }}
+</span>
+
+</div>
+
+
+<h3 class="blog-title">
+<a href="{% url 'blog_detail' blog.slug %}">
+{{ blog.title }}
+</a>
+</h3>
+
+
+<p class="blog-description">
+{{ blog.short_description|truncatewords:25 }}
+</p>
+
+
+<a class="read-more" href="{% url 'blog_detail' blog.slug %}">
+Read Article →
+</a>
+
+</div>
+
+</article>
+
+{% endfor %}
+
+</div>
+
+
+<!-- PAGINATION -->
+
+<div class="pagination">
+
+{% if blogs.has_previous %}
+<a class="page-btn" href="?page={{ blogs.previous_page_number }}">
+Previous
+</a>
+{% else %}
+<span class="page-btn disabled">Previous</span>
+{% endif %}
+
+<span class="page-number">
+{{ blogs.number }} / {{ blogs.paginator.num_pages }}
+</span>
+
+{% if blogs.has_next %}
+<a class="page-btn" href="?page={{ blogs.next_page_number }}">
+Next
+</a>
+{% else %}
+<span class="page-btn disabled">Next</span>
+{% endif %}
+
+</div>
+
+
+</div>
+</section>
+
+{% include "footer.html" %}
+{% endblock %}

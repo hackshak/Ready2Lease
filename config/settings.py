@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'cover_letters',
     'payments',
     'reports',
+    'blog',
     
 ]
 
