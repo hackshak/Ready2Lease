@@ -1,507 +1,989 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-
 <style>
 
-/* ================= PAGE ================= */
+/* ============================================================
+   FONTS
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
 
+/* ============================================================
+   PAGE SETUP
+   ============================================================ */
 @page {
-size:A4;
-margin:40px;
-
-@bottom-left{
-content:"Ready2Lease";
-font-size:11px;
-color:#777;
+  size: A4;
+  margin: 0;
+  @bottom-left   { content: "Ready2Lease  •  Confidential"; font-family: 'DM Sans', sans-serif; font-size: 10px; color: #7a8599; margin: 0 0 14px 40px; }
+  @bottom-center { content: "Report ID: {{report.report_id}}";  font-family: 'DM Sans', sans-serif; font-size: 10px; color: #7a8599; margin: 0 0 14px 0; }
+  @bottom-right  { content: "Page " counter(page) " of " counter(pages); font-family: 'DM Sans', sans-serif; font-size: 10px; color: #7a8599; margin: 0 40px 14px 0; }
 }
 
-@bottom-center{
-content:"Report ID: {{report.report_id}}";
-font-size:11px;
-color:#777;
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', Arial, sans-serif;
+  color: #1a2035;
+  background: #ffffff;
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
-@bottom-right{
-content:"Page " counter(page);
-font-size:11px;
-color:#777;
+/* ============================================================
+   PAGE BREAKS
+   ============================================================ */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 48px 44px 72px;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
 }
-}
+.page:last-child { page-break-after: auto; }
 
-body{
-font-family:Arial, Helvetica, sans-serif;
-color:#1a1a1a;
-margin:0;
-}
-
-/* ================= GENERAL ================= */
-
-.page{
-page-break-after:always;
-}
-
-.center{text-align:center;}
-
-.logo{
-font-size:32px;
-font-weight:bold;
-}
-
-.subtitle{
-letter-spacing:3px;
-font-size:12px;
-color:#c9a54c;
+/* ============================================================
+   BRAND COLOURS
+   ============================================================ */
+:root {
+  --gold:   #c9a54c;
+  --gold2:  #e8c97a;
+  --dark:   #0d1326;
+  --navy:   #111e3c;
+  --mid:    #2a3a5e;
+  --good:   #28d17c;
+  --warn:   #f7c948;
+  --bad:    #ff5a7a;
+  --muted:  #7a8599;
+  --border: #e6eaf3;
+  --light:  #f5f7fc;
 }
 
-.divider{
-height:1px;
-background:#111;
-margin:30px 0;
+/* ============================================================
+   COVER PAGE
+   ============================================================ */
+.cover {
+  background: var(--dark);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 44px;
 }
 
-.sectionTitle{
-border-bottom:2px solid #c9a54c;
-padding-bottom:6px;
-margin-bottom:20px;
+/* decorative circles */
+.cover::before, .cover::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: .07;
+}
+.cover::before {
+  width: 500px; height: 500px;
+  background: var(--gold);
+  top: -120px; right: -120px;
+}
+.cover::after {
+  width: 360px; height: 360px;
+  background: var(--gold);
+  bottom: -80px; left: -80px;
 }
 
-.small{
-font-size:12px;
-color:#777;
+.brand-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 42px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
 }
 
-/* ================= GRID ================= */
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
+.brand-tag {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold2);
+  margin-bottom: 40px;
 }
 
-.card{
-border:1px solid #e5e5e5;
-padding:20px;
-border-radius:8px;
-background:#fafafa;
+.cover-divider {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 40px;
 }
 
-/* ================= SCORE ================= */
-
-.scoreBox{
-background:#111;
-color:#fff;
-padding:30px;
-border-radius:10px;
-width:260px;
+.cover-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 8px;
 }
 
-.score{
-font-size:42px;
-font-weight:bold;
+.cover-subtitle {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold2);
+  margin-bottom: 50px;
 }
 
-.profile{
-margin-top:10px;
-font-size:12px;
-background:#c9a54c;
-color:#111;
-display:inline-block;
-padding:3px 8px;
-border-radius:4px;
+.cover-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 8px;
 }
 
-/* ================= KPI CARDS ================= */
-
-.kpiGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
+.cover-meta {
+  font-size: 12px;
+  color: #8894b0;
+  margin-bottom: 4px;
 }
 
-.kpi{
-border:1px solid #eee;
-padding:15px;
-border-radius:8px;
-background:#fafafa;
+.cover-qr {
+  margin-top: 44px;
+  padding: 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  display: inline-block;
 }
 
-/* ================= HIGHLIGHTS ================= */
+.cover-qr img { display: block; }
+.cover-qr p   { font-size: 10px; color: #8894b0; margin-top: 8px; }
 
-.highlight{
-background:#e5f2e9;
-padding:6px 10px;
-border-radius:4px;
-display:inline-block;
-margin-right:10px;
-margin-top:6px;
-font-size:12px;
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
 }
 
-/* ================= MARKET BAR ================= */
-
-.marketWrapper{
-position:relative;
+.section-header h2 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--dark);
 }
 
-.marketBar{
-display:flex;
-height:30px;
-border-radius:6px;
-overflow:hidden;
+.section-header .accent-bar {
+  width: 4px;
+  height: 24px;
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
-.marketBar div{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:11px;
+/* ============================================================
+   TOC
+   ============================================================ */
+.toc-list { list-style: none; }
+
+.toc-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px dotted #d0d6e8;
+  font-size: 13px;
 }
 
-.risk{background:#e8bcbc;}
-.average{background:#f2dfa0;}
-.strong{background:#bcd4f6;}
-.elite{background:#c6e8c6;}
-
-.scoreMarker{
-position:absolute;
-top:-6px;
-height:40px;
-width:3px;
-background:#111;
-left:{{score}}%;
+.toc-list li .toc-page {
+  font-weight: 600;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-left: 12px;
 }
 
-/* ================= STRATEGIC CARD ================= */
-
-.strategy{
-background:#111;
-color:#fff;
-padding:25px;
-border-radius:8px;
-margin-top:20px;
+/* ============================================================
+   SCORE RING (CSS conic-gradient approach for WeasyPrint)
+   ============================================================ */
+.score-block {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  color: #fff;
 }
 
-/* ================= TIMELINE ================= */
-
-.timeline{
-position:relative;
-margin-top:20px;
+.score-ring-wrap {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  background:
+    radial-gradient(circle, var(--navy) 58%, transparent 59%),
+    conic-gradient(
+      {{profile_color}} 0deg {{score_deg}}deg,
+      rgba(255,255,255,.10) {{score_deg}}deg 360deg
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.timelineItem{
-position:relative;
-padding-left:60px;
-margin-bottom:35px;
+.score-number {
+  font-size: 38px;
+  font-weight: 700;
+  color: #fff;
 }
 
-.timelineLine{
-position:absolute;
-left:22px;
-top:0;
-bottom:0;
-width:2px;
-background:#ddd;
+.score-label {
+  font-size: 11px;
+  color: #8894b0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
 }
 
-.timelineDot{
-position:absolute;
-left:16px;
-width:12px;
-height:12px;
-border-radius:50%;
-top:4px;
+.profile-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--gold);
+  color: var(--dark);
 }
 
-.dotToday{background:#e74c3c;}
-.dotWeek{background:#f1c40f;}
-.dotNext{background:#3498db;}
-
-.timelineLabel{
-font-size:11px;
-font-weight:bold;
-margin-bottom:4px;
+/* ============================================================
+   KPI GRID
+   ============================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  height: 100%;
 }
 
-.labelToday{color:#e74c3c;}
-.labelWeek{color:#f1c40f;}
-.labelNext{color:#3498db;}
+.kpi-card {
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
 
-/* ================= QR ================= */
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dark);
+}
 
-.qrCard{
-border:3px solid #111;
-padding:40px;
-border-radius:10px;
-display:inline-block;
+.kpi-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ============================================================
+   HIGHLIGHTS / RISK CHIPS
+   ============================================================ */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chip-good  { background: #d6f5e7; color: #0e6e40; border: 1px solid #9ee8c3; }
+.chip-risk  { background: #ffe5ea; color: #9b2133; border: 1px solid #ffa8b6; }
+
+/* ============================================================
+   2-COL LAYOUT
+   ============================================================ */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.card-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   DATA ROWS
+   ============================================================ */
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.data-row:last-child { border-bottom: none; }
+
+.data-label { color: var(--muted); }
+.data-value { font-weight: 600; color: var(--dark); }
+
+/* ============================================================
+   DOCUMENT BADGES
+   ============================================================ */
+.doc-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.doc-badge {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #e3e8f5;
+  color: var(--mid);
+  border: 1px solid #c8d0e8;
+}
+
+/* ============================================================
+   MARKET POSITION BAR
+   ============================================================ */
+.market-bar-wrap { margin: 20px 0; position: relative; }
+
+.market-bar {
+  display: flex;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bar-seg {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.bar-risk    { background: #ffd4da; color: #9b2133; }
+.bar-average { background: #fef3c7; color: #92400e; }
+.bar-strong  { background: #dbeafe; color: #1e40af; }
+.bar-elite   { background: #d1fae5; color: #065f46; }
+
+.score-pin {
+  position: absolute;
+  top: -8px;
+  width: 4px;
+  height: 52px;
+  background: var(--dark);
+  border-radius: 2px;
+  left: calc({{score}}% - 2px);
+}
+
+.score-pin::before {
+  content: "{{score}}";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--dark);
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   STRATEGY CARD
+   ============================================================ */
+.strategy-card {
+  background: var(--navy);
+  color: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.strategy-card h3 {
+  color: var(--gold);
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline { position: relative; padding-left: 36px; margin-top: 20px; }
+
+.timeline-line {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -30px;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.dot-today   { background: var(--bad);  box-shadow: 0 0 0 3px rgba(255,90,122,.2); }
+.dot-week    { background: var(--warn); box-shadow: 0 0 0 3px rgba(247,201,72,.2); }
+.dot-next    { background: #6c7dff;     box-shadow: 0 0 0 3px rgba(108,125,255,.2); }
+
+.timeline-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tag-today { color: var(--bad); }
+.tag-week  { color: var(--warn); }
+.tag-next  { color: #6c7dff; }
+
+.timeline-title  { font-weight: 600; font-size: 13px; color: var(--dark); }
+.timeline-desc   { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* ============================================================
+   VERIFICATION PAGE
+   ============================================================ */
+.verify-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--light);
+}
+
+.qr-frame {
+  border: 3px solid var(--dark);
+  padding: 24px;
+  border-radius: 14px;
+  display: inline-block;
+  background: #fff;
+  margin: 30px 0;
+}
+
+.disclaimer {
+  max-width: 480px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   RENT COVERAGE BAR
+   ============================================================ */
+.coverage-bar-track {
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.coverage-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--good), #1aa562);
+  width: {% if rent_coverage %}{% if rent_coverage > 100 %}100{% else %}{{ rent_coverage }}{% endif %}{% else %}0{% endif %}%;
 }
 
 </style>
 </head>
-
 <body>
 
-<!-- COVER PAGE -->
 
-<div class="page center">
+<!-- ======================================================
+     PAGE 1 — COVER
+     ====================================================== -->
+<div class="page cover">
 
-<div style="margin-top:160px">
-
-<div class="logo">Ready2Lease</div>
-
-<div class="divider"></div>
-
-<h1>TENANT READINESS DOSSIER</h1>
-
-<div class="subtitle">OFFICIAL ASSESSMENT PROFILE</div>
-
-<div class="divider"></div>
-
-<p class="small">Prepared For</p>
-
-<h2>{{assessment.full_name}}</h2>
-
-<p class="small">{{report.report_id}}</p>
-
-<p class="small">{{report.created_at}}</p>
-
-<div style="margin-top:40px">
-
-<img src="{{qr_code_url}}" width="80">
-
-<p class="small">Scan to verify</p>
-
+  <div class="brand-name">
+  <img src="{{logo_path}}" alt="Ready2Lease" style="height:60px; width:auto;">
 </div>
+  <div class="brand-tag">Tenant Intelligence Platform</div>
 
-</div>
+  <div class="cover-divider"></div>
+
+  <div class="cover-title">Tenant Readiness Dossier</div>
+  <div class="cover-subtitle">Official Assessment Profile</div>
+
+  <p class="cover-meta">Prepared For</p>
+  <div class="cover-name">{{assessment.full_name}}</div>
+
+  <p class="cover-meta" style="margin-top:18px">Report Reference</p>
+  <p style="font-size:13px;color:#8894b0;font-family:monospace">{{report.report_id}}</p>
+
+  <p class="cover-meta" style="margin-top:8px">Generated On</p>
+  <p style="font-size:13px;color:#8894b0">{{report.created_at|date:"d F Y"}}</p>
+
+  <div class="cover-qr">
+    <img src="{{qr_code_url}}" width="80" height="80">
+    <p>Scan to verify authenticity</p>
+  </div>
 
 </div>
 
 
-<!-- TABLE OF CONTENTS -->
-
+<!-- ======================================================
+     PAGE 2 — TABLE OF CONTENTS
+     ====================================================== -->
 <div class="page">
 
-<h2 class="sectionTitle">Table of Contents</h2>
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <h2>Table of Contents</h2>
+  </div>
 
-<p>Executive Summary .............. 3</p>
-<p>Category Breakdown: ID & Income ........ 4</p>
-<p>Category Breakdown: History & References ... 5</p>
-<p>Competitive Analysis ............ 6</p>
-<p>Customized Action Plan .......... 7</p>
-<p>Verification & Disclaimer ....... 8</p>
+  <ul class="toc-list">
+    <li><span>Executive Summary</span>             <span class="toc-page">3</span></li>
+    <li><span>Identity &amp; Documentation</span>  <span class="toc-page">4</span></li>
+    <li><span>Financial Profile</span>             <span class="toc-page">4</span></li>
+    <li><span>Competitive Analysis</span>          <span class="toc-page">5</span></li>
+    <li><span>Customised Action Plan</span>        <span class="toc-page">6</span></li>
+    <li><span>Verification &amp; Disclaimer</span> <span class="toc-page">7</span></li>
+  </ul>
+
+  <!-- Mini score preview -->
+  <div style="margin-top:40px;padding:24px;background:var(--light);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:24px;">
+    <div style="width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--light) 54%,transparent 55%),conic-gradient({{profile_color}} 0deg {{score_deg}}deg,#dde2ed {{score_deg}}deg 360deg);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+      <span style="font-size:20px;font-weight:700;color:var(--dark)">{{score}}</span>
+    </div>
+    <div>
+      <div style="font-size:16px;font-weight:700;color:var(--dark)">{{assessment.full_name}}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">Readiness Score: <strong style="color:{{profile_color}}">{{score}}/100 — {{profile}}</strong></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">{{strength_count}} strengths identified &nbsp;·&nbsp; {{risk_count}} areas to address</div>
+    </div>
+  </div>
 
 </div>
 
 
-<!-- EXECUTIVE SUMMARY -->
-
+<!-- ======================================================
+     PAGE 3 — EXECUTIVE SUMMARY
+     ====================================================== -->
 <div class="page">
 
-<h2 class="sectionTitle">Executive Summary</h2>
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <h2>Executive Summary</h2>
+  </div>
 
-<div class="grid">
+  <div class="two-col" style="align-items:start">
 
-<div class="scoreBox">
+    <!-- Score ring -->
+    <div class="score-block">
+      <div class="score-label">Readiness Score</div>
+      <div class="score-ring-wrap">
+        <div class="score-number">{{score}}</div>
+      </div>
+      <div class="profile-badge">{{profile}}</div>
+      <p style="font-size:11px;color:#8894b0;margin-top:12px">Out of 100 points</p>
+    </div>
 
-<div>READINESS SCORE</div>
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-value" style="color:var(--good)">{{strength_count}}</div>
+        <div class="kpi-label">Strengths</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" style="color:var(--bad)">{{risk_count}}</div>
+        <div class="kpi-label">Risk Areas</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" style="color:#6c7dff">{{action_count}}</div>
+        <div class="kpi-label">Actions</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" style="color:var(--gold)">{{score}}/100</div>
+        <div class="kpi-label">Total Score</div>
+      </div>
+    </div>
 
-<div class="score">{{score}} /100</div>
+  </div>
 
-<div class="profile">{{profile}}</div>
+  <!-- Highlights -->
+  {% if highlights %}
+  <h3 style="margin-top:28px;margin-bottom:8px;font-size:14px;color:var(--dark)">Key Strengths</h3>
+  <div class="chips">
+    {% for h in highlights %}
+    <span class="chip chip-good">&#10003; {{h}}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Risks -->
+  {% if risks %}
+  <h3 style="margin-top:20px;margin-bottom:8px;font-size:14px;color:var(--dark)">Risk Areas</h3>
+  <div class="chips">
+    {% for r in risks %}
+    <span class="chip chip-risk">&#9888; {{r}}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
 
 </div>
 
-<div class="kpiGrid">
 
-<div class="kpi">
-<strong>{{strength_count}}</strong><br>
-Key Strengths
-</div>
-
-<div class="kpi">
-<strong>{{risk_count}}</strong><br>
-Risk Areas
-</div>
-
-<div class="kpi">
-<strong>{{actions|length}}</strong><br>
-Priority Actions
-</div>
-
-</div>
-
-</div>
-
-<h3 style="margin-top:30px">Key Highlights</h3>
-
-{% for h in highlights %}
-<span class="highlight">{{h}}</span>
-{% endfor %}
-
-<h3 style="margin-top:30px">Critical Risks</h3>
-
-<ul>
-{% for r in risks %}
-<li>{{r}}</li>
-{% endfor %}
-</ul>
-
-</div>
-
-
-<!-- CATEGORY ANALYSIS -->
-
+<!-- ======================================================
+     PAGE 4 — IDENTITY & FINANCIAL PROFILE
+     ====================================================== -->
 <div class="page">
 
-<h2 class="sectionTitle">Category Analysis</h2>
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <h2>Identity &amp; Financial Profile</h2>
+  </div>
 
-<div class="card">
+  <div class="two-col">
 
-<strong>Identity Documentation</strong>
+    <!-- Identity -->
+    <div class="card">
+      <div class="card-title">Identity Documents</div>
 
-<ul>
-{% for d in assessment.documents %}
-<li>{{d|title|cut:"_"}}</li>
-{% endfor %}
-</ul>
+      {% if assessment.documents %}
+      <div class="doc-badges">
+        {% for d in assessment.documents %}
+        <span class="doc-badge">&#10003; {{d|title|cut:"_"}}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="color:var(--bad);font-size:13px;margin-top:8px">&#9888; No documents on file</p>
+      {% endif %}
+
+      <div style="margin-top:16px">
+        <div class="data-row">
+          <span class="data-label">Rental History</span>
+          <span class="data-value">{{assessment.get_rental_history_display|default:assessment.rental_history}}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Employment</span>
+          <span class="data-value">{{assessment.get_employment_status_display|default:assessment.employment_status}}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Time in Role</span>
+          <span class="data-value">{{assessment.time_in_role|default:"—"}}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Proof of Income</span>
+          <span class="data-value">{{assessment.get_proof_of_income_display|default:assessment.proof_of_income}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Household -->
+    <div class="card">
+      <div class="card-title">Household Details</div>
+      <div class="data-row">
+        <span class="data-label">Adults</span>
+        <span class="data-value">{{assessment.moving_with_adults|default:"1"}}</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Children</span>
+        <span class="data-value">{{assessment.moving_with_children|default:"0"}}</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Pets</span>
+        <span class="data-value">{{assessment.moving_with_pets|default:"0"}}</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">Location</span>
+        <span class="data-value">{{assessment.suburb|default:""}}{%if assessment.suburb and assessment.city%}, {%endif%}{{assessment.city|default:"—"}}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Financial panel -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">Financial Stability</div>
+
+    <div class="two-col">
+
+      <div>
+        <div class="data-row">
+          <span class="data-label">Household Income</span>
+          <span class="data-value">
+            {% if assessment.household_income %}
+              ${{assessment.household_income}} / {{assessment.household_income_period|default:"mo"}}
+            {% else %}—{% endif %}
+          </span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Individual Income</span>
+          <span class="data-value">
+            {% if assessment.individual_income %}
+              ${{assessment.individual_income}} / {{assessment.individual_income_period|default:"mo"}}
+            {% else %}—{% endif %}
+          </span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Rent Budget (monthly)</span>
+          <span class="data-value">
+            {% if assessment.monthly_rent_budget %}${{assessment.monthly_rent_budget}}{% else %}—{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <!-- Rent-to-income visual -->
+      <div>
+        <div class="data-label" style="margin-bottom:6px">Rent-to-Income Ratio</div>
+        {% if rent_coverage %}
+        <div style="font-size:24px;font-weight:700;color:{% if rent_coverage < 40 %}var(--good){% elif rent_coverage < 60 %}var(--warn){% else %}var(--bad){% endif %}">
+          {{rent_coverage}}%
+        </div>
+        <div class="coverage-bar-track">
+          <div class="coverage-bar-fill"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          {% if rent_coverage < 30 %}Excellent — well within affordability range
+          {% elif rent_coverage < 40 %}Good — comfortable affordability
+          {% elif rent_coverage < 50 %}Moderate — approaching typical thresholds
+          {% else %}High — may exceed standard affordability guidelines{% endif %}
+        </div>
+        {% else %}
+        <p style="color:var(--muted);font-size:12px">Insufficient data to calculate</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
 
 </div>
 
-<div class="card" style="margin-top:20px">
 
-<strong>Financial Stability</strong>
-
-<p>Weekly Income: ${{assessment.household_income}}</p>
-<p>Target Rent: ${{assessment.monthly_rent_budget}}</p>
-<p>Rent Coverage: {{rent_coverage}}%</p>
-
-</div>
-
-</div>
-
-
-<!-- COMPETITIVE ANALYSIS -->
-
+<!-- ======================================================
+     PAGE 5 — COMPETITIVE ANALYSIS
+     ====================================================== -->
 <div class="page">
 
-<h2 class="sectionTitle">Competitive Analysis</h2>
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <h2>Competitive Analysis</h2>
+  </div>
 
-<h3>Market Position</h3>
+  <h3 style="font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">Market Position</h3>
 
-<div class="marketWrapper">
+  <div class="market-bar-wrap">
+    <div class="market-bar">
+      <div class="bar-seg bar-risk">Risk (0–39)</div>
+      <div class="bar-seg bar-average">Average (40–59)</div>
+      <div class="bar-seg bar-strong">Strong (60–79)</div>
+      <div class="bar-seg bar-elite">Elite (80–100)</div>
+    </div>
+    <div class="score-pin"></div>
+  </div>
 
-<div class="marketBar">
+  <div class="two-col" style="margin-top:24px">
 
-<div class="risk">Risk</div>
-<div class="average">Average</div>
-<div class="strong">Strong</div>
-<div class="elite">Elite</div>
+    <div class="card">
+      <div class="card-title">Market Tier</div>
+      <div style="font-size:22px;font-weight:700;color:{{profile_color}};margin-bottom:4px">{{profile}}</div>
+      <p style="font-size:12px;color:var(--muted)">
+        {% if score >= 80 %}You are in the top applicant bracket. Most agents will fast-track your application.
+        {% elif score >= 60 %}You present a strong application. A cover letter will help you stand out.
+        {% elif score >= 40 %}You are competitive. Addressing the risk areas below will lift your profile.
+        {% else %}Several items need attention before submitting applications.{% endif %}
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Score Breakdown</div>
+      <!-- Visual bar chart of score components -->
+      <div style="margin-top:4px">
+
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span style="color:var(--muted)">Identity (max 40)</span>
+            <span style="font-weight:600">
+              {% if "Primary ID document provided" in strengths %}20{% else %}0{% endif %}
+              +
+              {% if assessment.documents and "driver_license" in assessment.documents %}20{% else %}0{% endif %}
+            </span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="height:100%;background:#6c7dff;border-radius:4px;width:{% if "Primary ID document provided" in strengths and assessment.documents and "driver_license" in assessment.documents %}100{% elif "Primary ID document provided" in strengths %}50{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span style="color:var(--muted)">Income (max 25)</span>
+            <span style="font-weight:600">{% if assessment.household_income %}25{% else %}0{% endif %}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="height:100%;background:var(--good);border-radius:4px;width:{% if assessment.household_income %}100{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span style="color:var(--muted)">Rental History (max 20)</span>
+            <span style="font-weight:600">{% if assessment.rental_history == "rented_locally" %}20{% else %}0{% endif %}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="height:100%;background:var(--warn);border-radius:4px;width:{% if assessment.rental_history == "rented_locally" %}100{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span style="color:var(--muted)">Proof of Income (max 15)</span>
+            <span style="font-weight:600">{% if assessment.proof_of_income == "recent_payslip" %}15{% else %}0{% endif %}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="height:100%;background:var(--gold);border-radius:4px;width:{% if assessment.proof_of_income == "recent_payslip" %}100{% else %}0{% endif %}%"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="strategy-card">
+    <h3>Strategic Recommendation</h3>
+    <p style="font-size:13px;line-height:1.7;color:#c8d0e8">
+      {% if score >= 80 %}
+      Your profile is exceptional. Submit applications promptly — at this score level, competition is your only remaining variable. Consider attaching your dossier QR code directly on your application to let agents verify your credentials instantly.
+      {% elif score >= 60 %}
+      You present competitively. Attach a brief cover letter highlighting your employment stability and rental history. Completing the recommended actions below could push your score into the elite bracket.
+      {% elif score >= 40 %}
+      Focus on the high-priority actions this week. Uploading a recent payslip and ensuring all ID documents are present are quick wins that significantly lift your score and first impression.
+      {% else %}
+      Several foundational items are missing. Complete the "Today" actions first — particularly your primary ID document and proof of income — before submitting any applications.
+      {% endif %}
+    </p>
+  </div>
 
 </div>
 
-<div class="scoreMarker"></div>
 
-</div>
-
-<div class="grid" style="margin-top:25px">
-
-<div class="card">
-<strong>Estimated Rank</strong>
-<p>You likely fall into the Top 50% of applicants.</p>
-</div>
-
-<div class="card">
-<strong>Improvement Potential</strong>
-<p>Completing recommended actions could boost your score.</p>
-</div>
-
-</div>
-
-<div class="strategy">
-
-<strong>Strategic Advice</strong>
-
-<p style="margin-top:10px">
-Submit your application quickly and include a strong cover letter to stand out.
-</p>
-
-</div>
-
-</div>
-
-
-<!-- ACTION PLAN -->
-
+<!-- ======================================================
+     PAGE 6 — ACTION PLAN
+     ====================================================== -->
 <div class="page">
 
-<h2 class="sectionTitle">Customized Action Plan</h2>
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <h2>Customised Action Plan</h2>
+  </div>
 
-<div class="timeline">
+  {% if actions %}
 
-<div class="timelineLine"></div>
+  <div class="timeline">
+    <div class="timeline-line"></div>
 
-{% for action in actions %}
+    {% for action in actions %}
+    <div class="timeline-item">
 
-<div class="timelineItem">
+      {% if action.timeline == "today" %}
+        <div class="timeline-dot dot-today"></div>
+        <div class="timeline-tag tag-today">&#9679; Today — Urgent</div>
+      {% elif action.timeline == "this_week" %}
+        <div class="timeline-dot dot-week"></div>
+        <div class="timeline-tag tag-week">&#9679; This Week</div>
+      {% else %}
+        <div class="timeline-dot dot-next"></div>
+        <div class="timeline-tag tag-next">&#9679; Next Week</div>
+      {% endif %}
 
-{% if action.timeline == "today" %}
-<div class="timelineDot dotToday"></div>
-<div class="timelineLabel labelToday">TODAY</div>
+      <div class="timeline-title">{{action.title}}</div>
+      <div class="timeline-desc">{{action.description}}</div>
 
-{% elif action.timeline == "this_week" %}
-<div class="timelineDot dotWeek"></div>
-<div class="timelineLabel labelWeek">THIS WEEK</div>
+    </div>
+    {% endfor %}
 
-{% else %}
-<div class="timelineDot dotNext"></div>
-<div class="timelineLabel labelNext">NEXT WEEK</div>
-{% endif %}
+  </div>
 
-<strong>{{action.title}}</strong>
+  {% else %}
 
-<p>{{action.description}}</p>
+  <div style="background:var(--light);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-top:20px">
+    <div style="font-size:28px;margin-bottom:8px">&#10003;</div>
+    <div style="font-weight:600;color:var(--dark);margin-bottom:4px">No Actions Required</div>
+    <div style="font-size:12px;color:var(--muted)">Your profile is complete. You are ready to submit applications.</div>
+  </div>
 
-</div>
-
-{% endfor %}
-
-</div>
-
-</div>
-
-
-<!-- VERIFICATION -->
-
-<div class="page center">
-
-<h2 class="sectionTitle">Verified Report</h2>
-
-<div class="qrCard">
-
-<img src="{{qr_code_url}}" width="120">
-
-<p class="small">{{report.report_id}}</p>
+  {% endif %}
 
 </div>
 
-<div style="margin-top:40px">
 
-<h3>Legal Disclaimer</h3>
+<!-- ======================================================
+     PAGE 7 — VERIFICATION
+     ====================================================== -->
+<div class="page verify-page">
 
-<p class="small">
+  <div class="section-header" style="align-self:stretch">
+    <div class="accent-bar"></div>
+    <h2>Verification &amp; Disclaimer</h2>
+  </div>
 
-This document is a readiness assessment generated by Ready2Lease.It does not guarantee rental approval.The scores and assessments are based on the data provided by the applicant. Ready2Lease is not a real estate agency or Financial institution.
-<br>
-For Verification of the data contained herein,please use the QR code above or contact the applicant directly for original documentation.
+  <p style="font-size:13px;color:var(--muted);max-width:400px">
+    Scan the QR code below to verify the authenticity of this dossier on the Ready2Lease platform.
+  </p>
 
-</p>
+  <div class="qr-frame">
+    <img src="{{qr_code_url}}" width="130" height="130">
+    <p style="font-family:monospace;font-size:11px;color:var(--muted);margin-top:10px">{{report.report_id}}</p>
+  </div>
+
+  <div style="font-size:13px;color:var(--dark);font-weight:600;margin-bottom:6px">{{assessment.full_name}}</div>
+  <div style="font-size:12px;color:var(--muted)">Score: {{score}}/100 &nbsp;·&nbsp; {{profile}} &nbsp;·&nbsp; Generated {{report.created_at|date:"d M Y"}}</div>
+
+  <p class="disclaimer">
+    This document is a readiness assessment generated by Ready2Lease. It does not guarantee rental approval.
+    Scores and assessments are based solely on data provided by the applicant.
+    Ready2Lease is not a real estate agency or financial institution.
+    For verification, use the QR code above or contact the applicant directly for original documentation.
+  </p>
 
 </div>
 
-</div>
 
 </body>
 </html>

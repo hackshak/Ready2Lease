@@ -17,36 +17,23 @@ from rest_framework.generics import ListAPIView
 from .serializers import TenantReportSerializer
 
 
-
 class ReportsPageView(TemplateView):
     template_name = "reports/reports_page.html"
 
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
-
         context["is_premium"] = getattr(self.request.user, "is_premium", False)
-
         return context
 
 
-
-
-
 class ReportListView(ListAPIView):
-
     serializer_class = TenantReportSerializer
 
     def get_queryset(self):
-
         user = self.request.user
-
         return TenantReport.objects.filter(
             assessment__user=user
         ).order_by("-created_at")
-    
-
-
 
 
 class GenerateTenantReport(APIView):
@@ -54,25 +41,29 @@ class GenerateTenantReport(APIView):
     def post(self, request, assessment_id):
 
         assessment = get_object_or_404(Assessment, id=assessment_id)
-
         score = calculate_score(assessment)
-
-        strengths, risks = generate_analysis(assessment)
-
-        actions = generate_actions(assessment)
-
+        assessment.save(update_fields=[
+            "readiness_score",
+            "risk_level",
+            "strengths",
+            "weaknesses",
+            "recommendations",
+            "gap_analysis",
+        ])
         report = TenantReport.objects.create(
             assessment=assessment,
-            report_id=f"assess_{uuid.uuid4().hex[:12]}",
+            report_id=f"R2L-{uuid.uuid4().hex[:10].upper()}",
             score=score,
-            strengths=strengths,
-            risks=risks,
-            actions=actions
+            # Mirror the assessment's own strengths/risks/actions on the snapshot
+            strengths=assessment.strengths,
+            risks=assessment.weaknesses,
+            actions=assessment.recommendations,
         )
 
         pdf_file = generate_pdf(report)
 
         return Response({
             "report_id": report.report_id,
-            "pdf": pdf_file.url
+            "score": score,
+            "pdf": pdf_file.url,
         })
