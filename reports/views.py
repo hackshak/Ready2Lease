@@ -1,47 +1,49 @@
 import uuid
 
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.views.generic import TemplateView
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView
 
 from assessments.models import Assessment
 from .models import TenantReport
-
+from .serializers import TenantReportSerializer
 from .services.scoring_service import calculate_score
 from .services.analysis_service import generate_analysis
 from .services.action_plan_service import generate_actions
 from .services.pdf_service import generate_pdf
-from django.views.generic import TemplateView
 
-from rest_framework.generics import ListAPIView
-from .serializers import TenantReportSerializer
+User = get_user_model()
+
+
 
 
 class ReportsPageView(TemplateView):
     template_name = "reports/reports_page.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_premium"] = getattr(self.request.user, "is_premium", False)
-        return context
 
 
+# REPORT LIST (ALL LOGGED-IN USERS)
 class ReportListView(ListAPIView):
     serializer_class = TenantReportSerializer
 
     def get_queryset(self):
-        user = self.request.user
         return TenantReport.objects.filter(
-            assessment__user=user
+            assessment__user=self.request.user
         ).order_by("-created_at")
 
 
+# GENERATE TENANT REPORT
 class GenerateTenantReport(APIView):
 
     def post(self, request, assessment_id):
-
         assessment = get_object_or_404(Assessment, id=assessment_id)
+
         score = calculate_score(assessment)
+
         assessment.save(update_fields=[
             "readiness_score",
             "risk_level",
@@ -50,11 +52,11 @@ class GenerateTenantReport(APIView):
             "recommendations",
             "gap_analysis",
         ])
+
         report = TenantReport.objects.create(
             assessment=assessment,
             report_id=f"R2L-{uuid.uuid4().hex[:10].upper()}",
             score=score,
-            # Mirror the assessment's own strengths/risks/actions on the snapshot
             strengths=assessment.strengths,
             risks=assessment.weaknesses,
             actions=assessment.recommendations,

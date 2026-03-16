@@ -29,7 +29,19 @@ body{
   color:var(--text);
 }
 
-.wrap{margin:0 auto;padding:24px 18px 60px;max-width:1200px;}
+/* ============================= */
+/* LAYOUT WRAPPER                */
+/* ============================= */
+
+.wrap{
+  margin:0 auto;
+  padding:24px 18px 60px;
+  max-width:1200px;
+}
+
+/* ============================= */
+/* CARDS                         */
+/* ============================= */
 
 .card{
   margin-top:15px;
@@ -45,19 +57,28 @@ body{
 h2{margin:0 0 12px;font-size:15px;}
 .sub{color:var(--muted);font-size:12px;}
 
+/* ============================= */
+/* HERO GRID                     */
+/* ============================= */
+
 .hero{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap:20px;
 }
-@media(max-width:900px){
-  .hero{grid-template-columns:1fr;}
-}
+
+/* ============================= */
+/* KPI GRID                      */
+/* ============================= */
 
 .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
 .item{background:rgba(255,255,255,.05);padding:12px;border-radius:14px;border:1px solid var(--border);margin-top:5px}
 .label{font-size:11px;color:var(--muted);}
 .value{font-size:15px;font-weight:700;margin-top:5px;}
+
+/* ============================= */
+/* SELECT                        */
+/* ============================= */
 
 select{
   background: rgba(17,26,51,.85);
@@ -69,6 +90,7 @@ select{
   outline:none;
   appearance:none;
   cursor:pointer;
+  max-width:100%;
 }
 
 select option{
@@ -80,6 +102,10 @@ select:focus{
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(108,125,255,.3);
 }
+
+/* ============================= */
+/* SCORE RING                    */
+/* ============================= */
 
 .ring{
   width:140px;height:140px;border-radius:50%;
@@ -100,8 +126,16 @@ select:focus{
     conic-gradient(var(--mid) 0deg,var(--mid) var(--deg),rgba(255,255,255,.08) var(--deg));
 }
 
+/* ============================= */
+/* PROGRESS BARS                 */
+/* ============================= */
+
 .track{height:8px;background:rgba(255,255,255,.08);border-radius:999px;}
 .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--good),var(--primary));}
+
+/* ============================= */
+/* RISK ITEMS                    */
+/* ============================= */
 
 .riskItem{
   background:rgba(255,90,122,.08);
@@ -109,6 +143,10 @@ select:focus{
   padding:10px;border-radius:12px;margin-bottom:8px;
   font-size:12px;
 }
+
+/* ============================= */
+/* NEXT ACTION CARD              */
+/* ============================= */
 
 .nextAction{
   background:linear-gradient(135deg,rgba(108,125,255,.15),rgba(139,92,246,.12));
@@ -127,6 +165,10 @@ select:focus{
   flex:1;
 }
 
+/* ============================= */
+/* SUCCESS CARD                  */
+/* ============================= */
+
 .successCard{
   text-align:center;
   padding:30px;
@@ -138,19 +180,107 @@ select:focus{
   margin-bottom:10px;
   color:var(--good);
 }
+
+/* ============================= */
+/* RESPONSIVE — TABLET (≤900px)  */
+/* ============================= */
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;}
+
+  .nextAction{
+    height:auto;
+    min-height:200px;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE — MOBILE (≤600px)  */
+/* ============================= */
+
+@media(max-width:600px){
+
+  .wrap{
+    padding:14px 12px 40px;
+  }
+
+  /* Header card: stack label + select vertically */
+  .card > div[style*="justify-content:space-between"]{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:12px;
+  }
+
+  /* Assessment select full width on mobile */
+  select{
+    width:100%;
+  }
+
+  /* KPI grid: single column on very small screens */
+  .kpi{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .card{
+    padding:14px;
+    border-radius:14px;
+  }
+
+  h2{font-size:14px;}
+
+  /* Ring: slightly smaller on mobile */
+  .ring{
+    width:120px;
+    height:120px;
+  }
+
+  #scoreValue{font-size:22px !important;}
+
+  /* Next action card: auto height on mobile */
+  .nextAction{
+    height:auto;
+    min-height:180px;
+    border-radius:14px;
+  }
+
+  /* Radar chart: shorter on mobile */
+  #strengthRadar{
+    max-height:220px;
+  }
+
+  .card > div[style*="height:280px"]{
+    height:220px !important;
+  }
+
+  /* Item cards in improvement plan */
+  .item{
+    padding:10px;
+    font-size:13px;
+  }
+
+  .value{font-size:14px;}
+}
+
+/* ============================= */
+/* RESPONSIVE — SMALL (≤400px)   */
+/* ============================= */
+
+@media(max-width:400px){
+  .kpi{grid-template-columns:1fr;}
+}
 </style>
 
 <div class="wrap">
 
 <div class="card">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
     <div>
       <h2 id="welcomeLine">Hi — 👋</h2>
       <div class="sub">Track and improve your rental approval strength.</div>
     </div>
 
-    <div>
-      <div class="sub">Assessment</div>
+    <div style="min-width:0;">
+      <div class="sub" style="margin-bottom:6px;">Assessment</div>
       <select id="assessmentSelect"></select>
     </div>
   </div>
@@ -158,73 +288,73 @@ select:focus{
 
 <div class="hero">
 
-<div class="card">
-  <h2>Readiness Score</h2>
+  <div class="card">
+    <h2>Readiness Score</h2>
 
-  <div class="ring" id="scoreRing" style="--deg:0deg">
-    <div style="text-align:center">
-      <div style="font-size:28px;font-weight:700" id="scoreValue">—</div>
-      <div style="font-size:11px;color:var(--muted)">/ 100</div>
+    <div class="ring" id="scoreRing" style="--deg:0deg">
+      <div style="text-align:center">
+        <div style="font-size:28px;font-weight:700" id="scoreValue">—</div>
+        <div style="font-size:11px;color:var(--muted)">/ 100</div>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="item">
+        <div class="label">Approval Probability</div>
+        <div class="value" id="approvalProb">—</div>
+      </div>
+      <div class="item">
+        <div class="label">Competitiveness Rank</div>
+        <div class="value" id="competRank">—</div>
+      </div>
     </div>
   </div>
 
-  <div class="kpi">
-    <div class="item">
-      <div class="label">Approval Probability</div>
-      <div class="value" id="approvalProb">—</div>
-    </div>
-    <div class="item">
-      <div class="label">Competitiveness Rank</div>
-      <div class="value" id="competRank">—</div>
+  <div class="nextAction" id="nextActionCard">
+    <h2>🔥 Next Best Actions</h2>
+    <div class="nextActionScroll">
+      <div id="nextActionContent"></div>
     </div>
   </div>
-</div>
-
-<div class="nextAction" id="nextActionCard">
-  <h2>🔥 Next Best Actions</h2>
-  <div class="nextActionScroll">
-    <div id="nextActionContent"></div>
-  </div>
-</div>
 
 </div>
 
 <div id="premiumSections">
 
-<div class="card">
-  <h2>⚠ Risk Signals</h2>
-  <div id="riskSignals"></div>
-</div>
+  <div class="card">
+    <h2>⚠ Risk Signals</h2>
+    <div id="riskSignals"></div>
+  </div>
 
-<div class="card">
-  <h2>Category Breakdown</h2>
-  <div id="breakdownList"></div>
-</div>
+  <div class="card">
+    <h2>Category Breakdown</h2>
+    <div id="breakdownList"></div>
+  </div>
 
-<div class="card">
-  <h2>Application Strength Radar</h2>
-  <div style="height:280px">
+  <div class="card">
+    <h2>Application Strength Radar</h2>
+    <div style="height:280px">
       <canvas id="strengthRadar"></canvas>
+    </div>
+    <div class="sub" style="margin-top:10px;">
+      Visual overview of your rental application strengths.
+    </div>
   </div>
-  <div class="sub">
-    Visual overview of your rental application strengths.
-  </div>
-</div>
 
-<div class="card">
-  <h2>Improvement Plan</h2>
-  <div id="stepsList"></div>
-</div>
-
-<div class="card">
-  <h2>Area Snapshot</h2>
-  <div class="kpi">
-    <div class="item"><div class="label">Postcode</div><div class="value" id="postcodeVal"></div></div>
-    <div class="item"><div class="label">Avg Rent</div><div class="value" id="avgRent"></div></div>
-    <div class="item"><div class="label">Target Rent</div><div class="value" id="targetRent"></div></div>
-    <div class="item"><div class="label">Income Weekly</div><div class="value" id="incomeWeekly"></div></div>
+  <div class="card">
+    <h2>Improvement Plan</h2>
+    <div id="stepsList"></div>
   </div>
-</div>
+
+  <div class="card">
+    <h2>Area Snapshot</h2>
+    <div class="kpi">
+      <div class="item"><div class="label">Postcode</div><div class="value" id="postcodeVal"></div></div>
+      <div class="item"><div class="label">Avg Rent</div><div class="value" id="avgRent"></div></div>
+      <div class="item"><div class="label">Target Rent</div><div class="value" id="targetRent"></div></div>
+      <div class="item"><div class="label">Income Weekly</div><div class="value" id="incomeWeekly"></div></div>
+    </div>
+  </div>
 
 </div>
 
@@ -302,7 +432,7 @@ function renderRadarChart(breakdown){
           suggestedMax:100,
           angleLines:{color:"rgba(255,255,255,.15)"},
           grid:{color:"rgba(255,255,255,.1)"},
-          pointLabels:{color:"#e9eefc"},
+          pointLabels:{color:"#e9eefc",font:{size: window.innerWidth < 600 ? 9 : 11}},
           ticks:{backdropColor:"transparent",color:"#a9b4d6"}
         }
       },

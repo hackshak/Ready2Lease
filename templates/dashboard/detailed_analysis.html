@@ -26,6 +26,10 @@ body{
   color:var(--text);
 }
 
+/* ============================= */
+/* WRAPPER                       */
+/* ============================= */
+
 .wrapper{
   padding:30px;
   display:grid;
@@ -45,6 +49,10 @@ body{
   overflow-y:auto;
 }
 
+/* ============================= */
+/* CARDS                         */
+/* ============================= */
+
 .card{
   background:linear-gradient(180deg,var(--panel),var(--panel2));
   border:1px solid var(--border);
@@ -55,6 +63,10 @@ body{
 
 .card h2{margin:0 0 15px;font-size:15px;font-weight:600;}
 
+/* ============================= */
+/* SCORE                         */
+/* ============================= */
+
 .score-wrap{display:flex;align-items:center;gap:25px;}
 
 .score-ring{
@@ -64,9 +76,14 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  flex-shrink:0;
 }
 
 .score-ring b{font-size:28px}
+
+/* ============================= */
+/* KPI GRID                      */
+/* ============================= */
 
 .kpi-grid{
   display:grid;
@@ -84,6 +101,10 @@ body{
 
 .kpi span{font-size:12px;color:var(--muted);}
 .kpi strong{display:block;margin-top:5px;}
+
+/* ============================= */
+/* BAR ROWS                      */
+/* ============================= */
 
 .bar-row{
   display:grid;
@@ -108,6 +129,10 @@ body{
   transition:width .4s ease;
 }
 
+/* ============================= */
+/* ITEM BOXES                    */
+/* ============================= */
+
 .item-box{
   background:rgba(255,255,255,.05);
   border-radius:16px;
@@ -127,6 +152,10 @@ body{
 .priority.high{background:rgba(255,90,122,.2); color:var(--bad);}
 .priority.medium{background:rgba(247,201,72,.2); color:var(--mid);}
 .priority.low{background:rgba(40,209,124,.2); color:var(--good);}
+
+/* ============================= */
+/* ASSESSMENT SIDEBAR ITEMS      */
+/* ============================= */
 
 .assessment-item{
   background:rgba(255,255,255,.05);
@@ -152,10 +181,146 @@ body{
   background:linear-gradient(135deg,#6c7dff,#8b5cf6);
   color:white;
 }
+
+/* ============================= */
+/* MOBILE ASSESSMENT TOGGLE BTN  */
+/* ============================= */
+
+.mob-history-toggle{
+  display:none;
+  width:100%;
+  padding:12px;
+  background:linear-gradient(135deg,rgba(108,125,255,.2),rgba(139,92,246,.15));
+  border:1px solid rgba(108,125,255,.35);
+  border-radius:14px;
+  color:var(--text);
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  text-align:center;
+  margin-bottom:4px;
+}
+
+.mob-history-panel{
+  display:none;
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  margin-bottom:16px;
+}
+
+.mob-history-panel.open{display:block;}
+
+/* ============================= */
+/* RESPONSIVE — TABLET (≤1024px) */
+/* ============================= */
+
+@media(max-width:1024px){
+  .wrapper{
+    grid-template-columns:1fr;
+    padding:20px;
+  }
+
+  .right{
+    display:none; /* hidden on mobile — shown via toggle panel */
+    max-height:none;
+  }
+
+  .mob-history-toggle{display:block;}
+}
+
+/* ============================= */
+/* RESPONSIVE — MOBILE (≤600px)  */
+/* ============================= */
+
+@media(max-width:600px){
+  .wrapper{
+    padding:12px;
+    gap:14px;
+  }
+
+  .card{
+    padding:14px;
+    border-radius:16px;
+  }
+
+  .card h2{font-size:14px;margin-bottom:10px;}
+
+  /* Score ring: shrink on mobile */
+  .score-ring{
+    width:88px;
+    height:88px;
+  }
+
+  .score-ring b{font-size:22px;}
+
+  .score-wrap{gap:16px;}
+
+  /* Bar rows: stack label above bar on mobile */
+  .bar-row{
+    grid-template-columns:1fr 40px;
+    grid-template-rows:auto auto;
+    gap:6px;
+  }
+
+  .bar-row > div:first-child{
+    grid-column:1 / -1;
+    font-size:12px;
+  }
+
+  .bar-track{
+    grid-column:1;
+    grid-row:2;
+  }
+
+  .bar-row > div:last-child{
+    grid-column:2;
+    grid-row:2;
+    font-size:12px;
+    text-align:right;
+  }
+
+  /* KPI grid: single column */
+  .kpi-grid{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .kpi{padding:11px;}
+  .kpi span{font-size:11px;}
+
+  .item-box{
+    padding:12px;
+    font-size:13px;
+  }
+
+  .assessment-item{
+    padding:12px;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE — SMALL (≤400px)   */
+/* ============================= */
+
+@media(max-width:400px){
+  .kpi-grid{grid-template-columns:1fr;}
+}
 </style>
 
 <div class="wrapper">
   <div class="left">
+
+    <!-- Mobile: Previous Assessments toggle -->
+    <button class="mob-history-toggle" onclick="toggleMobHistory()">
+      📋 Previous Assessments <span id="mobToggleArrow">▼</span>
+    </button>
+    <div class="mob-history-panel" id="mobHistoryPanel">
+      <h2 style="margin:0 0 4px;font-size:15px;font-weight:600;">Previous Assessments</h2>
+      <div id="assessmentListMob"></div>
+    </div>
 
     <div class="card">
       <h2>Readiness Snapshot</h2>
@@ -191,6 +356,7 @@ body{
 
   </div>
 
+  <!-- Desktop: right sidebar -->
   <div class="right">
     <h2>Previous Assessments</h2>
     <div id="assessmentList"></div>
@@ -204,6 +370,14 @@ function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 let scoreInterval=null;
 let currentController=null;
 let hasLoadedInitial=false;
+
+/* Mobile history panel toggle */
+function toggleMobHistory(){
+  const panel=document.getElementById("mobHistoryPanel");
+  const arrow=document.getElementById("mobToggleArrow");
+  const isOpen=panel.classList.toggle("open");
+  arrow.textContent=isOpen?"▲":"▼";
+}
 
 /* Animate Score */
 function animateScore(newScore){
@@ -225,18 +399,12 @@ function animateScore(newScore){
   },15);
 }
 
-/* Load All Assessments */
-async function loadAssessments(){
-
-  const res=await fetch("/api/detailed-readiness/",{
-    credentials:"same-origin"
-  });
-
-  const data=await res.json();
-  const list=$("assessmentList");
+/* Render assessment items into a given container */
+function renderAssessmentItems(containerId, assessments){
+  const list=$(containerId);
   list.innerHTML="";
 
-  data.previous_assessments.forEach(a=>{
+  assessments.forEach(a=>{
     const div=document.createElement("div");
     div.className="assessment-item";
     div.dataset.id=a.id;
@@ -253,6 +421,20 @@ async function loadAssessments(){
 
     list.appendChild(div);
   });
+}
+
+/* Load All Assessments */
+async function loadAssessments(){
+
+  const res=await fetch("/api/detailed-readiness/",{
+    credentials:"same-origin"
+  });
+
+  const data=await res.json();
+
+  /* Render into both desktop sidebar and mobile panel */
+  renderAssessmentItems("assessmentList", data.previous_assessments);
+  renderAssessmentItems("assessmentListMob", data.previous_assessments);
 
   if(!hasLoadedInitial){
     hasLoadedInitial=true;
@@ -260,13 +442,18 @@ async function loadAssessments(){
   }
 }
 
-/* Load Single Assessment */
-async function loadDetailed(id){
-
+/* Mark active item in both lists */
+function setActiveItems(id){
   document.querySelectorAll(".assessment-item")
     .forEach(el=>{
       el.classList.toggle("active",Number(el.dataset.id)===Number(id));
     });
+}
+
+/* Load Single Assessment */
+async function loadDetailed(id){
+
+  setActiveItems(id);
 
   const res=await fetch(`/api/detailed-readiness/?assessment_id=${id}`,{
     credentials:"same-origin"

@@ -16,7 +16,19 @@
 
 body{background:var(--bg);color:var(--text);}
 
-.wrap{padding:30px 20px;max-width:1100px;margin:auto;}
+/* ============================= */
+/* LAYOUT                        */
+/* ============================= */
+
+.wrap{
+  padding:30px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+/* ============================= */
+/* CARDS                         */
+/* ============================= */
 
 .card{
   border:1px solid var(--border);
@@ -28,6 +40,10 @@ body{background:var(--bg);color:var(--text);}
 
 h1{margin:0 0 8px;font-size:22px;}
 .sub{color:var(--muted);font-size:13px;margin-bottom:15px;}
+
+/* ============================= */
+/* ASSESSMENT SELECT             */
+/* ============================= */
 
 .assessmentSelectWrap{
   display:flex;
@@ -52,14 +68,16 @@ select{
   transition:.2s;
 }
 
-select:hover{
-  border-color:var(--primary);
-}
+select:hover{ border-color:var(--primary); }
 
 select:focus{
   border-color:var(--primary);
   box-shadow:0 0 0 2px rgba(108,125,255,.25);
 }
+
+/* ============================= */
+/* PROGRESS BAR                  */
+/* ============================= */
 
 .progressWrap{margin-top:20px;}
 
@@ -77,6 +95,10 @@ select:focus{
   background: linear-gradient(90deg, var(--good), var(--primary));
   transition:.3s ease;
 }
+
+/* ============================= */
+/* DOCUMENT GRID                 */
+/* ============================= */
 
 .grid{
   margin-top:25px;
@@ -98,6 +120,10 @@ select:focus{
 
 .docCard h3{margin:0;font-size:15px;}
 .docCard p{margin:6px 0 12px;color:var(--muted);font-size:12px;}
+
+/* ============================= */
+/* BUTTONS                       */
+/* ============================= */
 
 button{
   border:0;
@@ -121,20 +147,146 @@ button{
   flex-wrap:wrap;
 }
 
+/* File input: styled for dark theme */
+.actions input[type="file"]{
+  font-size:12px;
+  color:var(--muted);
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:7px 10px;
+  cursor:pointer;
+  width:100%;
+  max-width:100%;
+}
+
+.actions input[type="file"]::-webkit-file-upload-button{
+  background:linear-gradient(135deg, var(--primary), var(--primary2));
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:600;
+  cursor:pointer;
+  margin-right:8px;
+}
+
+/* ============================= */
+/* TOAST                         */
+/* ============================= */
+
 .toast{
   position:fixed;
-  bottom:20px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%);
   background:#111a33;
   border:1px solid var(--border);
-  padding:10px 14px;
+  padding:10px 18px;
   border-radius:12px;
+  font-size:13px;
   opacity:0;
   transition:.2s;
+  z-index:9999;
+  white-space:nowrap;
+  pointer-events:none;
 }
 
 .toast.show{opacity:1;}
+
+/* ============================= */
+/* RESPONSIVE — TABLET (≤768px)  */
+/* ============================= */
+
+@media(max-width:768px){
+  .wrap{
+    padding:20px 14px;
+  }
+
+  .grid{
+    grid-template-columns: 1fr 1fr;
+    gap:14px;
+  }
+
+  h1{font-size:19px;}
+}
+
+/* ============================= */
+/* RESPONSIVE — MOBILE (≤560px)  */
+/* ============================= */
+
+@media(max-width:560px){
+  .wrap{
+    padding:14px 12px 40px;
+  }
+
+  .card{
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:16px;
+  }
+
+  h1{font-size:17px;}
+  .sub{font-size:12px;}
+
+  /* Single column doc grid on mobile */
+  .grid{
+    grid-template-columns: 1fr;
+    gap:12px;
+    margin-top:16px;
+  }
+
+  .docCard{
+    padding:14px;
+    border-radius:14px;
+  }
+
+  .docCard h3{font-size:14px;}
+  .docCard p{font-size:12px;margin-bottom:10px;}
+
+  /* Progress text */
+  #progressText{
+    font-size:12px;
+    margin-bottom:8px;
+  }
+
+  .track{height:10px;}
+
+  /* File input full-width already — just ensure button is reachable */
+  .actions{
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .actions a,
+  .actions button{
+    width:100%;
+    text-align:center;
+    display:block;
+  }
+
+  .actions input[type="file"]{
+    width:100%;
+  }
+
+  /* Toast: wider on mobile so text doesn't clip */
+  .toast{
+    left:12px;
+    right:12px;
+    transform:none;
+    text-align:center;
+    white-space:normal;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE — SMALL (≤400px)   */
+/* ============================= */
+
+@media(max-width:400px){
+  select{font-size:12px;padding:10px;}
+}
 </style>
 
 <div class="wrap">
@@ -231,13 +383,13 @@ function loadChecklist(){
 
         if(item.file_url){
           actions.innerHTML+=`
-            <a href="${item.file_url}" target="_blank">
-              <button class="btnGhost">View</button>
+            <a href="${item.file_url}" target="_blank" style="width:100%">
+              <button class="btnGhost" style="width:100%">View</button>
             </a>`;
         }
 
         actions.innerHTML+=`
-          <button class="btnGhost"
+          <button class="btnGhost" style="width:100%"
             onclick="deleteDoc('${item.key}',${item.object_id})">
             Delete
           </button>`;

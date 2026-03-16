@@ -4,7 +4,7 @@
 
 <style>
 /* =========================================
-   CENTER WRAPPER (NEW - SAFE ADDITION)
+   CENTER WRAPPER
 ========================================= */
 .ap-center-wrapper{
     min-height: calc(100vh - 40px);
@@ -14,7 +14,7 @@
 }
 
 /* =========================================
-   ACTION PLAN PAGE (MULTI-ASSESSMENT READY)
+   ACTION PLAN PAGE
 ========================================= */
 
 .action-plan-container{
@@ -29,6 +29,8 @@
     justify-content:space-between;
     align-items:center;
     margin-bottom:35px;
+    flex-wrap:wrap;
+    gap:12px;
 }
 
 .ap-title{
@@ -56,6 +58,13 @@
 
 .ap-selector{margin-bottom:30px;}
 
+.ap-selector label{
+    font-size:13px;
+    color:#a9b4d6;
+    margin-bottom:6px;
+    display:block;
+}
+
 .ap-selector select{
     background:#0f1730;
     border:1px solid rgba(255,255,255,.12);
@@ -63,6 +72,8 @@
     padding:10px 14px;
     border-radius:12px;
     font-size:13px;
+    max-width:100%;
+    width:100%;
 }
 
 .ap-grid{
@@ -125,6 +136,7 @@
     padding:18px;
     border-radius:16px;
     border:1px solid rgba(255,255,255,.08);
+    gap:16px;
 }
 
 .ap-step h4{margin:0;font-size:15px;}
@@ -139,6 +151,10 @@
     padding:5px 10px;
     border-radius:999px;
     font-weight:700;
+}
+
+.ap-step-btn-wrap{
+    flex-shrink:0;
 }
 
 .ap-empty{
@@ -160,6 +176,7 @@
     align-items:center;
     justify-content:center;
     z-index:3000;
+    padding:16px;
 }
 
 .ap-modal-content{
@@ -200,6 +217,7 @@
     display:flex;
     justify-content:flex-end;
     gap:12px;
+    flex-wrap:wrap;
 }
 
 .ap-success{
@@ -221,8 +239,107 @@
     margin-bottom:20px;
 }
 
-@media(max-width:1000px){
+/* =========================================
+   RESPONSIVE — TABLET (≤900px)
+========================================= */
+
+@media(max-width:900px){
     .ap-grid{grid-template-columns:1fr;}
+
+    .action-plan-container{
+        padding:30px 20px;
+    }
+
+    .ap-title{font-size:20px;}
+}
+
+/* =========================================
+   RESPONSIVE — MOBILE (≤600px)
+========================================= */
+
+@media(max-width:600px){
+
+    .ap-center-wrapper{
+        align-items:flex-start;
+    }
+
+    .action-plan-container{
+        padding:18px 12px 40px;
+    }
+
+    .ap-header{
+        margin-bottom:20px;
+    }
+
+    .ap-title{
+        font-size:18px;
+    }
+
+    .ap-btn{
+        padding:9px 14px;
+        font-size:12px;
+    }
+
+    .ap-selector{margin-bottom:20px;}
+
+    .ap-card{
+        padding:18px 14px;
+        border-radius:16px;
+    }
+
+    /* Ring: smaller on mobile */
+    .ap-ring{
+        width:110px;
+        height:110px;
+        margin:20px auto;
+    }
+
+    .ap-ring b{font-size:24px;}
+
+    /* Steps: stack content + button vertically */
+    .ap-step{
+        flex-direction:column;
+        align-items:flex-start;
+        padding:14px;
+        gap:12px;
+    }
+
+    .ap-step-btn-wrap{
+        width:100%;
+    }
+
+    .ap-step-btn-wrap .ap-btn{
+        width:100%;
+        text-align:center;
+    }
+
+    .ap-step h4{font-size:14px;}
+    .ap-step p{font-size:12px;}
+
+    /* Modal: full padding reduction on small screens */
+    .ap-modal-content{
+        padding:22px 16px;
+        border-radius:18px;
+    }
+
+    .ap-modal-content h3{font-size:16px;}
+
+    .modal-actions{
+        justify-content:stretch;
+    }
+
+    .modal-actions .ap-btn{
+        width:100%;
+        text-align:center;
+    }
+}
+
+/* =========================================
+   RESPONSIVE — SMALL (≤400px)
+========================================= */
+
+@media(max-width:400px){
+    .ap-title{font-size:16px;}
 }
 </style>
 
@@ -238,7 +355,7 @@
 </div>
 
 <div class="ap-selector">
-    <label>Select Assessment:</label><br>
+    <label>Select Assessment:</label>
     <select id="assessmentSelect"></select>
 </div>
 
@@ -355,6 +472,7 @@ async function loadTasks(){
                 <p>${task.description}</p>
                 <div class="ap-impact">+${task.points} Points</div>
             </div>
+            <div class="ap-step-btn-wrap"></div>
         `;
 
         const btn=document.createElement("button");
@@ -363,7 +481,7 @@ async function loadTasks(){
         btn.textContent="Start";
         btn.onclick=()=>openTask(task.key,task.type,task.document_type||"",task.points);
 
-        div.appendChild(btn);
+        div.querySelector(".ap-step-btn-wrap").appendChild(btn);
         container.appendChild(div);
     });
 }
@@ -415,10 +533,10 @@ async function handleUpload(type,docType,points){
     if(type==="cover_letter") url=`/save-cover-letter/${selectedAssessment}/`;
 
     const res = await fetch(url,{
-    method:"POST",
-    credentials:"same-origin",
-    headers:{"X-CSRFToken":getCSRFToken()},
-    body:formData
+        method:"POST",
+        credentials:"same-origin",
+        headers:{"X-CSRFToken":getCSRFToken()},
+        body:formData
     });
 
     const data = await res.json();

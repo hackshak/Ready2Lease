@@ -1,47 +1,40 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import Application
 from .serializers import ApplicationSerializer
 
+User = get_user_model()
 
-# ==========================================================
-# HELPER
-# ==========================================================
 
+# HELPER — always reads fresh from DB, never the session cache
 def require_premium(user):
-    return getattr(user, "is_premium", False)
+    """
+    Re-fetches the user from the DB on every call so we never
+    read a stale is_premium value from the Django session cache.
+    """
+    try:
+        fresh = User.objects.get(pk=user.pk)
+        return fresh.is_premium
+    except User.DoesNotExist:
+        return False
 
-
-# ==========================================================
-# TEMPLATE PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
-# ==========================================================
 
 def application_page(request):
     if not request.user.is_authenticated:
         return redirect("login")
 
-    # ✅ Page visible to all logged-in users
-    return render(
-        request,
-        "applications/applications.html",
-        {
-            "is_premium": require_premium(request.user)
-        }
-    )
+    return render(request, "applications/applications.html")
 
 
-# ==========================================================
 # API VIEWSET (FUNCTIONALITY → PREMIUM ONLY)
-# ==========================================================
-
 class ApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Non-premium users cannot access application data
         if not require_premium(self.request.user):
             return Application.objects.none()
 

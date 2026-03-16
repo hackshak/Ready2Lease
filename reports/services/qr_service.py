@@ -5,7 +5,7 @@ from django.conf import settings
 
 def generate_qr(report_id):
 
-    verify_url = f"https://ready2lease.com.au/verify/{report_id}"
+    verify_url = "https://ready2lease.com.au/"  # homepage
 
     qr = qrcode.make(verify_url)
 
