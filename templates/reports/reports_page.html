@@ -87,10 +87,6 @@ body { font-family: 'DM Sans', sans-serif; }
   margin-top:10px;
 }
 
-@media(max-width:860px){
-  .hero{ grid-template-columns:1fr; }
-}
-
 /* ─── SELECT ─── */
 .selectWrap{
   position:relative;
@@ -155,7 +151,6 @@ select:focus{
 
 .genBtn:hover{ opacity:.88; transform:translateY(-1px); }
 .genBtn:active{ transform:translateY(0); }
-
 .genBtn.loading{ opacity:.6; cursor:not-allowed; }
 
 /* Spinner */
@@ -227,6 +222,7 @@ select:focus{
   border-radius:12px;
   background:rgba(255,255,255,.025);
   transition:.18s background, .18s border-color;
+  gap:12px;
 }
 
 .reportItem:hover{
@@ -238,6 +234,7 @@ select:focus{
   display:flex;
   align-items:center;
   gap:14px;
+  min-width:0;
 }
 
 .scoreChip{
@@ -248,12 +245,20 @@ select:focus{
   flex-shrink:0;
 }
 
-.reportMeta{ display:flex; flex-direction:column; gap:3px; }
+.reportMeta{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
 
 .reportName{
   font-size:13px;
   font-weight:600;
   color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .reportDate{
@@ -274,7 +279,6 @@ select:focus{
   transition:.15s background;
   white-space:nowrap;
   flex-shrink:0;
-  margin-left:12px;
 }
 
 .downloadBtn:hover{
@@ -311,6 +315,121 @@ select:focus{
   transform:translateY(0);
 }
 
+/* ============================= */
+/* RESPONSIVE — TABLET (≤860px)  */
+/* ============================= */
+
+@media(max-width:860px){
+  .hero{
+    grid-template-columns:1fr;
+  }
+
+  /* On tablet, score ring sits below the generator — make it horizontal */
+  .ringCard{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    text-align:left;
+  }
+
+  .ringCard .ring{
+    margin:0;
+    flex-shrink:0;
+    width:100px;
+    height:100px;
+  }
+
+  .ringCard .scoreText{ font-size:22px; }
+}
+
+/* ============================= */
+/* RESPONSIVE — MOBILE (≤640px)  */
+/* ============================= */
+
+@media(max-width:640px){
+
+  .wrap{
+    padding:62px 12px 60px; /* 62px top clears mobile hamburger */
+  }
+
+  .pageHeader{
+    margin-bottom:18px;
+  }
+
+  .pageHeader h1{ font-size:20px; }
+
+  .card{
+    padding:16px 14px;
+    border-radius:14px;
+    margin-bottom:14px;
+  }
+
+  .cardTitle{ font-size:13px; }
+
+  /* Ring card: compact horizontal layout */
+  .ringCard{
+    flex-direction:row;
+    gap:16px;
+    text-align:left;
+  }
+
+  .ringCard .ring{
+    width:80px;
+    height:80px;
+    margin:0;
+    flex-shrink:0;
+  }
+
+  .ringCard .scoreText{ font-size:18px; }
+  .ringCard .scoreLabel{ font-size:10px; }
+
+  /* Report items: stack on very small screens */
+  .reportItem{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+    padding:12px 14px;
+  }
+
+  .reportLeft{
+    width:100%;
+  }
+
+  .downloadBtn{
+    width:100%;
+    text-align:center;
+    padding:9px 14px;
+  }
+
+  /* Score chip: slightly smaller */
+  .scoreChip{
+    width:38px;
+    height:38px;
+    font-size:12px;
+  }
+
+  .reportName{ font-size:12px; }
+  .reportDate{ font-size:10px; }
+
+  /* Toast: full width at bottom */
+  .toast{
+    bottom:16px;
+    right:12px;
+    left:12px;
+    text-align:center;
+    transform:translateY(8px);
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE — SMALL (≤400px)   */
+/* ============================= */
+
+@media(max-width:400px){
+  .pageHeader h1{ font-size:18px; }
+  select{ font-size:12px; padding:10px 32px 10px 12px; }
+  .genBtn{ font-size:12px; padding:10px 16px; }
+}
 </style>
 
 
@@ -321,7 +440,6 @@ select:focus{
     <h1>Tenant Reports</h1>
     <div class="sub">Generate and download professional tenant readiness dossiers</div>
   </div>
-
 
   <!-- ── HERO: GENERATOR + SCORE ── -->
   <div class="hero">
@@ -340,21 +458,19 @@ select:focus{
       </button>
     </div>
 
-
     <div class="card ringCard">
-      <div class="cardTitle">Assessment Score</div>
-      <div class="cardSub">Preview for selected assessment</div>
-
       <div class="ring" id="scoreRing">
         <div class="scoreText" id="scoreText">—</div>
       </div>
-
-      <div class="scoreLabel">Readiness Score</div>
-      <div class="profileBadge" id="profileBadge">Select an assessment</div>
+      <div>
+        <div class="cardTitle">Assessment Score</div>
+        <div class="cardSub" style="margin-bottom:10px;">Preview for selected assessment</div>
+        <div class="scoreLabel">Readiness Score</div>
+        <div class="profileBadge" id="profileBadge">Select an assessment</div>
+      </div>
     </div>
 
   </div>
-
 
   <!-- ── PREVIOUS REPORTS ── -->
   <div class="card">
@@ -506,7 +622,6 @@ async function generateReport(){
   let id = document.getElementById("assessmentSelect").value;
   if(!id) return;
 
-  /* loading state */
   let btn    = document.getElementById("genBtn");
   let spin   = document.getElementById("spinner");
   let label  = document.getElementById("genLabel");

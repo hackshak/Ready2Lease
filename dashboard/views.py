@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from assessments.models import Assessment
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,49 +10,38 @@ from django.utils import timezone
 from assessments.gap_analysis import generate_gap_analysis
 from action_plan.services import ActionPlanService
 
+User = get_user_model()
 
-# ==========================================================
-# HELPER
-# ==========================================================
 
+# HELPER — always reads fresh from DB, never the session cache
 def require_premium(user):
-    return getattr(user, "is_premium", False)
+    """
+    Re-fetches the user from the DB on every call so we never
+    read a stale is_premium value from the Django session cache.
+    """
+    try:
+        fresh = User.objects.get(pk=user.pk)
+        return fresh.is_premium
+    except User.DoesNotExist:
+        return False
 
 
-# ==========================================================
-# TEMPLATE VIEWS
-# ==========================================================
 
 def dashboard_home(request):
     if not request.user.is_authenticated:
         return redirect("login")
 
-    return render(
-        request,
-        "dashboard/dashboard_home.html",
-        {
-            "is_premium": require_premium(request.user)
-        }
-    )
+    return render(request, "dashboard/dashboard_home.html")
 
 
 def detailed_analysis(request):
     if not request.user.is_authenticated:
         return redirect("login")
 
-    return render(
-        request,
-        "dashboard/detailed_analysis.html",
-        {
-            "is_premium": require_premium(request.user)
-        }
-    )
+    return render(request, "dashboard/detailed_analysis.html")
 
 
-# ==========================================================
 # CORE READINESS LOGIC (SHARED)
-# ==========================================================
-
 def build_readiness_response(request, premium=False):
 
     assessment_id = request.query_params.get("assessment_id")
@@ -133,7 +123,6 @@ def build_readiness_response(request, premium=False):
     approval_probability = min(95, max(25, final_score))
     competitiveness_percentile = min(95, max(10, int(final_score * 0.9)))
 
-    # ✅ Improved Risk Logic (High + Medium, sorted by lowest score)
     risk_signals = sorted(
         [
             {
@@ -153,14 +142,14 @@ def build_readiness_response(request, premium=False):
         {c["category"]: c["score"] for c in categories}
     )
 
-    next_best_action = []
-
-    for r in recommendations:
-        next_best_action.append({
+    next_best_action = [
+        {
             "title": r["category"].replace("_", " ").title(),
             "suggestion": r["suggestion"],
             "priority": r["priority"]
-        })
+        }
+        for r in recommendations
+    ]
 
     now = timezone.now()
     previous_list = []
@@ -170,7 +159,6 @@ def build_readiness_response(request, premium=False):
             request.user,
             item
         )
-
         previous_list.append({
             "id": item.id,
             "score": score_value,
@@ -210,17 +198,11 @@ def build_readiness_response(request, premium=False):
         "steps": steps,
         "previous_assessments": previous_list,
         "risk_level": assessment.risk_level,
-        "is_premium": premium
+        "is_premium": premium   # kept for API JSON responses only
     }, status=status.HTTP_200_OK)
 
 
-
-
-
-# ==========================================================
 # FREE DASHBOARD API
-# ==========================================================
-
 class FreeReadinessView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -228,15 +210,12 @@ class FreeReadinessView(APIView):
         return build_readiness_response(request, premium=False)
 
 
-# ==========================================================
 # PREMIUM DASHBOARD API
-# ==========================================================
-
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required.", "is_premium": False},
@@ -246,15 +225,12 @@ class DetailedReadinessAnalysisView(APIView):
         return build_readiness_response(request, premium=True)
 
 
-# ==========================================================
 # CATEGORY SCORES (PREMIUM ONLY)
-# ==========================================================
-
 class CalculateCategoryScoresView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id=None, format=None):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required.", "is_premium": False},

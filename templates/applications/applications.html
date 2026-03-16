@@ -16,15 +16,14 @@
   --danger:#ff4d6d;
 }
 
-/* Layout */
+/* ============================= */
+/* LAYOUT                        */
+/* ============================= */
+
 .wrap{
   max-width:1400px;
   margin:auto;
   padding:40px 30px;
-}
-
-@media(max-width:768px){
-  .wrap{padding:20px 15px;}
 }
 
 .card{
@@ -35,7 +34,11 @@
   margin-bottom:20px;
 }
 
-h1{color:#fff;margin-bottom:20px;}
+h1{color:#fff;margin-bottom:20px;font-size:22px;}
+
+/* ============================= */
+/* BUTTONS                       */
+/* ============================= */
 
 button{
   padding:10px 14px;
@@ -50,16 +53,21 @@ button{
 .btnGhost{background:rgba(255,255,255,.08);border:1px solid var(--border);}
 .btnDanger{background:var(--danger);}
 
-/* Table */
+/* ============================= */
+/* TABLE                         */
+/* ============================= */
+
 .table-wrapper{
   width:100%;
   overflow-x:auto;
+  margin-top:20px;
+  -webkit-overflow-scrolling:touch;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:700px;
+  min-width:600px;
 }
 
 th,td{
@@ -83,17 +91,59 @@ tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
 .Approved{background:rgba(40,209,124,.15);}
 .Rejected{background:rgba(255,90,122,.15);}
 
-/* Detail */
+/* ============================= */
+/* MOBILE CARD LIST              */
+/* (replaces table on mobile)    */
+/* ============================= */
+
+.mob-app-list{
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  margin-top:16px;
+}
+
+.mob-app-card{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 16px;
+  cursor:pointer;
+  transition:background .2s;
+}
+
+.mob-app-card:hover{background:rgba(255,255,255,.06);}
+
+.mob-app-card .mob-address{
+  font-size:14px;
+  font-weight:600;
+  color:#fff;
+  margin-bottom:6px;
+}
+
+.mob-app-card .mob-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.mob-app-card .mob-info{
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* ============================= */
+/* DETAIL SECTION                */
+/* ============================= */
+
 #detailSection{display:none;}
 
 .detail-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:15px;
-}
-
-@media(max-width:768px){
-  .detail-grid{grid-template-columns:1fr;}
 }
 
 .detail-item{
@@ -103,7 +153,7 @@ tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
 }
 
 .label{color:var(--muted);font-size:12px;}
-.value{color:#fff;font-size:14px;}
+.value{color:#fff;font-size:14px;margin-top:4px;word-break:break-word;}
 
 .actions{
   margin-top:20px;
@@ -112,12 +162,10 @@ tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
   flex-wrap:wrap;
 }
 
-@media(max-width:480px){
-  .actions{flex-direction:column;}
-  .actions button{width:100%;}
-}
+/* ============================= */
+/* MODAL                         */
+/* ============================= */
 
-/* Modal */
 .modal{
   position:fixed;
   inset:0;
@@ -126,7 +174,7 @@ tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
   align-items:center;
   justify-content:center;
   z-index:9999;
-  padding:20px;
+  padding:16px;
 }
 
 .modal-content{
@@ -141,21 +189,20 @@ tr.clickable:hover{background:rgba(255,255,255,.05);cursor:pointer;}
 }
 
 .modal-title{
-  font-size:25px;
+  font-size:22px;
   margin-bottom:20px;
   color:white;
   font-weight:bold;
 }
 
-/* Form Grid */
+/* ============================= */
+/* FORM GRID                     */
+/* ============================= */
+
 .form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:15px;
-}
-
-@media(max-width:768px){
-  .form-grid{grid-template-columns:1fr;}
 }
 
 input,select,textarea{
@@ -165,53 +212,115 @@ input,select,textarea{
   background:var(--panel2);
   color:#fff;
   width:100%;
+  font-size:13px;
 }
 
 .full{grid-column:1/-1;}
 
-@media(max-width:768px){
-  .full{grid-column:auto;}
-}
+/* ============================= */
+/* TOAST                         */
+/* ============================= */
 
-/* Toast */
 .toast{
   position:fixed;
-  bottom:20px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%);
   background:var(--panel);
   padding:10px 16px;
   border-radius:10px;
+  font-size:13px;
   opacity:0;
   transition:.3s;
   z-index:10000;
+  white-space:nowrap;
+  pointer-events:none;
 }
 
 .toast.show{opacity:1;}
 
-/* Flatpickr Dark */
-.flatpickr-calendar{
-  background:#111a33 !important;
-  border:1px solid var(--border);
-}
+/* ============================= */
+/* FLATPICKR DARK THEME          */
+/* ============================= */
+
+.flatpickr-calendar{background:#111a33 !important;border:1px solid var(--border);}
 .flatpickr-month,
 .flatpickr-current-month,
 .flatpickr-current-month input.cur-year,
-.flatpickr-monthDropdown-months{
-  color:#fff !important;
-  background:transparent !important;
-}
+.flatpickr-monthDropdown-months{color:#fff !important;background:transparent !important;}
 .flatpickr-weekdays{background:#111a33 !important;}
 .flatpickr-weekdays .flatpickr-weekday{color:#fff !important;font-weight:600;}
 .flatpickr-day{color:#fff !important;border-radius:6px;}
 .flatpickr-day:hover{background:rgba(108,125,255,.25) !important;color:#fff !important;}
 .flatpickr-day.today{border:1px solid var(--primary) !important;}
-.flatpickr-day.selected{
-  background:linear-gradient(135deg,var(--primary),var(--primary2)) !important;
-  color:#fff !important;
-}
+.flatpickr-day.selected{background:linear-gradient(135deg,var(--primary),var(--primary2)) !important;color:#fff !important;}
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg{fill:#fff !important;}
+
+/* ============================= */
+/* RESPONSIVE — TABLET (≤900px)  */
+/* ============================= */
+
+@media(max-width:900px){
+  .wrap{padding:20px 15px;}
+
+  .form-grid{grid-template-columns:1fr;}
+  .full{grid-column:auto;}
+}
+
+/* ============================= */
+/* RESPONSIVE — MOBILE (≤640px)  */
+/* ============================= */
+
+@media(max-width:640px){
+
+  .wrap{
+    padding:62px 12px 40px; /* 62px top clears mobile hamburger */
+  }
+
+  h1{font-size:18px;margin-bottom:14px;}
+
+  .card{
+    padding:16px 14px;
+    border-radius:14px;
+  }
+
+  /* Hide desktop table, show mobile card list */
+  .table-wrapper{display:none;}
+  .mob-app-list{display:flex;}
+
+  /* Detail grid: single column */
+  .detail-grid{grid-template-columns:1fr;}
+
+  .actions{flex-direction:column;}
+  .actions button{width:100%;text-align:center;}
+
+  /* Modal: tighter padding */
+  .modal-content{
+    padding:20px 16px;
+    border-radius:14px;
+    max-height:88vh;
+  }
+
+  .modal-title{font-size:18px;margin-bottom:14px;}
+
+  /* Toast full-width */
+  .toast{
+    left:12px;
+    right:12px;
+    transform:none;
+    text-align:center;
+    white-space:normal;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE — SMALL (≤400px)   */
+/* ============================= */
+
+@media(max-width:400px){
+  input,select,textarea{font-size:12px;padding:9px;}
+}
 </style>
 
 <div class="wrap">
@@ -220,6 +329,7 @@ input,select,textarea{
   <h1>Application Tracker</h1>
   <button onclick="openModal()">+ Add New Application</button>
 
+  <!-- Desktop table -->
   <div class="table-wrapper">
     <table>
       <thead>
@@ -234,6 +344,9 @@ input,select,textarea{
       <tbody id="appTable"></tbody>
     </table>
   </div>
+
+  <!-- Mobile card list -->
+  <div class="mob-app-list" id="mobAppList"></div>
 </div>
 
 <div class="card" id="detailSection">
@@ -312,133 +425,155 @@ let currentApp=null;
 document.addEventListener("DOMContentLoaded",loadApplications);
 
 function loadApplications(){
-fetch(API).then(r=>r.json()).then(data=>{
-let table=document.getElementById("appTable");
-table.innerHTML="";
-data.forEach(app=>{
-table.innerHTML+=`
-<tr class="clickable" onclick="viewDetail(${app.id})">
-<td>${app.property_address}</td>
-<td><span class="status ${app.status}">${app.status}</span></td>
-<td>${app.date_applied||"-"}</td>
-<td>${app.rent_amount||"-"}</td>
-<td>${app.documents_submitted?"✅":"—"}</td>
-</tr>`;
-});
-});
+  fetch(API).then(r=>r.json()).then(data=>{
+
+    /* Desktop table */
+    let table=document.getElementById("appTable");
+    table.innerHTML="";
+    data.forEach(app=>{
+      table.innerHTML+=`
+      <tr class="clickable" onclick="viewDetail(${app.id})">
+        <td>${app.property_address}</td>
+        <td><span class="status ${app.status}">${app.status}</span></td>
+        <td>${app.date_applied||"-"}</td>
+        <td>${app.rent_amount||"-"}</td>
+        <td>${app.documents_submitted?"✅":"—"}</td>
+      </tr>`;
+    });
+
+    /* Mobile card list */
+    const mobList=document.getElementById("mobAppList");
+    mobList.innerHTML="";
+    data.forEach(app=>{
+      const card=document.createElement("div");
+      card.className="mob-app-card";
+      card.onclick=()=>viewDetail(app.id);
+      card.innerHTML=`
+        <div class="mob-address">${app.property_address}</div>
+        <div class="mob-meta">
+          <span class="status ${app.status}">${app.status}</span>
+          <span class="mob-info">${app.date_applied||"-"}</span>
+          <span class="mob-info">$${app.rent_amount||"-"}</span>
+          <span class="mob-info">${app.documents_submitted?"✅ Docs":"—"}</span>
+        </div>
+      `;
+      mobList.appendChild(card);
+    });
+
+  });
 }
 
 function openModal(){
-document.getElementById("modalTitle").innerText="New Application";
-document.getElementById("appId").value="";
-document.getElementById("formModal").style.display="flex";
+  document.getElementById("modalTitle").innerText="New Application";
+  document.getElementById("appId").value="";
+  document.getElementById("formModal").style.display="flex";
 }
 
 function closeModal(){
-document.getElementById("formModal").style.display="none";
+  document.getElementById("formModal").style.display="none";
 }
 
 function saveApplication(){
-let id=appId.value;
-let payload={
-property_address:property_address.value,
-company_name:company_name.value,
-contact_person:contact_person.value,
-contact_email:contact_email.value,
-contact_phone:contact_phone.value,
-rent_amount:rent_amount.value,
-date_applied:date_applied.value,
-interview_date:interview_date.value||null,
-follow_up_date:follow_up_date.value||null,
-documents_submitted:documents_submitted.checked,
-status:status.value,
-notes:notes.value
-};
+  let id=appId.value;
+  let payload={
+    property_address:property_address.value,
+    company_name:company_name.value,
+    contact_person:contact_person.value,
+    contact_email:contact_email.value,
+    contact_phone:contact_phone.value,
+    rent_amount:rent_amount.value,
+    date_applied:date_applied.value,
+    interview_date:interview_date.value||null,
+    follow_up_date:follow_up_date.value||null,
+    documents_submitted:documents_submitted.checked,
+    status:status.value,
+    notes:notes.value
+  };
 
-fetch(id?API+id+"/":API,{
-method:id?"PUT":"POST",
-headers:{
-"Content-Type":"application/json",
-"X-CSRFToken":getCSRFToken()
-},
-body:JSON.stringify(payload)
-}).then(()=>{
-closeModal();
-loadApplications();
-showToast("Saved Successfully");
-});
+  fetch(id?API+id+"/":API,{
+    method:id?"PUT":"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "X-CSRFToken":getCSRFToken()
+    },
+    body:JSON.stringify(payload)
+  }).then(()=>{
+    closeModal();
+    loadApplications();
+    showToast("Saved Successfully");
+  });
 }
 
 function viewDetail(id){
-fetch(API+id+"/").then(r=>r.json()).then(app=>{
-currentApp=app;
-let d=document.getElementById("detailContent");
-d.innerHTML="";
-for(let key in app){
-if(key==="id") continue;
-d.innerHTML+=`
-<div class="detail-item">
-<div class="label">${key.replace(/_/g," ")}</div>
-<div class="value">${app[key]||"-"}</div>
-</div>`;
-}
-document.getElementById("listSection").style.display="none";
-document.getElementById("detailSection").style.display="block";
-});
+  fetch(API+id+"/").then(r=>r.json()).then(app=>{
+    currentApp=app;
+    let d=document.getElementById("detailContent");
+    d.innerHTML="";
+    for(let key in app){
+      if(key==="id") continue;
+      d.innerHTML+=`
+      <div class="detail-item">
+        <div class="label">${key.replace(/_/g," ")}</div>
+        <div class="value">${app[key]||"-"}</div>
+      </div>`;
+    }
+    document.getElementById("listSection").style.display="none";
+    document.getElementById("detailSection").style.display="block";
+  });
 }
 
 function backToList(){
-document.getElementById("detailSection").style.display="none";
-document.getElementById("listSection").style.display="block";
+  document.getElementById("detailSection").style.display="none";
+  document.getElementById("listSection").style.display="block";
 }
 
 function editCurrent(){
-openModal();
-document.getElementById("modalTitle").innerText="Edit Application";
-for(let key in currentApp){
-if(document.getElementById(key)){
-if(document.getElementById(key).type==="checkbox"){
-document.getElementById(key).checked=currentApp[key];
-}else{
-document.getElementById(key).value=currentApp[key]||"";
-}
-}
-}
-appId.value=currentApp.id;
+  openModal();
+  document.getElementById("modalTitle").innerText="Edit Application";
+  for(let key in currentApp){
+    if(document.getElementById(key)){
+      if(document.getElementById(key).type==="checkbox"){
+        document.getElementById(key).checked=currentApp[key];
+      }else{
+        document.getElementById(key).value=currentApp[key]||"";
+      }
+    }
+  }
+  appId.value=currentApp.id;
 }
 
 function openDeleteModal(){
-document.getElementById("deleteModal").style.display="flex";
+  document.getElementById("deleteModal").style.display="flex";
 }
 
 function closeDeleteModal(){
-document.getElementById("deleteModal").style.display="none";
+  document.getElementById("deleteModal").style.display="none";
 }
 
 function confirmDelete(){
-fetch(API+currentApp.id+"/",{
-method:"DELETE",
-headers:{"X-CSRFToken":getCSRFToken()}
-})
-.then(()=>{
-closeDeleteModal();
-backToList();
-loadApplications();
-showToast("Deleted Successfully");
-});
+  fetch(API+currentApp.id+"/",{
+    method:"DELETE",
+    headers:{"X-CSRFToken":getCSRFToken()}
+  })
+  .then(()=>{
+    closeDeleteModal();
+    backToList();
+    loadApplications();
+    showToast("Deleted Successfully");
+  });
 }
 
 function showToast(msg){
-let toast=document.getElementById("toast");
-toast.innerText=msg;
-toast.classList.add("show");
-setTimeout(()=>toast.classList.remove("show"),2000);
+  let toast=document.getElementById("toast");
+  toast.innerText=msg;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),2000);
 }
 
 function getCSRFToken(){
-return document.cookie.split('; ')
-.find(r=>r.startsWith('csrftoken'))
-?.split('=')[1];
+  return document.cookie.split('; ')
+    .find(r=>r.startsWith('csrftoken'))
+    ?.split('=')[1];
 }
 </script>
 

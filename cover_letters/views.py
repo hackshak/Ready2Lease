@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.http import FileResponse
 
 from rest_framework.views import APIView
@@ -16,42 +17,36 @@ from .serializers import (
 from .services.generator import CoverLetterGeneratorService
 from .services.pdf import CoverLetterPDFService
 
+User = get_user_model()
 
-# HELPER
+
+# HELPER — always reads fresh from DB, never the session cache
+
 def require_premium(user):
-    return getattr(user, "is_premium", False)
+    """
+    Re-fetches the user from the DB on every call so we never
+    read a stale is_premium value from the Django session cache.
+    """
+    try:
+        fresh = User.objects.get(pk=user.pk)
+        return fresh.is_premium
+    except User.DoesNotExist:
+        return False
 
 
-# TEMPLATE VIEWS (VISIBLE TO ALL LOGGED-IN USERS)
 @login_required
 def cover_letter_list_view(request):
-    # ✅ Page visible to all logged-in users
-    return render(
-        request,
-        "cover_letters/list.html",
-        {
-            "is_premium": require_premium(request.user)
-        }
-    )
+    return render(request, "cover_letters/list.html")
 
 
 @login_required
 def cover_letter_editor_view(request, pk):
-    # ✅ Page visible to all logged-in users
-    letter = get_object_or_404(
-        CoverLetter,
-        pk=pk,
-        user=request.user
-    )
+    letter = get_object_or_404(CoverLetter, pk=pk, user=request.user)
 
-    return render(
-        request,
-        "cover_letters/editor.html",
-        {
-            "letter_id": letter.id,
-            "is_premium": require_premium(request.user)
-        }
-    )
+    # letter_id is page-specific context — kept intentionally
+    return render(request, "cover_letters/editor.html", {
+        "letter_id": letter.id,
+    })
 
 
 # API: LIST LETTERS (PREMIUM FUNCTIONALITY)
@@ -59,7 +54,7 @@ class CoverLetterListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -89,7 +84,7 @@ class GenerateCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -148,19 +143,14 @@ class CoverLetterDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        letter = get_object_or_404(
-            CoverLetter,
-            pk=pk,
-            user=request.user
-        )
-
+        letter = get_object_or_404(CoverLetter, pk=pk, user=request.user)
         serializer = CoverLetterDetailSerializer(letter)
         return Response(serializer.data)
 
@@ -170,18 +160,14 @@ class SaveCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        letter = get_object_or_404(
-            CoverLetter,
-            pk=pk,
-            user=request.user
-        )
+        letter = get_object_or_404(CoverLetter, pk=pk, user=request.user)
 
         serializer = CoverLetterUpdateSerializer(
             letter,
@@ -193,7 +179,6 @@ class SaveCoverLetterAPI(APIView):
             return Response(serializer.errors, status=400)
 
         serializer.save()
-
         return Response({"success": True})
 
 
@@ -202,18 +187,14 @@ class ExportCoverLetterPDFAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        letter = get_object_or_404(
-            CoverLetter,
-            pk=pk,
-            user=request.user
-        )
+        letter = get_object_or_404(CoverLetter, pk=pk, user=request.user)
 
         if not letter.final_content:
             return Response(

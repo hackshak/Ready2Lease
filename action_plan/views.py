@@ -6,6 +6,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from assessments.models import Assessment
@@ -13,22 +14,28 @@ from .services import ActionPlanService, TASK_WEIGHTS
 from .models import CompletedTask, UserDocument, ReferenceLetter, CoverLetter
 from .checklist_service import ChecklistService
 
+User = get_user_model()
 
 
-# HELPER
+# HELPER — always reads fresh from DB, never the session cache
+
 def require_premium(user):
-    return getattr(user, "is_premium", False)
+    """
+    Re-fetches the user from the DB on every call so we never
+    read a stale is_premium value from the Django session cache.
+    """
+    try:
+        fresh = User.objects.get(pk=user.pk)
+        return fresh.is_premium
+    except User.DoesNotExist:
+        return False
 
 
 
-# PAGE VIEW (VISIBLE TO ALL LOGGED-IN USERS)
 class ActionPlanPageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/action_plan.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_premium"] = require_premium(self.request.user)
-        return context
+
 
 
 
@@ -37,7 +44,7 @@ class ActionPlanTasksView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id=None):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -51,9 +58,7 @@ class ActionPlanTasksView(APIView):
                 user=request.user
             )
         else:
-            assessment = ActionPlanService.get_latest_assessment(
-                request.user
-            )
+            assessment = ActionPlanService.get_latest_assessment(request.user)
 
         if not assessment:
             return Response({
@@ -63,9 +68,7 @@ class ActionPlanTasksView(APIView):
                 "final_score": 0
             }, status=status.HTTP_200_OK)
 
-        tasks = ActionPlanService.generate_tasks_for_assessment(
-            assessment
-        )
+        tasks = ActionPlanService.generate_tasks_for_assessment(assessment)
 
         return Response({
             "tasks": tasks,
@@ -87,7 +90,7 @@ class UploadDocumentView(APIView):
 
     @transaction.atomic
     def post(self, request, assessment_id):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -136,7 +139,6 @@ class UploadDocumentView(APIView):
             task_key=task_key
         )
 
-        # 🔧 FIX: recalculate and persist score
         new_score = ActionPlanService.get_final_score_for_assessment(
             request.user,
             assessment
@@ -145,9 +147,7 @@ class UploadDocumentView(APIView):
         assessment.readiness_score = new_score
         assessment.save(update_fields=["readiness_score"])
 
-        return Response({
-            "final_score": new_score
-        }, status=status.HTTP_200_OK)
+        return Response({"final_score": new_score}, status=status.HTTP_200_OK)
 
 
 
@@ -157,7 +157,7 @@ class AddReferenceView(APIView):
 
     @transaction.atomic
     def post(self, request, assessment_id):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -193,7 +193,6 @@ class AddReferenceView(APIView):
             task_key=task_key
         )
 
-        # 🔧 FIX: persist new score
         new_score = ActionPlanService.get_final_score_for_assessment(
             request.user,
             assessment
@@ -202,9 +201,7 @@ class AddReferenceView(APIView):
         assessment.readiness_score = new_score
         assessment.save(update_fields=["readiness_score"])
 
-        return Response({
-            "final_score": new_score
-        }, status=status.HTTP_200_OK)
+        return Response({"final_score": new_score}, status=status.HTTP_200_OK)
 
 
 
@@ -214,7 +211,7 @@ class SaveCoverLetterView(APIView):
 
     @transaction.atomic
     def post(self, request, assessment_id):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -249,7 +246,6 @@ class SaveCoverLetterView(APIView):
             task_key=task_key
         )
 
-        # 🔧 FIX: persist score
         new_score = ActionPlanService.get_final_score_for_assessment(
             request.user,
             assessment
@@ -258,13 +254,11 @@ class SaveCoverLetterView(APIView):
         assessment.readiness_score = new_score
         assessment.save(update_fields=["readiness_score"])
 
-        return Response({
-            "final_score": new_score
-        }, status=status.HTTP_200_OK)
+        return Response({"final_score": new_score}, status=status.HTTP_200_OK)
 
 
 
-# DOCUMENTS HOME PAGE (VISIBLE TO ALL LOGGED-IN USERS)
+
 class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
     template_name = "action_plan/documents.html"
 
@@ -275,9 +269,9 @@ class DocumentsHomePageView(LoginRequiredMixin, TemplateView):
             .filter(user=self.request.user)
             .order_by("-created_at")
         )
-        context["is_premium"] = require_premium(self.request.user)
+        # is_premium is intentionally NOT set here —
+        # the context processor injects it automatically.
         return context
-
 
 
 # DOCUMENT CHECKLIST API (PREMIUM ONLY)
@@ -285,7 +279,7 @@ class DocumentChecklistView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -306,14 +300,13 @@ class DocumentChecklistView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-
 # DELETE DOCUMENT (PREMIUM ONLY)
 class DeleteDocumentView(APIView):
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
     def delete(self, request, assessment_id, doc_type, object_id):
-
+        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -329,45 +322,36 @@ class DeleteDocumentView(APIView):
         task_key = None
 
         if doc_type in ["id_document", "payslip", "bank_statement"]:
-
             doc = get_object_or_404(
                 UserDocument,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
-
             task_key = f"upload_{doc.document_type}"
-
             doc.file.delete(save=False)
             doc.delete()
 
         elif doc_type == "reference_letter":
-
             ref = get_object_or_404(
                 ReferenceLetter,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
-
             task_key = "add_reference_letter"
-
             if ref.file:
                 ref.file.delete(save=False)
             ref.delete()
 
         elif doc_type == "cover_letter":
-
             cover = get_object_or_404(
                 CoverLetter,
                 id=object_id,
                 user=request.user,
                 assessment=assessment
             )
-
             task_key = "improve_cover_letter"
-
             cover.delete()
 
         else:
@@ -383,7 +367,6 @@ class DeleteDocumentView(APIView):
                 task_key=task_key
             ).delete()
 
-        # 🔧 FIX: recalculate score after deletion
         new_score = ActionPlanService.get_final_score_for_assessment(
             request.user,
             assessment

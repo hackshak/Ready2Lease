@@ -3,14 +3,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Ready2Lease | Dashboard</title>
-    <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
 
 body { margin: 0; min-height: 100vh; background: #f4f5f7; }
+
+/* ============================= */
+/* DESKTOP SIDEBAR                */
+/* ============================= */
 
 .sidebar {
     position: fixed;
@@ -81,6 +85,10 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
     overflow: hidden;
 }
 
+/* ============================= */
+/* DASHBOARD CONTENT             */
+/* ============================= */
+
 .dashboard-content {
     margin-left: 70px;
     min-height: 100vh;
@@ -93,174 +101,228 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
 
 .locked { opacity: 0.5; }
 
-
-/* Premium Overlay */
+/* ============================= */
+/* MOBILE DRAWER                 */
 /* ============================= */
 
-.premium-overlay{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-    background:rgba(11,16,32,.75);
-    backdrop-filter:blur(12px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:999999;
-    animation:fadeIn .35s ease;
+.mob-menu-btn {
+    display: none;
+    position: fixed;
+    top: 12px;
+    right: 14px;
+    width: 38px;
+    height: 38px;
+    background: #111a33;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    border: none;
+    color: white;
+    font-size: 16px;
 }
 
-/* ============================= */
-/* Modal Card */
-/* ============================= */
-
-.premium-modal{
-    width:420px;
-    max-width:90%;
-    background:rgba(17,26,51,.85);
-    backdrop-filter:blur(14px);
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.10);
-    box-shadow:0 18px 40px rgba(0,0,0,.45);
-    padding:28px 26px;
-    text-align:center;
-    color:#e9eefc;
-    position:relative;
+.mob-drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11,16,32,0.55);
+    z-index: 1002;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-/* ============================= */
-/* Badge */
-/* ============================= */
+.mob-drawer-overlay.visible { opacity: 1; }
 
-.premium-badge{
-    display:inline-block;
-    padding:6px 14px;
-    font-size:11px;
-    border-radius:999px;
-    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
-    color:white;
-    margin-bottom:12px;
-    font-weight:600;
+.mob-drawer {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 240px;
+    height: 100vh;
+    background: #111a33;
+    z-index: 1003;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    padding-top: 52px;
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
-/* ============================= */
-/* Title */
-/* ============================= */
+.mob-drawer.open { left: 0; }
 
-.premium-modal h2{
-    margin:6px 0 10px;
-    font-size:20px;
-    font-weight:700;
+.mob-drawer-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ============================= */
-/* Subtext */
-/* ============================= */
+.mob-drawer ul { list-style: none; padding: 0 10px; }
 
-.premium-subtext{
-    font-size:13px;
-    color:#a9b4d6;
-    line-height:1.6;
-    margin-bottom:20px;
+.mob-drawer ul li {
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 3px;
+    transition: background 0.2s;
 }
 
-/* ============================= */
-/* Feature List */
-/* ============================= */
+.mob-drawer ul li:hover { background: rgba(255,255,255,0.08); }
 
-.premium-features{
-    text-align:left;
-    margin-bottom:24px;
+.mob-drawer ul li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.85);
+    width: 100%;
 }
 
-.feature-item{
-    font-size:13px;
-    padding:10px 12px;
-    border-radius:12px;
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.08);
-    margin-bottom:8px;
+.mob-drawer ul li i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: rgba(255,255,255,0.65);
 }
 
-/* ============================= */
-/* Buttons */
-/* ============================= */
+.mob-drawer ul li span { font-size: 15px; }
 
-.premium-buttons{
-    display:flex;
-    gap:10px;
-}
+/* Mobile content padding adjustments */
+@media (max-width: 768px) {
+    .sidebar { display: none; }
 
-.btn-cancel{
-    flex:1;
-    border:none;
-    background:rgba(255,255,255,.08);
-    color:#e9eefc;
-    padding:10px;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:13px;
-    transition:.25s;
-}
+    .mob-menu-btn { display: flex; }
 
-.btn-cancel:hover{
-    background:rgba(255,255,255,.14);
-}
+    .mob-drawer-overlay { display: block; pointer-events: none; }
+    .mob-drawer-overlay.visible { pointer-events: auto; }
 
-.btn-upgrade{
-    flex:1;
-    text-decoration:none;
-    text-align:center;
-    padding:10px;
-    border-radius:12px;
-    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
-    color:white;
-    font-size:13px;
-    font-weight:600;
-    transition:.25s;
-}
-
-.btn-upgrade:hover{
-    transform:translateY(-2px);
-    box-shadow:0 6px 18px rgba(108,125,255,.35);
-}
-
-/* ============================= */
-/* Animation */
-/* ============================= */
-
-@keyframes fadeIn{
-    from{
-        opacity:0;
-        transform:scale(.95);
-    }
-    to{
-        opacity:1;
-        transform:scale(1);
+    .dashboard-content {
+        margin-left: 0 !important;
     }
 }
 
 /* ============================= */
-/* Mobile */
+/* Premium Overlay               */
 /* ============================= */
 
-@media(max-width:480px){
-
-    .premium-modal{
-        padding:22px 18px;
-    }
-
-    .premium-buttons{
-        flex-direction:column;
-    }
-
+.premium-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11,16,32,.75);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    animation: fadeIn .35s ease;
+    padding: 16px;
 }
 
+.premium-modal {
+    width: 420px;
+    max-width: 100%;
+    background: rgba(17,26,51,.85);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: 0 18px 40px rgba(0,0,0,.45);
+    padding: 28px 26px;
+    text-align: center;
+    color: #e9eefc;
+    position: relative;
+}
+
+.premium-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 11px;
+    border-radius: 999px;
+    background: linear-gradient(135deg,#6c7dff,#8b5cf6);
+    color: white;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.premium-modal h2 { margin: 6px 0 10px; font-size: 20px; font-weight: 700; }
+
+.premium-subtext { font-size: 13px; color: #a9b4d6; line-height: 1.6; margin-bottom: 20px; }
+
+.premium-features { text-align: left; margin-bottom: 24px; }
+
+.feature-item {
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 8px;
+}
+
+.premium-buttons { display: flex; gap: 10px; }
+
+.btn-cancel {
+    flex: 1;
+    border: none;
+    background: rgba(255,255,255,.08);
+    color: #e9eefc;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .25s;
+}
+
+.btn-cancel:hover { background: rgba(255,255,255,.14); }
+
+.btn-upgrade {
+    flex: 1;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#6c7dff,#8b5cf6);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.btn-upgrade:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(108,125,255,.35); }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(.95); }
+    to   { opacity: 1; transform: scale(1);   }
+}
+
+@media (max-width: 480px) {
+    .premium-modal { padding: 22px 18px; }
+    .premium-buttons { flex-direction: column; }
+}
 </style>
 </head>
 <body>
 
+{# ─────────────────────────────────────────────────────────────── #}
+{# PREMIUM MODAL                                                    #}
+{# `is_premium` is injected globally by payments.context_processors #}
+{# so this works correctly on every dashboard page automatically.   #}
+{# ─────────────────────────────────────────────────────────────── #}
 {% if user.is_authenticated and not is_premium %}
 <div id="premiumModalOverlay" class="premium-overlay">
     <div class="premium-modal">
@@ -272,30 +334,26 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
         </p>
         <div class="premium-features">
             <div class="feature-item">✔ Detailed Score Breakdown</div>
-            <div class="feature-item">✔ Risk Analysis & Alerts</div>
+            <div class="feature-item">✔ Risk Analysis &amp; Alerts</div>
             <div class="feature-item">✔ AI Action Plan</div>
             <div class="feature-item">✔ Approval Probability Insights</div>
         </div>
         <div class="premium-buttons">
-            <button onclick="closePremiumModal()" class="btn-cancel">
-                Maybe Later
-            </button>
-            <a href="{% url 'create_checkout_session' %}" class="btn-upgrade">
-                Upgrade Now →
-            </a>
+            <button onclick="closePremiumModal()" class="btn-cancel">Maybe Later</button>
+            <a href="{% url 'create_checkout_session' %}" class="btn-upgrade">Upgrade Now →</a>
         </div>
     </div>
 </div>
 {% endif %}
 
-<div class="sidebar collapsed" id="sidebar">
+<!-- ============================= -->
+<!-- DESKTOP SIDEBAR               -->
+<!-- ============================= -->
 
-    <!-- UPDATED TOGGLE ICON -->
+<div class="sidebar collapsed" id="sidebar">
     <div class="toggle-btn" id="toggleBtn">
         <i class="fas fa-chevron-right" id="toggleIcon"></i>
     </div>
-
-    <!-- Navigation (UNCHANGED) -->
     <ul>
         <li><a href="{% url 'dashboard_home' %}"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
         <li><a href="{% url 'assessment-page' %}"><i class="fa-solid fa-check-to-slot"></i><span>Readiness Check</span></a></li>
@@ -307,124 +365,155 @@ body { margin: 0; min-height: 100vh; background: #f4f5f7; }
         <li><a href="{% url 'reports' %}"><i class="fa-solid fa-receipt"></i><span>Reports</span></a></li>
         <li id="authButton">
             {% if request.user.is_authenticated %}
-                <a href="{% url 'logout' %}">
-                    <i class="fas fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
+                <a href="{% url 'logout' %}"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
             {% else %}
-                <a href="{% url 'login' %}">
-                    <i class="fas fa-right-from-bracket"></i>
-                    <span>Login</span>
-                </a>
+                <a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i><span>Login</span></a>
             {% endif %}
         </li>
     </ul>
 </div>
+
+<!-- ============================= -->
+<!-- MOBILE HAMBURGER BUTTON       -->
+<!-- ============================= -->
+
+<button class="mob-menu-btn" id="mobMenuBtn" aria-label="Open menu">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- ============================= -->
+<!-- MOBILE DRAWER OVERLAY         -->
+<!-- ============================= -->
+
+<div class="mob-drawer-overlay" id="mobDrawerOverlay" onclick="closeMobDrawer()"></div>
+
+<!-- ============================= -->
+<!-- MOBILE DRAWER                 -->
+<!-- ============================= -->
+
+<div class="mob-drawer" id="mobDrawer">
+    <button class="mob-drawer-close" onclick="closeMobDrawer()">
+        <i class="fas fa-times"></i>
+    </button>
+    <ul>
+        <li><a href="{% url 'dashboard_home' %}"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
+        <li><a href="{% url 'assessment-page' %}"><i class="fa-solid fa-check-to-slot"></i><span>Readiness Check</span></a></li>
+        <li><a href="{% url 'detailed-analysis' %}"><i class="fas fa-file-alt"></i><span>Detailed Analysis</span></a></li>
+        <li><a href="{% url 'action_plan_page' %}"><i class="fas fa-building"></i><span>Action Plan</span></a></li>
+        <li><a href="{% url 'cover_letter_list' %}"><i class="fa-brands fa-square-letterboxd"></i><span>Cover Letter</span></a></li>
+        <li><a href="{% url 'document_home' %}"><i class="fa-brands fa-readme"></i><span>Documents</span></a></li>
+        <li><a href="{% url 'application_page' %}"><i class="fas fa-user-cog"></i><span>Applications</span></a></li>
+        <li><a href="{% url 'reports' %}"><i class="fa-solid fa-receipt"></i><span>Reports</span></a></li>
+        <li>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'logout' %}"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i><span>Login</span></a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+<!-- ============================= -->
+<!-- DASHBOARD CONTENT             -->
+<!-- ============================= -->
 
 <div class="dashboard-content">
     {% block content %}{% endblock %}
 </div>
 
 <script>
-const isPremiumUser = {{ request.user.is_premium|yesno:"true,false" }};
+    {# ─────────────────────────────────────────────────────────────── #}
+    {# FIX: Use `is_premium` context variable (from context processor) #}
+    {# NOT `request.user.is_premium` which reads the stale session obj #}
+    {# ─────────────────────────────────────────────────────────────── #}
+    const isPremiumUser = {{ is_premium|yesno:"true,false" }};
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const toggleBtn = document.getElementById("toggleBtn");
-    const sidebar = document.getElementById("sidebar");
-    const toggleIcon = document.getElementById("toggleIcon");
+        /* ===== DESKTOP SIDEBAR TOGGLE ===== */
+        const toggleBtn  = document.getElementById("toggleBtn");
+        const sidebar    = document.getElementById("sidebar");
+        const toggleIcon = document.getElementById("toggleIcon");
 
-    /* ===== UPDATED TOGGLE LOGIC ===== */
-    function updateToggleIcon() {
-        if (sidebar.classList.contains("collapsed")) {
-            toggleIcon.classList.remove("fa-chevron-left");
-            toggleIcon.classList.add("fa-chevron-right");
-        } else {
-            toggleIcon.classList.remove("fa-chevron-right");
-            toggleIcon.classList.add("fa-chevron-left");
-        }
-    }
-
-    updateToggleIcon();
-
-    toggleBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("collapsed");
-        updateToggleIcon();
-    });
-
-    /* ===== YOUR ORIGINAL LOGIC (UNCHANGED) ===== */
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+        function updateToggleIcon() {
+            if (sidebar.classList.contains("collapsed")) {
+                toggleIcon.classList.remove("fa-chevron-left");
+                toggleIcon.classList.add("fa-chevron-right");
+            } else {
+                toggleIcon.classList.remove("fa-chevron-right");
+                toggleIcon.classList.add("fa-chevron-left");
             }
         }
-        return cookieValue;
-    }
-});
 
-function closePremiumModal() {
-    const modal = document.getElementById("premiumModalOverlay");
-    if (modal) {
-        modal.style.display = "none";
-        document.body.style.overflow = "auto";
-    }
-}
+        updateToggleIcon();
 
-document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("premiumModalOverlay");
-    if (modal) {
+        toggleBtn.addEventListener("click", function () {
+            sidebar.classList.toggle("collapsed");
+            updateToggleIcon();
+        });
+
+        /* ===== MOBILE DRAWER TOGGLE ===== */
+        const mobMenuBtn = document.getElementById("mobMenuBtn");
+        if (mobMenuBtn) {
+            mobMenuBtn.addEventListener("click", openMobDrawer);
+        }
+
+        /* ===== PREMIUM MODAL SCROLL LOCK ===== */
+        const modal = document.getElementById("premiumModalOverlay");
+        if (modal) {
+            document.body.style.overflow = "hidden";
+        }
+
+    });
+
+    function openMobDrawer() {
+        document.getElementById("mobDrawer").classList.add("open");
+        document.getElementById("mobDrawerOverlay").classList.add("visible");
         document.body.style.overflow = "hidden";
     }
-});
-</script>
 
+    function closeMobDrawer() {
+        document.getElementById("mobDrawer").classList.remove("open");
+        document.getElementById("mobDrawerOverlay").classList.remove("visible");
+        document.body.style.overflow = "auto";
+    }
+
+    function closePremiumModal() {
+        const modal = document.getElementById("premiumModalOverlay");
+        if (modal) {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+    }
+</script>
 
 <!-- Chatbase Chatbot -->
 <script>
 (function () {
-
     if (!window.chatbase || window.chatbase("getState") !== "initialized") {
-
         window.chatbase = (...arguments) => {
-            if (!window.chatbase.q) {
-                window.chatbase.q = [];
-            }
+            if (!window.chatbase.q) { window.chatbase.q = []; }
             window.chatbase.q.push(arguments);
         };
-
         window.chatbase = new Proxy(window.chatbase, {
             get(target, prop) {
-                if (prop === "q") {
-                    return target.q;
-                }
+                if (prop === "q") { return target.q; }
                 return (...args) => target(prop, ...args);
             }
         });
-
     }
-
     const onLoad = function () {
         const script = document.createElement("script");
         script.src = "https://www.chatbase.co/embed.min.js";
-        script.id = "_CIV7lvSa2UXmhrO2hyJG";
+        script.id = "fBKfqtEA6oZrm3KY5f6cR";
         script.domain = "www.chatbase.co";
         document.body.appendChild(script);
     };
-
-    if (document.readyState === "complete") {
-        onLoad();
-    } else {
-        window.addEventListener("load", onLoad);
-    }
-
+    if (document.readyState === "complete") { onLoad(); }
+    else { window.addEventListener("load", onLoad); }
 })();
 </script>
+
 </body>
 </html>
