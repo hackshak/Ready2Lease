@@ -2,16 +2,16 @@ from rest_framework import serializers
 from .models import CoverLetter
 
 
-class CoverLetterCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CoverLetter
-        fields = [
-            "property_address",
-            "tone",
-            "employment_type",
-            "rental_history_type",
-            "base_inputs",
-        ]
+class CoverLetterCreateSerializer(serializers.Serializer):  # NOT ModelSerializer
+    property_address = serializers.CharField(required=False, allow_blank=True)
+    tone = serializers.ChoiceField(choices=["professional", "friendly", "confident", "direct"])
+    employment_type = serializers.ChoiceField(
+        choices=["full_time", "part_time", "student", "retired"], required=False
+    )
+    rental_history_type = serializers.ChoiceField(
+        choices=["first_time", "rented_before", "rented_overseas"], required=False
+    )
+    base_inputs = serializers.DictField()
 
 
 class CoverLetterDetailSerializer(serializers.ModelSerializer):
