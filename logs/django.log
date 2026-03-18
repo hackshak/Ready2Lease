@@ -1,0 +1,17 @@
+ERROR 2026-03-18 21:34:19,887 log 24230 135691952490176 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-18 21:34:19,890 log 24230 135691952490176 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-18 21:34:31,056 log 24230 135691952490176 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-18 21:34:31,076 log 24230 135691952490176 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-18 21:34:31,080 log 24230 135691952490176 You're accessing the development server over HTTPS, but it only supports HTTP.
+WARNING 2026-03-18 21:47:46,071 log 24230 135691926263488 Not Found: /api/free-readiness/
+WARNING 2026-03-18 21:47:46,072 log 24230 135691926263488 "GET /api/free-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-18 21:49:12,640 log 24230 135691926263488 Not Found: /api/detailed-readiness/
+WARNING 2026-03-18 21:49:12,642 log 24230 135691926263488 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-18 22:05:39,293 log 27824 132428764051136 Not Found: /api/detailed-readiness/
+WARNING 2026-03-18 22:05:39,293 log 27824 132428764051136 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-18 22:07:31,365 log 28226 123439731996352 Not Found: /api/detailed-readiness/
+WARNING 2026-03-18 22:07:31,366 log 28226 123439731996352 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-18 22:30:23,838 log 30214 124510401472192 Not Found: /api/detailed-readiness/
+WARNING 2026-03-18 22:30:23,839 log 30214 124510401472192 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-18 22:32:50,314 log 30214 124510401472192 Not Found: /api/detailed-readiness/
+WARNING 2026-03-18 22:32:50,316 log 30214 124510401472192 "GET /api/detailed-readiness/ HTTP/1.1" 404 33

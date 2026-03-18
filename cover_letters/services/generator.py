@@ -70,7 +70,7 @@ class CoverLetterGeneratorService:
     220-300 words so the letter fits on one A4 PDF page.
     """
 
-    def generate_letter(self, base_inputs, tone, property_address=None):
+    def generate_letter(self, base_inputs: dict, tone: str, property_address: str = None):
 
         prompt = self.build_prompt(base_inputs, tone, property_address)
 
@@ -79,7 +79,12 @@ class CoverLetterGeneratorService:
             contents=prompt
         )
 
-        if not response.text:
-            raise Exception("Gemini returned empty response")
+        try:
+            text = response.candidates[0].content.parts[0].text
+        except (IndexError, AttributeError):
+            raise Exception("Gemini returned an empty or malformed response")
 
-        return response.text.strip()    
+        if not text or not text.strip():
+            raise Exception("Gemini returned empty text")
+
+        return text.strip()
