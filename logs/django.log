@@ -15,3 +15,7 @@ WARNING 2026-03-18 22:30:23,838 log 30214 124510401472192 Not Found: /api/detail
 WARNING 2026-03-18 22:30:23,839 log 30214 124510401472192 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
 WARNING 2026-03-18 22:32:50,314 log 30214 124510401472192 Not Found: /api/detailed-readiness/
 WARNING 2026-03-18 22:32:50,316 log 30214 124510401472192 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+ERROR 2026-03-19 00:05:34,509 log 38672 139078250038976 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-19 00:05:34,514 log 38672 139078250038976 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-22 07:59:36,952 log 4574 137031451662016 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-22 07:59:36,956 log 4574 137031451662016 You're accessing the development server over HTTPS, but it only supports HTTP.
