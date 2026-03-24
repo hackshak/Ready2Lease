@@ -96,7 +96,7 @@ TEMPLATES = [
 
 
 
-# DATABASE Production Setting
+# DATABASE
 if os.getenv("DB_ENGINE") == "postgresql":
     DATABASES = {
         "default": {
