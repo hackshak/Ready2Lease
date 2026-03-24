@@ -5,6 +5,9 @@ def home_page(request):
     return render(request,"core/home.html")
 
 
+def new_landing(request):
+    return render(request, 'core/landing_new.html')
+
 def upgrade_page(request):
     return render(request,"core/upgrade.html")
 

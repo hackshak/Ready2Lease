@@ -23,6 +23,10 @@
     <link rel="stylesheet" href="{% static 'css/assessment.css' %}">
     <link rel="stylesheet" href="{% static 'css/blog.css' %}">
     <link rel="stylesheet" href="{% static 'css/blog_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/NewFooter.css' %}">
+    <link rel="stylesheet" href="{% static 'css/newLandingPage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/NewNavBar.css' %}">
+
 
 
 
@@ -38,11 +42,9 @@
     {% block extra_css %}{% endblock %}
     
     <style>
-        html {
+        html, body {
             scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
         #messageModalWrapper {
             position: fixed;
@@ -112,7 +114,6 @@
 {% endif %}
 
     <!-- Header / Navigation -->
-    {% include "navbar.html" %}
 
 
     <!-- Main Content -->

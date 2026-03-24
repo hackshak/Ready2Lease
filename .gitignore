@@ -1,9 +1,0 @@
-.env
-db.sqlite3
-
-# apps
-
-
-# virtual environment
-env
-.gitignore
