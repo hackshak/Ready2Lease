@@ -19,3 +19,102 @@ ERROR 2026-03-19 00:05:34,509 log 38672 139078250038976 You're accessing the dev
 ERROR 2026-03-19 00:05:34,514 log 38672 139078250038976 You're accessing the development server over HTTPS, but it only supports HTTP.
 ERROR 2026-03-22 07:59:36,952 log 4574 137031451662016 You're accessing the development server over HTTPS, but it only supports HTTP.
 ERROR 2026-03-22 07:59:36,956 log 4574 137031451662016 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-24 02:35:44,805 log 6887 131482202965696 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-24 02:35:44,808 log 6887 131482202965696 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2026-03-24 02:49:06,894 log 6887 131482185131712 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 5, in home_page
+    return render(request,"core/home.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 634, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/core/home.html, Invalid block tag on line 11: 'static', expected 'endblock'. Did you forget to register or load this tag?
+ERROR 2026-03-24 02:49:06,901 log 6887 131482185131712 "GET / HTTP/1.1" 500 198321
+WARNING 2026-03-24 02:49:07,062 log 6887 131482185131712 Not Found: /favicon.ico
+WARNING 2026-03-24 02:49:07,062 log 6887 131482185131712 "GET /favicon.ico HTTP/1.1" 404 14967
+WARNING 2026-03-24 02:59:17,172 log 9239 138669423834816 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 02:59:17,173 log 9239 138669423834816 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:00:06,075 log 9239 138669432227520 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 03:00:06,078 log 9239 138669432227520 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:04:46,493 log 9239 138669423834816 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 03:04:46,494 log 9239 138669423834816 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:08:50,141 log 9239 138669432227520 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 03:08:50,142 log 9239 138669432227520 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:17:05,752 log 9239 138669432227520 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 03:17:05,753 log 9239 138669432227520 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:20:58,828 log 9239 138669440620224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 03:20:58,829 log 9239 138669440620224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 03:26:43,216 log 16609 128012088538816 "GET /static/images/familiar.png HTTP/1.1" 404 1871
+WARNING 2026-03-24 04:16:44,634 log 4514 128183500273344 "GET /static/images/rejection.png HTTP/1.1" 404 1874
+WARNING 2026-03-24 04:23:34,155 log 4514 128183744607936 "GET /static/images/agent.png HTTP/1.1" 404 1862
+WARNING 2026-03-24 04:27:49,524 log 4514 128183736215232 "GET /static/images/solution.png HTTP/1.1" 404 1871
+WARNING 2026-03-24 04:30:02,806 log 4514 128183500273344 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 04:30:02,807 log 4514 128183500273344 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 04:30:42,199 log 4514 128183744607936 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 04:30:42,200 log 4514 128183744607936 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 04:33:17,094 log 4514 128183726773952 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 04:33:17,095 log 4514 128183726773952 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078
+WARNING 2026-03-24 05:15:30,222 log 4514 128183744607936 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-24 05:15:30,223 log 4514 128183744607936 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15078

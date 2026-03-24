@@ -1,111 +1,235 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-            <!-- Eyebrow -->
+        <!-- Eyebrow -->
         <div class="eyebrow">
-            Rental Application Technology
-            <i class="fa-solid fa-file-shield"></i>
+            <span class="eyebrow-line"></span>
+            AUSTRALIA'S RENTAL READINESS PLATFORM
+            <span class="eyebrow-line"></span>
         </div>
 
-        <h1>Your Rental Application Keeps Getting Rejected?</h1>
+        <!-- Headline -->
+        <h1>
+            Getting rejected for<br>
+            <span class="headline-gold">rentals in Australia?</span>
+        </h1>
+
+        <!-- Subtext -->
         <p>
-            It's not your fault. You're just not "agent-ready" yet.
-            Missing docs, weak references, and bad formatting are costing you homes.
-            Get a readiness score, fix your gaps, and generate an agent-ready dossier in minutes.
+            It's often not about you — it's how your application looks to agents.
         </p>
+
+        <!-- Feature Bullets -->
+        <ul class="hero-bullets">
+            <li><i class="fa-solid fa-circle-dot"></i> Applications reviewed in minutes</li>
+            <li><i class="fa-solid fa-circle-dot"></i> Small gaps can lead to rejection</li>
+            <li><i class="fa-solid fa-circle-dot"></i> Most issues are fixable</li>
+        </ul>
+
+        <!-- CTA -->
         <a href="{% url 'assessment-page' %}" class="hero-btn">Start Free Readiness Check</a>
+
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+            <span><i class="fa-regular fa-clock"></i> Free</span>
+            <span><i class="fa-regular fa-hourglass-half"></i> 2–3 minutes</span>
+            <span><i class="fa-regular fa-file-lines"></i> No sign-up</span>
+            <span><i class="fa-solid fa-lock"></i> No documents</span>
+        </div>
+
     </div>
 </section>
 
-<!-- Process Section -->
-<section class="process-section" id="how-it-works">
-    <div class="process-container">
 
-        <!-- Label & Heading -->
-        <span class="section-label">Process</span>
-        <h2 class="section-title">From Rejected to Approved</h2>
 
-        <!-- Cards wrapper (flex only here) -->
-        <div class="process-cards-wrapper">
+<!-- familiar Section -->
+<section class="familiar-section">
+    <div class="familiar-container">
 
-            <div class="process-card">
-                <div class="icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                <h3>1. Check Readiness</h3>
-                <p>Take our free 2-minute quiz to see your score and find red flags.</p>
-                <a href="{% url  'assessment-page' %}" class="process-btn">Take Quiz <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+        <!-- Left: Image -->
+        <div class="familiar-image-wrap">
+            <img src="{% static 'images/familiar.png' %}" alt="People queuing outside a rental property">
+            <div class="familiar-image-overlay"></div>
+        </div>
 
-            <div class="process-card">
-                <div class="icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <h3>2. Fix Issues</h3>
-                <p>Use our guides and tools to fill gaps in your ID, income, or history.</p>
-                <a href="{% url 'dashboard_home' %}" class="process-btn">View Guides <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+        <!-- Right: Content -->
+        <div class="familiar-content">
 
-            <div class="process-card">
-                <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
-                <h3>3. Get Approved</h3>
-                <p>Apply with a Premium Tenant Dossier that agents love.</p>
-                <a href="{% url 'create_checkout_session' %}" class="process-btn">Get Premium <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+            <p class="familiar-eyebrow">SOUND FAMILIAR?</p>
+
+            <h2>If this feels familiar...</h2>
+
+            <ul class="familiar-list">
+                <li>
+                    <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                    You apply and hear nothing back
+                </li>
+                <li>
+                    <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                    You get a generic rejection message
+                </li>
+                <li>
+                    <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                    You're unsure what went wrong
+                </li>
+                <li>
+                    <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                    You feel like you did everything right
+                </li>
+            </ul>
+
+            <blockquote class="familiar-quote">
+                You're not alone — and there's usually a reason.
+            </blockquote>
 
         </div>
+
     </div>
 </section>
 
+<!-- Rejection Cycle Section -->
+<section class="rejection-section">
+    <div class="rejection-container">
 
+        <!-- Left: Content -->
+        <div class="rejection-content">
 
-<!-- Pricing Section -->
-<section class="pricing-section" id="pricing">
-    <div class="pricing-container">
+            <p class="rejection-eyebrow">THE REJECTION CYCLE</p>
 
-        <!-- Section Heading -->
-        <h2 class="pricing-title">Choose Your Advantage</h2>
+            <h2>That message...</h2>
 
-        <!-- Cards Wrapper -->
-        <div class="pricing-cards-wrapper">
-
-            <!-- Free Card -->
-            <div class="pricing-card pricing-free">
-                <h3>Free Account</h3>
-                <p>Good for understanding the basics.</p>
-                <div class="price">
-                    $0<span></span>
+            <div class="rejection-messages">
+                <div class="rejection-msg-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <span>"Due to high interest..."</span>
                 </div>
-                <ul class="pricing-features">
-                    <li><i class="fa-solid fa-circle-check"></i> Basic Readiness Score</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Access to Blog & Guides</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Basic Checklist</li>
-                </ul>
-                <a href="{% url 'assessment-page' %}" class="pricing-btn">Start Free</a>
-            </div>
-
-            <!-- Premium Card -->
-            <div class="pricing-card pricing-premium">
-                <div class="premium-badge">Most Popular</div>
-                <h3>Premium</h3>
-                <p>The complete toolkit to win the property.</p>
-                <div class="price">
-                    $19<span>one-time</span>
+                <div class="rejection-msg-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <span>"Another applicant was selected..."</span>
                 </div>
-                <ul class="pricing-features">
-                    <li><i class="fa-solid fa-circle-check"></i> Full Readiness Analysis</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Official Tenant Dossier PDF</li>
-                    <li><i class="fa-solid fa-circle-check"></i> AI Rental Assistant (24/7)</li>
-                    <li><i class="fa-solid fa-circle-check"></i> All Premium Tools</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Track Your Applications</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Generate Cover Letters</li>
-                    <li><i class="fa-solid fa-circle-check"></i> All Premium Tools</li>
-                     <li><i class="fa-solid fa-circle-check"></i> Complete Action Plan</li>
-                </ul>
-                <a href="{% url 'upgrade_page' %}" class="pricing-btn">Get Premium</a>
+            </div>
+
+            <blockquote class="rejection-quote">
+                This often comes down to clarity, not quality.
+            </blockquote>
+
+        </div>
+
+        <!-- Right: Image -->
+        <div class="rejection-image-wrap">
+            <img src="{% static 'images/Rejection.png' %}" alt="Person reading a rejection message on phone">
+            <div class="rejection-image-overlay"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Agent's View Section -->
+<section class="agents-section">
+    <div class="agents-container">
+
+        <!-- Left: Image -->
+        <div class="agents-image-wrap">
+            <img src="{% static 'images/agent.png' %}" alt="Agent reviewing rental applications">
+            <div class="agents-image-overlay"></div>
+        </div>
+
+        <!-- Right: Content -->
+        <div class="agents-content">
+
+            <p class="agents-eyebrow">THE AGENT'S VIEW</p>
+
+            <h2>What agents actually look for</h2>
+
+            <div class="agents-grid">
+                <div class="agents-card">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Clear, complete applications</span>
+                </div>
+                <div class="agents-card">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <span>Easy-to-understand income</span>
+                </div>
+                <div class="agents-card">
+                    <i class="fa-regular fa-circle-check"></i>
+                    <span>Consistent information</span>
+                </div>
+                <div class="agents-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Low perceived risk</span>
+                </div>
+            </div>
+
+            <p class="agents-subtext">
+                <em>If something is unclear, they move on quickly.</em>
+            </p>
+
+            <a href="{% url 'assessment-page' %}" class="agents-btn">Check Your Readiness — Free</a>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+
+<!-- How It Works Section -->
+<section class="solution-section" id="how-it-works">
+    <div class="solution-container">
+
+        <!-- Header -->
+        <div class="solution-header">
+            <p class="solution-eyebrow">THE SOLUTION</p>
+            <h2>How Ready2Lease helps</h2>
+            <p class="solution-subtext">
+                Check your rental readiness, spot gaps, and improve how your application is presented —
+                before you apply.
+            </p>
+        </div>
+
+        <!-- 3 Step Cards -->
+        <div class="solution-steps">
+
+            <div class="solution-card">
+                <div class="solution-card-top">
+                    <span class="step-number">01</span>
+                    <span class="step-icon"><i class="fa-regular fa-message"></i></span>
+                </div>
+                <h3>Answer a few questions</h3>
+                <p>Quick and straightforward — no documents required.</p>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-card-top">
+                    <span class="step-number">02</span>
+                    <span class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                </div>
+                <h3>See what might be holding you back</h3>
+                <p>Understand how your application could be perceived.</p>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-card-top">
+                    <span class="step-number">03</span>
+                    <span class="step-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                </div>
+                <h3>Improve before applying</h3>
+                <p>Make targeted changes that matter most.</p>
             </div>
 
         </div>
+
+        <!-- Bottom Image -->
+        <div class="solution-image-wrap">
+            <img src="{% static 'images/solution.png' %}" alt="Rental application checklist on a desk">
+        </div>
+
     </div>
 </section>
 
@@ -113,159 +237,283 @@
 
 
 
-<!-- Features Section -->
-<section class="features-section">
-    <div class="container">
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="testimonials-container">
 
-        <!-- Heading + Paragraph -->
-        <div class="section-header">
-            <h2>Discover All Features</h2>
-            <p>Explore the powerful features of Ready Rent that make renting easy and fast.</p>
+        <!-- Header -->
+        <div class="testimonials-header">
+            <p class="testimonials-eyebrow">EARLY FEEDBACK</p>
+            <h2>What renters are noticing</h2>
+            <p class="testimonials-subtext">
+                Thousands of renters have used Ready2Lease to improve their applications and get approved faster.
+            </p>
         </div>
 
-        <!-- Features Flex Grid -->
-        <div class="features-grid">
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                <h4>Official Tenant Dossier</h4>
-                <p>Agent-ready PDF resume</p>
+        <!-- 2x2 Grid -->
+        <div class="testimonials-grid">
+
+            <div class="testimonial-card">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"I didn't realise how unclear my application looked. After the check, I knew exactly what to fix. Got approved the next time I applied."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">J</div>
+                    <div>
+                        <p class="author-name">Jacob M.</p>
+                        <p class="author-location">Sydney, NSW</p>
+                    </div>
+                </div>
             </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
-                <h4>Readiness Score Breakdown</h4>
-                <p>Detailed 0-100 analysis</p>
+
+            <div class="testimonial-card">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Everything felt overwhelming but Ready2Lease broke it down simply. Helped me organise everything properly before applying again."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">J</div>
+                    <div>
+                        <p class="author-name">James K.</p>
+                        <p class="author-location">Melbourne, VIC</p>
+                    </div>
+                </div>
             </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-trophy"></i></div>
-                <h4>Rank Estimate</h4>
-                <p>See where you stand vs others</p>
+
+            <div class="testimonial-card">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Made things much clearer. I stopped guessing what agents wanted and started presenting myself properly."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">P</div>
+                    <div>
+                        <p class="author-name">Priya T.</p>
+                        <p class="author-location">Brisbane, QLD</p>
+                    </div>
+                </div>
             </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-search"></i></div>
-                <h4>Gap Analysis</h4>
-                <p>Identify missing requirements</p>
+
+            <div class="testimonial-card">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Simple, fast, and genuinely useful. Wish I'd found this before my first three rejections."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">D</div>
+                    <div>
+                        <p class="author-name">Daniel B.</p>
+                        <p class="author-location">Perth, WA</p>
+                    </div>
+                </div>
             </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-map-signs"></i></div>
-                <h4>Customized Action Plan</h4>
-                <p>Step-by-step roadmap</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-envelope"></i></div>
-                <h4>Smart Cover Letter</h4>
-                <p>AI-generated & tailored</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-file-signature"></i></div>
-                <h4>Reference Templates</h4>
-                <p>Scripts for your referees</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
-                <h4>Budget Tools</h4>
-                <p>Prove affordability easily</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-folder-open"></i></div>
-                <h4>Document Tracker</h4>
-                <p>Manage 100-point ID</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
-                <h4>Applications Tracker</h4>
-                <p>Log every submission</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-home"></i></div>
-                <h4>Inspection Prep</h4>
-                <p>Checklist for viewings</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-plane"></i></div>
-                <h4>New Migrant Guide</h4>
-                <p>Strategy for new arrivals</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
-                <h4>Gap Explainer</h4>
-                <p>Templates for resume gaps</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-paw"></i></div>
-                <h4>Pet-Friendly Pack</h4>
-                <p>Pet resume builder</p>
-            </div>
-            <div class="feature-box">
-                <div class="feature-icon"><i class="fas fa-robot"></i></div>
-                <h4>AI Coach</h4>
-                <p>24/7 Rental Expert Chat</p>
-            </div>
+
         </div>
 
-        <!-- Unlock button -->
-        <div class="section-footer">
-            <a href="{% url 'create_checkout_session' %}" class="btn-unlock">Unlock All Features Now</a>
+        <!-- Bottom note -->
+        <div class="testimonials-note">
+            <i class="fa-solid fa-lock"></i>
+            Your feedback stays private unless you accept reviews.
         </div>
 
     </div>
 </section>
-
-
 
 
 <!-- FAQ Section -->
-<section class="faq-section" id="faq">
+<section class="faq-section">
     <div class="faq-container">
-        <h2 class="faq-title">Frequently Asked Questions</h2>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <span>Is this a real estate agency?</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-                No. Ready2Lease is a preparation platform that helps you build a stronger application so you can apply confidently with any agent.
-            </div>
+        <div class="faq-header">
+            <p class="faq-eyebrow">QUICK Q&A</p>
+            <h2>Common questions</h2>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <span>Does a high score guarantee approval?</span>
-                <i class="fas fa-chevron-down"></i>
+        <div class="faq-list">
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Will this guarantee approval?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>No tool can guarantee approval, but Ready2Lease helps you present your strongest application and reduce the risk of being screened out for avoidable reasons.</p>
+                </div>
             </div>
-            <div class="faq-answer">
-                No. Approval is always up to the landlord. However, a high readiness score means you have removed the common reasons for rejection.
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Is this just generic advice?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>No — your readiness score and recommendations are based on your specific answers, not a one-size-fits-all checklist.</p>
+                </div>
             </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Do I need documents ready?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Not at all. The readiness check is question-based. No uploads, no documents, no sign-up required to get started.</p>
+                </div>
+            </div>
+
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <span>Is my data safe?</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-              Yes. Your data is stored locally on your device or securely in our encrypted database if you create an account.
-            </div>
+    </div>
+</section>
+
+
+
+<!-- Quick Improvements Section -->
+<section class="improvements-section">
+    <div class="improvements-container">
+
+        <!-- Header -->
+        <div class="improvements-header">
+            <p class="improvements-eyebrow">QUICK IMPROVEMENTS</p>
+            <h2>Small changes. Real difference.</h2>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <span>Is the fee one-time or recurring?</span>
-                <i class="fas fa-chevron-down"></i>
+        <!-- 4 Cards -->
+        <div class="improvements-grid">
+
+            <div class="improvements-card">
+                <div class="improvements-icon">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+                <p>Make income clearer</p>
             </div>
-            <div class="faq-answer">
-               The Premium Upgrade is a one-time payment of $19. There are no monthly subscriptions.
+
+            <div class="improvements-card">
+                <div class="improvements-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                </div>
+                <p>Fix missing details</p>
             </div>
+
+            <div class="improvements-card">
+                <div class="improvements-icon">
+                    <i class="fa-solid fa-table-list"></i>
+                </div>
+                <p>Improve structure</p>
+            </div>
+
+            <div class="improvements-card">
+                <div class="improvements-icon">
+                    <i class="fa-regular fa-eye"></i>
+                </div>
+                <p>Reduce confusion</p>
+            </div>
+
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <span>Can I use this for any state in Australia?</span>
-                <i class="fas fa-chevron-down"></i>
+        <!-- CTA -->
+        <a href="{% url 'assessment-page' %}" class="improvements-btn">Start Free Readiness Check</a>
+
+    </div>
+</section>
+
+
+
+<!-- Optional Upgrade Section -->
+<section class="upgrade-section">
+    <div class="upgrade-container">
+
+        <!-- Header -->
+        <div class="upgrade-header">
+            <span class="upgrade-eyebrow">OPTIONAL UPGRADE</span>
+            <h2>If you want extra help</h2>
+        </div>
+
+        <!-- 3 Cards -->
+        <div class="upgrade-grid">
+
+            <div class="upgrade-card">
+                <div class="upgrade-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                </div>
+                <h3>Cover letter generator</h3>
+                <p>Personalised cover letters for each property.</p>
             </div>
-            <div class="faq-answer">
-                Yes. Our guidelines cover NSW, VIC, QLD, WA, SA, TAS, ACT, and NT specific requirements.
+
+            <div class="upgrade-card">
+                <div class="upgrade-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <h3>Personalised checklist</h3>
+                <p>A step-by-step guide based on your results.</p>
             </div>
+
+            <div class="upgrade-card">
+                <div class="upgrade-icon">
+                    <i class="fa-solid fa-print"></i>
+                </div>
+                <h3>Printable tenant dossier</h3>
+                <p>A ready-to-send application package.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- Final CTA Section -->
+<section class="cta-section">
+    <div class="cta-overlay"></div>
+    <div class="cta-container">
+
+        <!-- Eyebrow -->
+        <div class="cta-eyebrow">
+            <span class="cta-eyebrow-line"></span>
+            READY TO START?
+            <span class="cta-eyebrow-line"></span>
+        </div>
+
+        <!-- Headline -->
+        <h2>
+            Before your next<br>
+            application...<br>
+            <span class="cta-gold">check this first</span>
+        </h2>
+
+        <!-- Subtext -->
+        <p class="cta-subtext">
+            It takes 2–3 minutes. No sign-up. No documents.<br>
+            Just clarity.
+        </p>
+
+        <!-- CTA Button -->
+        <a href="{% url 'assessment-page' %}" class="cta-btn">Do the Free Readiness Check</a>
+
+        <!-- Trust Badges -->
+        <div class="cta-badges">
+            <span><i class="fa-regular fa-circle-check"></i> Free</span>
+            <span><i class="fa-solid fa-bolt"></i> Fast</span>
+            <span><i class="fa-regular fa-heart"></i> No pressure</span>
+            <span><i class="fa-solid fa-lock"></i> Private</span>
         </div>
 
     </div>

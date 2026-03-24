@@ -1,74 +1,27 @@
 {% load static %}
-
-<!-- Footer Section -->
-<footer class="site-footer" id="contact">
+<!-- Footer -->
+<footer class="footer">
     <div class="footer-container">
 
-        <!-- Column 1: Logo + About + Socials -->
-        <div class="footer-col footer-about">
-            
-            <a href="{% url 'home' %}" class="footer-logo">
-                <img src="{% static 'images/Main_Logo.png' %}" alt="Ready2Lease Logo">
-            </a>
-
-            <p>
-                Your rental application solution. Make your application agent-ready and stress-free.
-            </p>
-
-            <div class="footer-socials">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-            </div>
+        <!-- Logo -->
+        <div class="footer-logo">
+            <img src="{% static 'images/Main_Logo.png' %}" alt="Ready2Lease Logo">
         </div>
 
-        <!-- Column 2 -->
-        <div class="footer-col">
-            <h4>Platform</h4>
-            <ul>
-                <li><a href="{% url 'home' %}#home">Home</a></li>
-                <li><a href="{% url 'assessment-page' %}">Calculate Readiness</a></li>
-                <li><a href="{% url 'upgrade_page' %}">Premium Upgrade</a></li>
-                {% if request.user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                {% endif %}
-            </ul>
-        </div>
+        <!-- Divider -->
+        <div class="footer-divider"></div>
 
-        <!-- Column 3 -->
-        <div class="footer-col">
-            <h4>Resources</h4>
-            <ul>
-                <li><a href="{% url 'home' %}#pricing">Pricing</a></li>
-                <li><a href="{% url 'home' %}#how-it-works">How It Works</a></li>
-                <li><a href="{% url 'home' %}#faq">Faq</a></li>
-                <li><a href="{% url 'blog_list' %}">Blogs</a></li>
-            </ul>
-        </div>
+        <!-- Disclaimer -->
+        <p class="footer-disclaimer">
+            Ready2Lease provides general educational information only. It does not provide legal,
+            financial, or real estate advice, and does not guarantee rental application approval or outcomes.
+        </p>
 
-        <!-- Column 4 -->
-        <div class="footer-col">
-            <h4>Contact & Legal</h4>
-            <ul>
-                <li><a href="{% url 'privacy_page' %}">Privacy Policy</a></li>
-                <li><a href="{% url 'terms_page' %}">Terms of Service</a></li>
-                
-                <li><i class="fas fa-envelope"></i> 
-                    <a href="mailto:support@ready2lease.com.au">support@ready2lease.com.au</a>
-                </li>
-                <li><i class="fas fa-globe"></i> 
-                    <a href="#">www.ready2lease.com.au</a>
-                </li>
-                
-            </ul>
-        </div>
+        <!-- Legal note -->
+        <p class="footer-legal">No approval guarantees. Not legal or real estate advice.</p>
 
-    </div>
+        <!-- Copyright -->
+        <p class="footer-copy">© 2026 Ready2Lease. All rights reserved.</p>
 
-    <!-- Bottom -->
-    <div class="footer-bottom">
-        <p>&copy; 2026 Ready2Lease. All rights reserved.</p>
     </div>
 </footer>
