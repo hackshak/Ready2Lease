@@ -38,11 +38,9 @@
     {% block extra_css %}{% endblock %}
     
     <style>
-        html {
+        html, body {
             scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
         #messageModalWrapper {
             position: fixed;
