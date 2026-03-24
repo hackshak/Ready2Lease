@@ -1,0 +1,91 @@
+/* ========================= */
+/* FOOTER                    */
+/* ========================= */
+
+.footer {
+    background: #0a0a0a;
+    padding: 60px 40px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.footer-container {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+/* ========================= */
+/* LOGO                      */
+/* ========================= */
+
+.footer-logo {
+    width: 80px;
+    height: 80px;
+    background: #111111;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.footer-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ========================= */
+/* DIVIDER                   */
+/* ========================= */
+
+.footer-divider {
+    width: 40px;
+    height: 1.5px;
+    background: rgba(212, 160, 23, 0.45);
+    margin-bottom: 28px;
+}
+
+/* ========================= */
+/* TEXT                      */
+/* ========================= */
+
+.footer-disclaimer {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.32);
+    line-height: 1.75;
+    margin-bottom: 16px;
+}
+
+.footer-legal {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.22);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.footer-copy {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.18);
+}
+
+/* ========================= */
+/* RESPONSIVE                */
+/* ========================= */
+
+@media (max-width: 480px) {
+    .footer {
+        padding: 50px 24px 32px;
+    }
+}

@@ -165,3 +165,497 @@ WARNING 2026-03-24 08:07:19,322 log 10250 124429380064960 "GET /static/css/NewFo
 WARNING 2026-03-24 08:07:19,329 log 10250 124429430421184 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
 WARNING 2026-03-24 08:07:20,305 log 10250 124428826441408 Not Found: /images/heroSection_image.png
 WARNING 2026-03-24 08:07:20,307 log 10250 124428826441408 "GET /images/heroSection_image.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:22:40,035 log 13699 134275978491584 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:22:40,039 log 13699 134276188210880 "GET /static/css/NewFooter.css HTTP/1.1" 404 1865
+WARNING 2026-03-24 08:22:57,063 log 13699 134275970098880 "GET /static/css/NewFooter.css HTTP/1.1" 404 1865
+WARNING 2026-03-24 08:22:57,063 log 13699 134276196603584 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:22:57,108 log 13699 134276196603584 Not Found: /images/heroSection_image.png
+WARNING 2026-03-24 08:22:57,109 log 13699 134276196603584 "GET /images/heroSection_image.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:24:08,949 log 13699 134275978491584 "GET /static/css/NewFooter.css HTTP/1.1" 404 1865
+WARNING 2026-03-24 08:24:08,954 log 13699 134275978491584 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:37:23,904 log 13699 134275978491584 Not Found: /campaign/images/solution.png
+WARNING 2026-03-24 08:37:23,906 log 13699 134276213388992 Not Found: /campaign/images/agent.png
+WARNING 2026-03-24 08:37:23,916 log 13699 134276204996288 Not Found: /campaign/images/Rejection.png
+WARNING 2026-03-24 08:37:23,924 log 13699 134275978491584 "GET /campaign/images/solution.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:37:23,931 log 13699 134276188210880 Not Found: /campaign/images/heroSection_image.png
+WARNING 2026-03-24 08:37:23,933 log 13699 134276196603584 Not Found: /campaign/images/familiar.png
+WARNING 2026-03-24 08:37:23,934 log 13699 134276213388992 "GET /campaign/images/agent.png HTTP/1.1" 404 15251
+WARNING 2026-03-24 08:37:23,934 log 13699 134276204996288 "GET /campaign/images/Rejection.png HTTP/1.1" 404 15263
+WARNING 2026-03-24 08:37:23,935 log 13699 134276188210880 "GET /campaign/images/heroSection_image.png HTTP/1.1" 404 15287
+WARNING 2026-03-24 08:37:23,935 log 13699 134276196603584 "GET /campaign/images/familiar.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:37:25,214 log 13699 134276188210880 Not Found: /favicon.ico
+WARNING 2026-03-24 08:37:25,216 log 13699 134276188210880 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:38:04,915 log 13699 134276188210880 Not Found: /campaign/images/solution.png
+WARNING 2026-03-24 08:38:04,919 log 13699 134275978491584 Not Found: /campaign/images/agent.png
+WARNING 2026-03-24 08:38:04,926 log 13699 134276188210880 "GET /campaign/images/solution.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:38:04,927 log 13699 134276204996288 Not Found: /campaign/images/Rejection.png
+WARNING 2026-03-24 08:38:04,928 log 13699 134275978491584 "GET /campaign/images/agent.png HTTP/1.1" 404 15251
+WARNING 2026-03-24 08:38:04,934 log 13699 134276213388992 Not Found: /campaign/images/familiar.png
+WARNING 2026-03-24 08:38:04,935 log 13699 134276204996288 "GET /campaign/images/Rejection.png HTTP/1.1" 404 15263
+WARNING 2026-03-24 08:38:04,936 log 13699 134276213388992 "GET /campaign/images/familiar.png HTTP/1.1" 404 15260
+WARNING 2026-03-24 08:38:05,961 log 13699 134276204996288 Not Found: /favicon.ico
+WARNING 2026-03-24 08:38:05,961 log 13699 134276204996288 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:41:37,681 log 13699 134276213388992 Not Found: /favicon.ico
+WARNING 2026-03-24 08:41:37,682 log 13699 134276213388992 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:41:59,426 log 13699 134276204996288 Not Found: /favicon.ico
+WARNING 2026-03-24 08:41:59,426 log 13699 134276204996288 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:43:51,611 log 13699 134276196603584 Not Found: /favicon.ico
+WARNING 2026-03-24 08:43:51,612 log 13699 134276196603584 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:44:25,447 log 13699 134276204996288 Not Found: /favicon.ico
+WARNING 2026-03-24 08:44:25,447 log 13699 134276204996288 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:44:35,529 log 13699 134276188210880 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:44:35,529 log 13699 134276213388992 "GET /static/css/NewFooter.css HTTP/1.1" 404 1865
+WARNING 2026-03-24 08:44:38,999 log 13699 134276196603584 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:44:38,999 log 13699 134276204996288 "GET /static/css/NewFooter.css HTTP/1.1" 404 1865
+WARNING 2026-03-24 08:45:21,015 log 13699 134276196603584 Not Found: /favicon.ico
+WARNING 2026-03-24 08:45:21,016 log 13699 134276196603584 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:45:28,415 log 13699 134276204996288 Not Found: /favicon.ico
+WARNING 2026-03-24 08:45:28,415 log 13699 134276204996288 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:47:26,196 log 13699 134275970098880 Not Found: /favicon.ico
+WARNING 2026-03-24 08:47:26,196 log 13699 134275970098880 "GET /favicon.ico HTTP/1.1" 404 15209
+ERROR 2026-03-24 08:48:07,366 log 13699 134276213388992 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 200, in render
+    template = context.template.engine.select_template(template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 228, in select_template
+    return self.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 644, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/newFooter.html, Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2026-03-24 08:48:07,369 log 13699 134276213388992 "GET /campaign/ HTTP/1.1" 500 170724
+WARNING 2026-03-24 08:48:07,463 log 13699 134276213388992 Not Found: /favicon.ico
+WARNING 2026-03-24 08:48:07,463 log 13699 134276213388992 "GET /favicon.ico HTTP/1.1" 404 15209
+ERROR 2026-03-24 08:48:14,122 log 13699 134276213388992 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 200, in render
+    template = context.template.engine.select_template(template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 228, in select_template
+    return self.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 644, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/newFooter.html, Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2026-03-24 08:48:14,125 log 13699 134276213388992 "GET /campaign/ HTTP/1.1" 500 170724
+WARNING 2026-03-24 08:48:14,178 log 13699 134276213388992 Not Found: /favicon.ico
+WARNING 2026-03-24 08:48:14,179 log 13699 134276213388992 "GET /favicon.ico HTTP/1.1" 404 15209
+ERROR 2026-03-24 08:48:24,020 log 16377 137423261566656 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 200, in render
+    template = context.template.engine.select_template(template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 228, in select_template
+    return self.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 644, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/newFooter.html, Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2026-03-24 08:48:24,022 log 16377 137423261566656 "GET /campaign/ HTTP/1.1" 500 170724
+WARNING 2026-03-24 08:48:24,073 log 16377 137423261566656 Not Found: /favicon.ico
+WARNING 2026-03-24 08:48:24,073 log 16377 137423261566656 "GET /favicon.ico HTTP/1.1" 404 15209
+ERROR 2026-03-24 08:48:25,966 log 16377 137423261566656 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 200, in render
+    template = context.template.engine.select_template(template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 228, in select_template
+    return self.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 644, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/newFooter.html, Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2026-03-24 08:48:25,967 log 16377 137423261566656 "GET /campaign/ HTTP/1.1" 500 170724
+WARNING 2026-03-24 08:48:25,988 log 16377 137423261566656 Not Found: /favicon.ico
+WARNING 2026-03-24 08:48:25,988 log 16377 137423261566656 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:50:45,496 log 16524 128735761143488 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+ERROR 2026-03-24 08:50:53,257 log 16524 128735777928896 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 577, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 200, in render
+    template = context.template.engine.select_template(template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 228, in select_template
+    return self.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 579, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 644, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Template: /home/shakeeb/Desktop/Ready2Lease/templates/newFooter.html, Invalid block tag on line 7: 'static'. Did you forget to register or load this tag?
+ERROR 2026-03-24 08:50:53,259 log 16524 128735777928896 "GET /campaign/ HTTP/1.1" 500 170459
+WARNING 2026-03-24 08:51:52,117 log 16806 135716394755776 Not Found: /favicon.ico
+WARNING 2026-03-24 08:51:52,118 log 16806 135716394755776 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:53:38,170 log 16806 135716403148480 Not Found: /favicon.ico
+WARNING 2026-03-24 08:53:38,170 log 16806 135716403148480 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:53:50,489 log 16806 135716490069696 Not Found: /favicon.ico
+WARNING 2026-03-24 08:53:50,489 log 16806 135716490069696 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:55:05,503 log 16806 135716377970368 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:55:50,475 log 16806 135716490069696 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:56:01,335 log 16806 135716480628416 Not Found: /campaign/assessment.html
+WARNING 2026-03-24 08:56:01,337 log 16806 135716480628416 "GET /campaign/assessment.html HTTP/1.1" 404 15248
+WARNING 2026-03-24 08:56:18,446 log 16806 135716480628416 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+ERROR 2026-03-24 08:56:44,274 log 16806 135716394755776 Internal Server Error: /campaign/
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/core/views.py", line 9, in new_landing
+    return render(request, 'core/landing_new.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/loader_tags.py", line 211, in render
+    return template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 176, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/template/defaulttags.py", line 511, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/urls/resolvers.py", line 842, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'asseesment' not found. 'asseesment' is not a valid view function or pattern name.
+ERROR 2026-03-24 08:56:44,276 log 16806 135716394755776 "GET /campaign/ HTTP/1.1" 500 147945
+WARNING 2026-03-24 08:56:44,296 log 16806 135716394755776 Not Found: /favicon.ico
+WARNING 2026-03-24 08:56:44,296 log 16806 135716394755776 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:57:08,369 log 16806 135716403148480 Not Found: /favicon.ico
+WARNING 2026-03-24 08:57:08,370 log 16806 135716403148480 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:57:10,506 log 16806 135716480628416 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:57:14,918 log 16806 135716403148480 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:00,902 log 16806 135716403148480 Not Found: /favicon.ico
+WARNING 2026-03-24 08:59:00,903 log 16806 135716403148480 "GET /favicon.ico HTTP/1.1" 404 15209
+WARNING 2026-03-24 08:59:07,372 log 16806 135716394755776 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:09,947 log 16806 135716403148480 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:15,595 log 16806 135716386363072 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:21,275 log 16806 135716480628416 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:25,522 log 16806 135716490069696 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 08:59:30,087 log 16806 135716480628416 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 09:00:10,243 log 17736 131241617635008 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 09:00:14,484 log 17736 131241651205824 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-24 09:00:23,371 log 17736 131241731446464 Not Found: /compaign
+WARNING 2026-03-24 09:00:23,372 log 17736 131241731446464 "GET /compaign HTTP/1.1" 404 15217
+WARNING 2026-03-24 09:00:32,568 log 17736 131241642813120 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
