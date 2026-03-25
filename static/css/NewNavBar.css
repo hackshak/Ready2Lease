@@ -53,19 +53,8 @@ body {
     display: inline-block;
     white-space: nowrap;
 }
-
-.btn-outline {
-    border: 1.5px solid #d4a017;
-    color: #d4a017;
-    background: transparent;
-}
-
-.btn-outline:hover {
-    background: rgba(212, 160, 23, 0.1);
-}
-
 .btn-primary {
-    background: #d4a017;
+    background: #EDB21D;
     color: #111111;
     border: none;
     box-shadow: 0 2px 12px rgba(212, 160, 23, 0.35);
@@ -83,7 +72,7 @@ body {
     }
 
     .logo img {
-        height: 65px;
+        height: 80px;
     }
 
     .btn {

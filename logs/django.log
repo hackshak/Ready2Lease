@@ -665,3 +665,31 @@ WARNING 2026-03-24 09:18:49,290 log 19928 131298282694336 Not Found: /favicon.ic
 WARNING 2026-03-24 09:18:49,291 log 19928 131298282694336 "GET /favicon.ico HTTP/1.1" 404 15226
 WARNING 2026-03-24 09:19:01,720 log 19928 131298265908928 Not Found: /favicon.ico
 WARNING 2026-03-24 09:19:01,722 log 19928 131298265908928 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-03-25 07:39:58,883 log 5568 123810074322624 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 07:40:08,038 log 5568 123810049144512 Not Found: /favicon.ico
+WARNING 2026-03-25 07:40:08,039 log 5568 123810049144512 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-03-25 07:40:17,160 log 5568 123810049144512 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 07:40:17,160 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 07:42:30,791 log 5568 123810049144512 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 07:42:30,792 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 07:44:17,603 log 5568 123810040751808 Not Found: /favicon.ico
+WARNING 2026-03-25 07:44:17,604 log 5568 123810040751808 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-03-25 07:44:53,106 log 5568 123810082715328 Not Found: /favicon.ico
+WARNING 2026-03-25 07:44:53,108 log 5568 123810082715328 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-03-25 07:54:33,456 log 5568 123810065929920 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 07:54:33,457 log 5568 123810065929920 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:00:27,973 log 5568 123810082715328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:00:27,973 log 5568 123810082715328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:10:03,853 log 5568 123810074322624 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 08:12:20,161 log 5568 123810057537216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:12:20,161 log 5568 123810057537216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:13:05,410 log 5568 123810057537216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:13:05,412 log 5568 123810057537216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:13:24,742 log 5568 123810074322624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:13:24,744 log 5568 123810074322624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:13:48,077 log 5568 123810074322624 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 08:15:00,735 log 5568 123810057537216 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 08:15:29,652 log 5568 123810049144512 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:15:29,653 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 08:15:48,568 log 5568 123810049144512 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 08:15:48,569 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
