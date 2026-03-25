@@ -12,10 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/NewNavBar.css' %}">
     <link rel="stylesheet" href="{% static 'css/newFooter.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
 
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html {
+       scroll-behavior: smooth;
+      }
         body { background: #0d0d0d; }
 
         /* HERO */
@@ -56,7 +60,7 @@
         .eyebrow-line { display: inline-block; width: 42px; height: 1.5px; background: #d4a017; flex-shrink: 0; }
         .hero-content h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 62px;
+            font-size: 60px;
             font-weight: 700;
             line-height: 1.12;
             margin-bottom: 18px;
@@ -65,7 +69,7 @@
         .headline-gold { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; color: #d4a017; }
         .hero-content p {
             font-family: 'DM Sans', sans-serif;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 300;
             color: rgba(255,255,255,0.78);
             line-height: 1.65;
@@ -86,7 +90,7 @@
         .hero-btn {
             display: inline-block;
             padding: 16px 42px;
-            background: #d4a017;
+            background: #EDB21D;
             color: #111111;
             font-family: 'DM Sans', sans-serif;
             font-size: 15px;
@@ -126,7 +130,7 @@
         .familiar-image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); border-radius: 16px; }
         .familiar-content { flex: 1; display: flex; flex-direction: column; }
         .familiar-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 14px; }
-        .familiar-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 42px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
+        .familiar-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
         .familiar-list { list-style: none; display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; padding: 0; }
         .familiar-list li { display: flex; align-items: center; gap: 14px; font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 400; color: rgba(255,255,255,0.85); }
         .familiar-list li .dot { width: 28px; height: 28px; background: rgba(212,160,23,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -145,11 +149,11 @@
         .rejection-container { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 70px; }
         .rejection-content { flex: 1; display: flex; flex-direction: column; }
         .rejection-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 14px; }
-        .rejection-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 42px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
+        .rejection-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
         .rejection-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
         .rejection-msg-card { display: flex; align-items: center; gap: 14px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 18px 22px; }
-        .rejection-msg-card i { font-size: 14px; color: rgba(255,255,255,0.2); flex-shrink: 0; }
-        .rejection-msg-card span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.45); }
+        .rejection-msg-card i { font-size: 14px; color: #d4a017; flex-shrink: 0; }
+        .rejection-msg-card span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; font-weight: 400; color: #d4a017; }
         .rejection-quote { border-left: 3px solid #d4a017; padding-left: 16px; margin: 0; font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.6; }
         .rejection-image-wrap { flex: 0 0 500px; position: relative; border-radius: 16px; border: 1px solid rgba(255,255,255,0.10); overflow: hidden; }
         .rejection-image-wrap img { width: 100%; height: 320px; object-fit: cover; display: block; }
@@ -165,13 +169,13 @@
         .agents-image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.25); }
         .agents-content { flex: 1; display: flex; flex-direction: column; }
         .agents-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 14px; }
-        .agents-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 40px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
+        .agents-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 28px; }
         .agents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
         .agents-card { display: flex; align-items: center; gap: 12px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px 18px; }
         .agents-card i { font-size: 15px; color: #d4a017; flex-shrink: 0; }
         .agents-card span { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.88); }
         .agents-subtext { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.45); margin-bottom: 28px; line-height: 1.6; }
-        .agents-btn { display: inline-block; padding: 13px 30px; background: #d4a017; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 20px rgba(212,160,23,0.35); transition: all 0.25s ease; align-self: flex-start; }
+        .agents-btn { display: inline-block; padding: 13px 30px; background: #EDB21D; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 20px rgba(212,160,23,0.35); transition: all 0.25s ease; align-self: flex-start; }
         .agents-btn:hover { background: #e6b020; box-shadow: 0 6px 28px rgba(212,160,23,0.55); transform: translateY(-1px); }
         @media (max-width: 900px) { .agents-container { flex-direction: column; gap: 40px; } .agents-image-wrap { flex: none; width: 100%; } .agents-image-wrap img { height: 240px; } .agents-content h2 { font-size: 30px; } }
         @media (max-width: 480px) { .agents-section { padding: 60px 20px; } .agents-grid { grid-template-columns: 1fr; } .agents-content h2 { font-size: 26px; } .agents-btn { align-self: stretch; text-align: center; } }
@@ -181,7 +185,7 @@
         .solution-container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
         .solution-header { text-align: center; margin-bottom: 48px; }
         .solution-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 14px; }
-        .solution-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 46px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 16px; }
+        .solution-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 16px; }
         .solution-subtext { font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 300; color: rgba(255,255,255,0.50); line-height: 1.7; max-width: 560px; margin: 0 auto; }
         .solution-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; margin-bottom: 48px; }
         .solution-card { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 28px 26px; display: flex; flex-direction: column; gap: 12px; position: relative; transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; overflow: hidden; }
@@ -201,33 +205,70 @@
         @media (max-width: 768px) { .solution-steps { grid-template-columns: 1fr; } .solution-header h2 { font-size: 32px; } .solution-image-wrap { width: 100%; } }
         @media (max-width: 480px) { .solution-section { padding: 60px 20px; } .solution-header h2 { font-size: 26px; } }
 
-        /* TESTIMONIALS */
-        .testimonials-section { background: #0d0d0d; padding: 90px 40px; }
-        .testimonials-container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-        .testimonials-header { text-align: center; margin-bottom: 44px; }
-        .testimonials-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 12px; }
-        .testimonials-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 40px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 14px; }
-        .testimonials-subtext { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 500px; margin: 0 auto; }
-        .testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-bottom: 24px; }
-        .testimonial-card { background: #161616; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-        .testimonial-card:hover { border-color: rgba(212,160,23,0.3); box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
-        .stars { display: flex; gap: 3px; }
-        .stars i { font-size: 11px; color: #d4a017; }
-        .testimonial-text { font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 400; color: rgba(255,255,255,0.75); line-height: 1.7; flex: 1; }
-        .testimonial-author { display: flex; align-items: center; gap: 10px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); }
-        .author-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(212,160,23,0.18); color: #d4a017; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .author-name { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
-        .author-location { font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 400; color: rgba(255,255,255,0.35); }
-        .testimonials-note { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.08); border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.35); }
-        .testimonials-note i { font-size: 11px; color: rgba(255,255,255,0.25); }
+/* TESTIMONIALS */
+.testimonials-section { background: #0d0d0d; padding: 90px 40px; }
+.testimonials-container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+.testimonials-header { text-align: center; margin-bottom: 44px; }
+.testimonials-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 12px; }
+.testimonials-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 14px; }
+.testimonials-subtext { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 500px; margin: 0 auto; }
+.testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-bottom: 24px; }
+.testimonial-card { background: #161616; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.testimonial-card:hover { border-color: rgba(212,160,23,0.3); box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+.stars { display: flex; gap: 3px; }
+.stars i { font-size: 11px; color: #d4a017; }
+.testimonial-text { font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 400; color: rgba(255,255,255,0.75); line-height: 1.7; flex: 1; }
+.testimonial-author { display: flex; align-items: center; gap: 10px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+/* UPDATED AVATAR */
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(212,160,23,0.18);
+    color: #d4a017;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* image inside avatar */
+.author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* fallback letter */
+.author-avatar span {
+    position: absolute;
+}
+
+/* hide fallback when image loads */
+.author-avatar img:not([src=""]) + span {
+    display: none;
+}
+
+.author-name { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+.author-location { font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 400; color: rgba(255,255,255,0.35); }
+.testimonials-note { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.08); border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.35); }
+.testimonials-note i { font-size: 11px; color: rgba(255,255,255,0.25); }
+
 
         /* FAQ */
         .faq-section { background: #0d0d0d; padding: 0 40px 90px; }
         .faq-container { margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
         .faq-header { text-align: center; margin-bottom: 32px; }
         .faq-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; color: #d4a017; text-transform: uppercase; margin-bottom: 12px; }
-        .faq-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #ffffff; line-height: 1.15; }
-        .faq-list { width: 80%; display: flex; flex-direction: column; gap: 10px; }
+        .faq-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; }
+        .faq-list { width: 45%; display: flex; flex-direction: column; gap: 10px;border-color: rgba(212,160,23,0.25); }
         .faq-item { background: #161616; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; transition: border-color 0.3s ease; }
         .faq-item.open { border-color: rgba(212,160,23,0.25); }
         .faq-question { width: 100%; background: none; border: none; padding: 13px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; gap: 16px; }
@@ -243,6 +284,7 @@
             .testimonials-grid { grid-template-columns: 1fr; }
             .testimonials-header h2, .faq-header h2 { font-size: 28px; }
             .testimonials-section, .faq-section { padding-left: 20px; padding-right: 20px; }
+            .faq-list {width: 90%;}
         }
 
         /* IMPROVEMENTS */
@@ -259,7 +301,7 @@
         .improvements-icon i { font-size: 17px; color: #d4a017; }
         .improvements-card p { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.60); text-align: center; line-height: 1.5; transition: color 0.3s ease; }
         .improvements-card:hover p, .improvements-card.active p { color: rgba(255,255,255,0.90); }
-        .improvements-btn { display: inline-block; padding: 13px 30px; background: #d4a017; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 24px rgba(212,160,23,0.4); transition: all 0.25s ease; }
+        .improvements-btn { display: inline-block; padding: 13px 30px; background: #EDB21D; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 24px rgba(212,160,23,0.4); transition: all 0.25s ease; }
         .improvements-btn:hover { background: #e6b020; box-shadow: 0 6px 32px rgba(212,160,23,0.6); transform: translateY(-2px); }
         @media (max-width: 768px) { .improvements-grid { grid-template-columns: repeat(2,1fr); } .improvements-header h2 { font-size: 34px; } }
         @media (max-width: 480px) { .improvements-section { padding: 60px 20px; } .improvements-grid { gap: 12px; } .improvements-header h2 { font-size: 28px; } .improvements-btn { width: 100%; text-align: center; } }
@@ -269,7 +311,7 @@
         .upgrade-container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
         .upgrade-header { text-align: center; margin-bottom: 48px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
         .upgrade-eyebrow { display: inline-block; padding: 6px 16px; border: 1px solid rgba(212,160,23,0.45); border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; color: #d4a017; text-transform: uppercase; }
-        .upgrade-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 46px; font-weight: 700; color: #ffffff; line-height: 1.15; }
+        .upgrade-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: 700; color: #ffffff; line-height: 1.15; }
         .upgrade-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; width: 100%; }
         .upgrade-card { background: #161616; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 40px 28px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; }
         .upgrade-card:hover { border-color: rgba(212,160,23,0.4); background: #1c1810; box-shadow: 0 0 28px rgba(212,160,23,0.08), 0 8px 32px rgba(0,0,0,0.5); transform: translateY(-3px); }
@@ -287,10 +329,10 @@
         .cta-container { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
         .cta-eyebrow { display: flex; align-items: center; gap: 14px; color: #d4a017; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 28px; }
         .cta-eyebrow-line { display: inline-block; width: 40px; height: 1.5px; background: #d4a017; flex-shrink: 0; }
-        .cta-section h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 62px; font-weight: 700; color: #ffffff; line-height: 1.12; margin-bottom: 24px; }
+        .cta-section h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 48px; font-weight: 700; color: #ffffff; line-height: 1.12; margin-bottom: 24px; }
         .cta-gold { font-family: 'Playfair Display', Georgia, serif; font-style: italic; color: #d4a017; }
         .cta-subtext { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.75; margin-bottom: 40px; }
-        .cta-btn { display: inline-block; padding: 19px 52px; background: #d4a017; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 32px rgba(212,160,23,0.45); transition: all 0.25s ease; margin-bottom: 28px; }
+        .cta-btn { display: inline-block; padding: 19px 52px; background:#EDB21D; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 32px rgba(212,160,23,0.45); transition: all 0.25s ease; margin-bottom: 28px; }
         .cta-btn:hover { background: #e6b020; box-shadow: 0 6px 40px rgba(212,160,23,0.65); transform: translateY(-2px); }
         .cta-badges { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; align-items: center; }
         .cta-badges span { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.40); display: flex; align-items: center; gap: 6px; }
@@ -317,7 +359,7 @@
                 <li><i class="fa-solid fa-circle-dot"></i> Small gaps can lead to rejection</li>
                 <li><i class="fa-solid fa-circle-dot"></i> Most issues are fixable</li>
             </ul>
-            <a href="{% url 'assessment-page' %}" class="hero-btn">Start Free Readiness Check</a>
+            <a href="#final-cta" class="hero-btn">Start Free Readiness Check</a>
             <div class="trust-badges">
                 <span><i class="fa-regular fa-clock"></i> Free</span>
                 <span><i class="fa-regular fa-hourglass-half"></i> 2–3 minutes</span>
@@ -384,7 +426,7 @@
                     <div class="agents-card"><i class="fa-solid fa-shield-halved"></i><span>Low perceived risk</span></div>
                 </div>
                 <p class="agents-subtext"><em>If something is unclear, they move on quickly.</em></p>
-                <a href="{% url 'assessment-page' %}" class="agents-btn">Check Your Readiness — Free</a>
+                <a href="#final-cta" class="agents-btn">Check Your Readiness — Free</a>
             </div>
         </div>
     </section>
@@ -420,39 +462,83 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section">
-        <div class="testimonials-container">
-            <div class="testimonials-header">
-                <p class="testimonials-eyebrow">EARLY FEEDBACK</p>
-                <h2>What renters are noticing</h2>
-                <p class="testimonials-subtext">Thousands of renters have used Ready2Lease to improve their applications and get approved faster.</p>
-            </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <p class="testimonial-text">"I didn't realise how unclear my application looked. After the check, I knew exactly what to fix. Got approved the next time I applied."</p>
-                    <div class="testimonial-author"><div class="author-avatar">J</div><div><p class="author-name">Jacob M.</p><p class="author-location">Sydney, NSW</p></div></div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <p class="testimonial-text">"Everything felt overwhelming but Ready2Lease broke it down simply. Helped me organise everything properly before applying again."</p>
-                    <div class="testimonial-author"><div class="author-avatar">J</div><div><p class="author-name">James K.</p><p class="author-location">Melbourne, VIC</p></div></div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <p class="testimonial-text">"Made things much clearer. I stopped guessing what agents wanted and started presenting myself properly."</p>
-                    <div class="testimonial-author"><div class="author-avatar">P</div><div><p class="author-name">Priya T.</p><p class="author-location">Brisbane, QLD</p></div></div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                    <p class="testimonial-text">"Simple, fast, and genuinely useful. Wish I'd found this before my first three rejections."</p>
-                    <div class="testimonial-author"><div class="author-avatar">D</div><div><p class="author-name">Daniel B.</p><p class="author-location">Perth, WA</p></div></div>
-                </div>
-            </div>
-            <div class="testimonials-note"><i class="fa-solid fa-lock"></i> Your feedback stays private unless you accept reviews.</div>
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="testimonials-container">
+        <div class="testimonials-header">
+            <p class="testimonials-eyebrow">EARLY FEEDBACK</p>
+            <h2>What renters are noticing</h2>
+            <p class="testimonials-subtext">Thousands of renters have used Ready2Lease to improve their applications and get approved faster.</p>
         </div>
-    </section>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p class="testimonial-text">"I didn't realise how unclear my application looked. After the check, I knew exactly what to fix. Got approved the next time I applied."</p>
+                
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="{% static 'images/ReviewImage1.png' %}" alt="Jacob">
+                        <span>J</span>
+                    </div>
+                    <div>
+                        <p class="author-name">Jacob M.</p>
+                        <p class="author-location">Sydney, NSW</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p class="testimonial-text">"Everything felt overwhelming but Ready2Lease broke it down simply. Helped me organise everything properly before applying again."</p>
+                
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="{% static 'images/ReviewImage2.png' %}" alt="James">
+                        <span>J</span>
+                    </div>
+                    <div>
+                        <p class="author-name">James K.</p>
+                        <p class="author-location">Melbourne, VIC</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p class="testimonial-text">"Made things much clearer. I stopped guessing what agents wanted and started presenting myself properly."</p>
+                
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="{% static 'images/ReviewImage1.png' %}" alt="Priya">
+                        <span>P</span>
+                    </div>
+                    <div>
+                        <p class="author-name">Priya T.</p>
+                        <p class="author-location">Brisbane, QLD</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p class="testimonial-text">"Simple, fast, and genuinely useful. Wish I'd found this before my first three rejections."</p>
+                
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="{% static 'images/ReviewImage2.png' %}" alt="Daniel">
+                        <span>D</span>
+                    </div>
+                    <div>
+                        <p class="author-name">Daniel B.</p>
+                        <p class="author-location">Perth, WA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonials-note"><i class="fa-solid fa-lock"></i> Your feedback stays private unless you accept reviews.</div>
+    </div>
+</section>
+
 
     <!-- FAQ Section -->
     <section class="faq-section">
@@ -491,7 +577,7 @@
                 <div class="improvements-card"><div class="improvements-icon"><i class="fa-solid fa-table-list"></i></div><p>Improve structure</p></div>
                 <div class="improvements-card"><div class="improvements-icon"><i class="fa-regular fa-eye"></i></div><p>Reduce confusion</p></div>
             </div>
-            <a href="{% url 'assessment-page' %}" class="improvements-btn">Start Free Readiness Check</a>
+            <a href="#final-cta" class="improvements-btn">Start Free Readiness Check</a>
         </div>
     </section>
 
@@ -511,7 +597,7 @@
     </section>
 
     <!-- Final CTA Section -->
-    <section class="cta-section">
+    <section class="cta-section" id="final-cta">
         <div class="cta-overlay"></div>
         <div class="cta-container">
             <div class="cta-eyebrow"><span class="cta-eyebrow-line"></span>READY TO START?<span class="cta-eyebrow-line"></span></div>
