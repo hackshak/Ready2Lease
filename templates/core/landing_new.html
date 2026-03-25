@@ -22,6 +22,95 @@
       }
         body { background: #0d0d0d; }
 
+        /* =============================================
+           ANIMATION BASE STYLES
+        ============================================= */
+
+        /* Fade up — default for most elements */
+        .anim-fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .anim-fade-up.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Fade in (no translate) */
+        .anim-fade {
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        .anim-fade.in-view {
+            opacity: 1;
+        }
+
+        /* Slide from left */
+        .anim-slide-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+        .anim-slide-left.in-view {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Slide from right */
+        .anim-slide-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+        .anim-slide-right.in-view {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Scale up */
+        .anim-scale {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .anim-scale.in-view {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Stagger delays */
+        .anim-delay-1 { transition-delay: 0.1s; }
+        .anim-delay-2 { transition-delay: 0.2s; }
+        .anim-delay-3 { transition-delay: 0.3s; }
+        .anim-delay-4 { transition-delay: 0.4s; }
+        .anim-delay-5 { transition-delay: 0.5s; }
+        .anim-delay-6 { transition-delay: 0.6s; }
+
+
+        /* HERO — entrance animations (no scroll needed, fires on load) */
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroLineGrow {
+            from { width: 0; opacity: 0; }
+            to   { width: 42px; opacity: 1; }
+        }
+        @keyframes heroPulse {
+            0%, 100% { box-shadow: 0 4px 24px rgba(212,160,23,0.4); }
+            50%       { box-shadow: 0 4px 40px rgba(212,160,23,0.75); }
+        }
+
+        .hero-content .eyebrow         { animation: heroFadeUp 0.7s ease 0.1s both; }
+        .hero-content .eyebrow-line     { animation: heroLineGrow 0.6s ease 0.3s both; }
+        .hero-content h1                { animation: heroFadeUp 0.7s ease 0.3s both; }
+        .hero-content > p               { animation: heroFadeUp 0.7s ease 0.5s both; }
+        .hero-bullets                   { animation: heroFadeUp 0.7s ease 0.65s both; }
+        .hero-btn                       { animation: heroFadeUp 0.7s ease 0.8s both, heroPulse 2.8s ease 1.5s infinite; }
+        .trust-badges                   { animation: heroFadeUp 0.7s ease 0.95s both; }
+
+
         /* HERO */
         .hero {
             position: relative;
@@ -57,16 +146,29 @@
             text-transform: uppercase;
             margin-bottom: 20px;
         }
-        .eyebrow-line { display: inline-block; width: 42px; height: 1.5px; background: #d4a017; flex-shrink: 0; }
+        .eyebrow-line {
+            display: inline-block;
+            width: 42px;
+            height: 1.5px;
+            flex-shrink: 0;
+            background: linear-gradient(
+                to right,
+                rgba(212,160,23,0) 0%,
+                rgba(212,160,23,1) 30%,
+                rgba(212,160,23,1) 70%,
+                rgba(212,160,23,0) 100%
+            );
+        }
+
         .hero-content h1 {
-            font-family: 'Playfair Display', Georgia, serif;
+            font-family: 'Playfair Display',serif;
             font-size: 60px;
             font-weight: 700;
             line-height: 1.12;
             margin-bottom: 18px;
             color: #ffffff;
         }
-        .headline-gold { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; color: #d4a017; }
+        .headline-gold { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; color: #d4a017; }
         .hero-content p {
             font-family: 'DM Sans', sans-serif;
             font-size: 18px;
@@ -135,7 +237,7 @@
         .familiar-list li { display: flex; align-items: center; gap: 14px; font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 400; color: rgba(255,255,255,0.85); }
         .familiar-list li .dot { width: 28px; height: 28px; background: rgba(212,160,23,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .familiar-list li .dot i { font-size: 8px; color: #d4a017; }
-        .familiar-quote { border-left: 3px solid #d4a017; padding-left: 16px; margin: 0; font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.60); line-height: 1.6; }
+        .familiar-quote { border-left: 3px solid #d4a017; padding-left: 16px; margin: 0; font-family: 'Playfair Display',serif; font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.60); line-height: 1.6; }
         @media (max-width: 900px) {
             .familiar-container { flex-direction: column; gap: 40px; }
             .familiar-image-wrap { flex: none; width: 100%; }
@@ -153,7 +255,7 @@
         .rejection-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
         .rejection-msg-card { display: flex; align-items: center; gap: 14px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 18px 22px; }
         .rejection-msg-card i { font-size: 14px; color: #d4a017; flex-shrink: 0; }
-        .rejection-msg-card span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; font-weight: 400; color: #d4a017; }
+        .rejection-msg-card span { font-family: 'Playfair Display',serif;font-size: 16px; font-weight: 400; color: #d4a017; }
         .rejection-quote { border-left: 3px solid #d4a017; padding-left: 16px; margin: 0; font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.6; }
         .rejection-image-wrap { flex: 0 0 500px; position: relative; border-radius: 16px; border: 1px solid rgba(255,255,255,0.10); overflow: hidden; }
         .rejection-image-wrap img { width: 100%; height: 320px; object-fit: cover; display: block; }
@@ -174,7 +276,7 @@
         .agents-card { display: flex; align-items: center; gap: 12px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px 18px; }
         .agents-card i { font-size: 15px; color: #d4a017; flex-shrink: 0; }
         .agents-card span { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.88); }
-        .agents-subtext { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.45); margin-bottom: 28px; line-height: 1.6; }
+        .agents-subtext { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.45); margin-bottom: 28px; line-height: 1.6; }
         .agents-btn { display: inline-block; padding: 13px 30px; background: #EDB21D; color: #111111; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 50px; box-shadow: 0 4px 20px rgba(212,160,23,0.35); transition: all 0.25s ease; align-self: flex-start; }
         .agents-btn:hover { background: #e6b020; box-shadow: 0 6px 28px rgba(212,160,23,0.55); transform: translateY(-1px); }
         @media (max-width: 900px) { .agents-container { flex-direction: column; gap: 40px; } .agents-image-wrap { flex: none; width: 100%; } .agents-image-wrap img { height: 240px; } .agents-content h2 { font-size: 30px; } }
@@ -213,7 +315,7 @@
 .testimonials-header h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: 14px; }
 .testimonials-subtext { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 500px; margin: 0 auto; }
 .testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-bottom: 24px; }
-.testimonial-card { background: #161616; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.testimonial-card { background: #0D0F11; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .testimonial-card:hover { border-color: rgba(212,160,23,0.3); box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
 .stars { display: flex; gap: 3px; }
 .stars i { font-size: 11px; color: #d4a017; }
@@ -339,11 +441,64 @@
         .cta-badges span i { font-size: 12px; color: #d4a017; }
         @media (max-width: 768px) { .cta-section h2 { font-size: 42px; } .cta-badges { gap: 16px; } }
         @media (max-width: 480px) { .cta-section { padding: 80px 20px; } .cta-section h2 { font-size: 34px; } .cta-btn { width: 100%; text-align: center; padding: 17px 24px; } .cta-eyebrow { font-size: 10px; } .cta-eyebrow-line { width: 24px; } }
+
+        /* =============================================
+           GOLD SHIMMER — for CTA heading gold word
+        ============================================= */
+        @keyframes goldShimmer {
+            0%   { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .cta-gold.in-view {
+            background: linear-gradient(90deg, #d4a017 30%, #ffe066 50%, #d4a017 70%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShimmer 2.5s linear 0.6s 2;
+        }
+
+        /* Image reveal with clip-path */
+        .anim-reveal-img {
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 0.85s cubic-bezier(0.77,0,0.175,1);
+        }
+        .anim-reveal-img.in-view {
+            clip-path: inset(0 0% 0 0);
+        }
+
+        /* Gold border underline on headings */
+        .anim-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .anim-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: #d4a017;
+            transition: width 0.7s ease 0.5s;
+        }
+        .anim-underline.in-view::after {
+            width: 100%;
+        }
+
+        /* Counter number roll */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 {% include "new_Navbar.html" %}
-    <!-- Hero Section -->
+
+    <!-- =========================================
+         HERO SECTION — JS-free, CSS-only entrance
+    ========================================= -->
     <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -369,194 +524,201 @@
         </div>
     </section>
 
-    <!-- Sound Familiar Section -->
+    <!-- =========================================
+         SOUND FAMILIAR SECTION
+    ========================================= -->
     <section class="familiar-section">
         <div class="familiar-container">
-            <div class="familiar-image-wrap">
+            <div class="familiar-image-wrap anim-slide-left">
                 <img src="{% static 'images/familiar.png' %}" alt="People queuing outside a rental property">
                 <div class="familiar-image-overlay"></div>
             </div>
             <div class="familiar-content">
-                <p class="familiar-eyebrow">SOUND FAMILIAR?</p>
-                <h2>If this feels familiar...</h2>
+                <p class="familiar-eyebrow anim-fade-up">SOUND FAMILIAR?</p>
+                <h2 class="anim-fade-up anim-delay-1">If this feels familiar...</h2>
                 <ul class="familiar-list">
-                    <li><span class="dot"><i class="fa-solid fa-circle"></i></span>You apply and hear nothing back</li>
-                    <li><span class="dot"><i class="fa-solid fa-circle"></i></span>You get a generic rejection message</li>
-                    <li><span class="dot"><i class="fa-solid fa-circle"></i></span>You're unsure what went wrong</li>
-                    <li><span class="dot"><i class="fa-solid fa-circle"></i></span>You feel like you did everything right</li>
+                    <li class="anim-fade-up anim-delay-2"><span class="dot"><i class="fa-solid fa-circle"></i></span>You apply and hear nothing back</li>
+                    <li class="anim-fade-up anim-delay-3"><span class="dot"><i class="fa-solid fa-circle"></i></span>You get a generic rejection message</li>
+                    <li class="anim-fade-up anim-delay-4"><span class="dot"><i class="fa-solid fa-circle"></i></span>You're unsure what went wrong</li>
+                    <li class="anim-fade-up anim-delay-5"><span class="dot"><i class="fa-solid fa-circle"></i></span>You feel like you did everything right</li>
                 </ul>
-                <blockquote class="familiar-quote">You're not alone — and there's usually a reason.</blockquote>
+                <blockquote class="familiar-quote anim-fade-up anim-delay-6">You're not alone — and there's usually a reason.</blockquote>
             </div>
         </div>
     </section>
 
-    <!-- Rejection Cycle Section -->
+    <!-- =========================================
+         REJECTION CYCLE SECTION
+    ========================================= -->
     <section class="rejection-section">
         <div class="rejection-container">
             <div class="rejection-content">
-                <p class="rejection-eyebrow">THE REJECTION CYCLE</p>
-                <h2>That message...</h2>
+                <p class="rejection-eyebrow anim-fade-up">THE REJECTION CYCLE</p>
+                <h2 class="anim-fade-up anim-delay-1">That message...</h2>
                 <div class="rejection-messages">
-                    <div class="rejection-msg-card"><i class="fa-solid fa-quote-left"></i><span>"Due to high interest..."</span></div>
-                    <div class="rejection-msg-card"><i class="fa-solid fa-quote-left"></i><span>"Another applicant was selected..."</span></div>
+                    <div class="rejection-msg-card anim-slide-left anim-delay-2"><i class="fa-solid fa-quote-left"></i><span>"Due to high interest..."</span></div>
+                    <div class="rejection-msg-card anim-slide-left anim-delay-3"><i class="fa-solid fa-quote-left"></i><span>"Another applicant was selected..."</span></div>
                 </div>
-                <blockquote class="rejection-quote">This often comes down to clarity, not quality.</blockquote>
+                <blockquote class="rejection-quote anim-fade-up anim-delay-4">This often comes down to clarity, not quality.</blockquote>
             </div>
-            <div class="rejection-image-wrap">
+            <div class="rejection-image-wrap anim-slide-right">
                 <img src="{% static 'images/Rejection.png' %}" alt="Person reading a rejection message on phone">
                 <div class="rejection-image-overlay"></div>
             </div>
         </div>
     </section>
 
-    <!-- Agent's View Section -->
+    <!-- =========================================
+         AGENT'S VIEW SECTION
+    ========================================= -->
     <section class="agents-section">
         <div class="agents-container">
-            <div class="agents-image-wrap">
+            <div class="agents-image-wrap anim-slide-left">
                 <img src="{% static 'images/agent.png' %}" alt="Agent reviewing rental applications">
                 <div class="agents-image-overlay"></div>
             </div>
             <div class="agents-content">
-                <p class="agents-eyebrow">THE AGENT'S VIEW</p>
-                <h2>What agents actually look for</h2>
+                <p class="agents-eyebrow anim-fade-up">THE AGENT'S VIEW</p>
+                <h2 class="anim-fade-up anim-delay-1">What agents actually look for</h2>
                 <div class="agents-grid">
-                    <div class="agents-card"><i class="fa-regular fa-file-lines"></i><span>Clear, complete applications</span></div>
-                    <div class="agents-card"><i class="fa-solid fa-dollar-sign"></i><span>Easy-to-understand income</span></div>
-                    <div class="agents-card"><i class="fa-regular fa-circle-check"></i><span>Consistent information</span></div>
-                    <div class="agents-card"><i class="fa-solid fa-shield-halved"></i><span>Low perceived risk</span></div>
+                    <div class="agents-card anim-scale anim-delay-2"><i class="fa-regular fa-file-lines"></i><span>Clear, complete applications</span></div>
+                    <div class="agents-card anim-scale anim-delay-3"><i class="fa-solid fa-dollar-sign"></i><span>Easy-to-understand income</span></div>
+                    <div class="agents-card anim-scale anim-delay-4"><i class="fa-regular fa-circle-check"></i><span>Consistent information</span></div>
+                    <div class="agents-card anim-scale anim-delay-5"><i class="fa-solid fa-shield-halved"></i><span>Low perceived risk</span></div>
                 </div>
-                <p class="agents-subtext"><em>If something is unclear, they move on quickly.</em></p>
-                <a href="#final-cta" class="agents-btn">Check Your Readiness — Free</a>
+                <p class="agents-subtext anim-fade-up anim-delay-4"><em>If something is unclear, they move on quickly.</em></p>
+                <a href="#final-cta" class="agents-btn anim-fade-up anim-delay-5">Check Your Readiness — Free</a>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section -->
+    <!-- =========================================
+         HOW IT WORKS SECTION
+    ========================================= -->
     <section class="solution-section" id="how-it-works">
         <div class="solution-container">
             <div class="solution-header">
-                <p class="solution-eyebrow">THE SOLUTION</p>
-                <h2>How Ready2Lease helps</h2>
-                <p class="solution-subtext">Check your rental readiness, spot gaps, and improve how your application is presented — before you apply.</p>
+                <p class="solution-eyebrow anim-fade-up">THE SOLUTION</p>
+                <h2 class="anim-fade-up anim-delay-1">How Ready2Lease helps</h2>
+                <p class="solution-subtext anim-fade-up anim-delay-2">Check your rental readiness, spot gaps, and improve how your application is presented — before you apply.</p>
             </div>
             <div class="solution-steps">
-                <div class="solution-card">
+                <div class="solution-card anim-fade-up anim-delay-2">
                     <div class="solution-card-top"><span class="step-number">01</span><span class="step-icon"><i class="fa-regular fa-message"></i></span></div>
                     <h3>Answer a few questions</h3>
                     <p>Quick and straightforward — no documents required.</p>
                 </div>
-                <div class="solution-card">
+                <div class="solution-card anim-fade-up anim-delay-3">
                     <div class="solution-card-top"><span class="step-number">02</span><span class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></span></div>
                     <h3>See what might be holding you back</h3>
                     <p>Understand how your application could be perceived.</p>
                 </div>
-                <div class="solution-card">
+                <div class="solution-card anim-fade-up anim-delay-4">
                     <div class="solution-card-top"><span class="step-number">03</span><span class="step-icon"><i class="fa-solid fa-arrow-trend-up"></i></span></div>
                     <h3>Improve before applying</h3>
                     <p>Make targeted changes that matter most.</p>
                 </div>
             </div>
-            <div class="solution-image-wrap">
+            <div class="solution-image-wrap anim-scale anim-delay-2">
                 <img src="{% static 'images/solution.png' %}" alt="Rental application checklist on a desk">
             </div>
         </div>
     </section>
 
-<!-- Testimonials Section -->
-<section class="testimonials-section">
-    <div class="testimonials-container">
-        <div class="testimonials-header">
-            <p class="testimonials-eyebrow">EARLY FEEDBACK</p>
-            <h2>What renters are noticing</h2>
-            <p class="testimonials-subtext">Thousands of renters have used Ready2Lease to improve their applications and get approved faster.</p>
+    <!-- =========================================
+         TESTIMONIALS SECTION
+    ========================================= -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <div class="testimonials-header">
+                <p class="testimonials-eyebrow anim-fade-up">EARLY FEEDBACK</p>
+                <h2 class="anim-fade-up anim-delay-1">What renters are noticing</h2>
+                <p class="testimonials-subtext anim-fade-up anim-delay-2">Thousands of renters have used Ready2Lease to improve their applications and get approved faster.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card anim-fade-up anim-delay-1">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="testimonial-text">"I didn't realise how unclear my application looked. After the check, I knew exactly what to fix. Got approved the next time I applied."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="{% static 'images/ReviewImage1.png' %}" alt="Jacob">
+                            <span>J</span>
+                        </div>
+                        <div>
+                            <p class="author-name">Jacob M.</p>
+                            <p class="author-location">Sydney, NSW</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card anim-fade-up anim-delay-2">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="testimonial-text">"Everything felt overwhelming but Ready2Lease broke it down simply. Helped me organise everything properly before applying again."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="{% static 'images/ReviewImage2.png' %}" alt="James">
+                            <span>J</span>
+                        </div>
+                        <div>
+                            <p class="author-name">James K.</p>
+                            <p class="author-location">Melbourne, VIC</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card anim-fade-up anim-delay-3">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="testimonial-text">"Made things much clearer. I stopped guessing what agents wanted and started presenting myself properly."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="{% static 'images/ReviewImage1.png' %}" alt="Priya">
+                            <span>P</span>
+                        </div>
+                        <div>
+                            <p class="author-name">Priya T.</p>
+                            <p class="author-location">Brisbane, QLD</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card anim-fade-up anim-delay-4">
+                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="testimonial-text">"Simple, fast, and genuinely useful. Wish I'd found this before my first three rejections."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="{% static 'images/ReviewImage2.png' %}" alt="Daniel">
+                            <span>D</span>
+                        </div>
+                        <div>
+                            <p class="author-name">Daniel B.</p>
+                            <p class="author-location">Perth, WA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonials-note anim-fade anim-delay-5"><i class="fa-solid fa-lock"></i> Your feedback stays private unless you accept reviews.</div>
         </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                <p class="testimonial-text">"I didn't realise how unclear my application looked. After the check, I knew exactly what to fix. Got approved the next time I applied."</p>
-                
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{% static 'images/ReviewImage1.png' %}" alt="Jacob">
-                        <span>J</span>
-                    </div>
-                    <div>
-                        <p class="author-name">Jacob M.</p>
-                        <p class="author-location">Sydney, NSW</p>
-                    </div>
-                </div>
-            </div>
+    </section>
 
-            <div class="testimonial-card">
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                <p class="testimonial-text">"Everything felt overwhelming but Ready2Lease broke it down simply. Helped me organise everything properly before applying again."</p>
-                
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{% static 'images/ReviewImage2.png' %}" alt="James">
-                        <span>J</span>
-                    </div>
-                    <div>
-                        <p class="author-name">James K.</p>
-                        <p class="author-location">Melbourne, VIC</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card">
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                <p class="testimonial-text">"Made things much clearer. I stopped guessing what agents wanted and started presenting myself properly."</p>
-                
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{% static 'images/ReviewImage1.png' %}" alt="Priya">
-                        <span>P</span>
-                    </div>
-                    <div>
-                        <p class="author-name">Priya T.</p>
-                        <p class="author-location">Brisbane, QLD</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card">
-                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                <p class="testimonial-text">"Simple, fast, and genuinely useful. Wish I'd found this before my first three rejections."</p>
-                
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{% static 'images/ReviewImage2.png' %}" alt="Daniel">
-                        <span>D</span>
-                    </div>
-                    <div>
-                        <p class="author-name">Daniel B.</p>
-                        <p class="author-location">Perth, WA</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="testimonials-note"><i class="fa-solid fa-lock"></i> Your feedback stays private unless you accept reviews.</div>
-    </div>
-</section>
-
-
-    <!-- FAQ Section -->
+    <!-- =========================================
+         FAQ SECTION
+    ========================================= -->
     <section class="faq-section">
         <div class="faq-container">
             <div class="faq-header">
-                <p class="faq-eyebrow">QUICK Q&amp;A</p>
-                <h2>Common questions</h2>
+                <p class="faq-eyebrow anim-fade-up">QUICK Q&amp;A</p>
+                <h2 class="anim-fade-up anim-delay-1">Common questions</h2>
             </div>
             <div class="faq-list">
-                <div class="faq-item">
+                <div class="faq-item anim-fade-up anim-delay-2">
                     <button class="faq-question" aria-expanded="false"><span>Will this guarantee approval?</span><i class="fa-solid fa-chevron-down"></i></button>
                     <div class="faq-answer"><p>No tool can guarantee approval, but Ready2Lease helps you present your strongest application and reduce the risk of being screened out for avoidable reasons.</p></div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item anim-fade-up anim-delay-3">
                     <button class="faq-question" aria-expanded="false"><span>Is this just generic advice?</span><i class="fa-solid fa-chevron-down"></i></button>
                     <div class="faq-answer"><p>No — your readiness score and recommendations are based on your specific answers, not a one-size-fits-all checklist.</p></div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item anim-fade-up anim-delay-4">
                     <button class="faq-question" aria-expanded="false"><span>Do I need documents ready?</span><i class="fa-solid fa-chevron-down"></i></button>
                     <div class="faq-answer"><p>Not at all. The readiness check is question-based. No uploads, no documents, no sign-up required to get started.</p></div>
                 </div>
@@ -564,47 +726,53 @@
         </div>
     </section>
 
-    <!-- Quick Improvements Section -->
+    <!-- =========================================
+         QUICK IMPROVEMENTS SECTION
+    ========================================= -->
     <section class="improvements-section">
         <div class="improvements-container">
             <div class="improvements-header">
-                <p class="improvements-eyebrow">QUICK IMPROVEMENTS</p>
-                <h2>Small changes. Real difference.</h2>
+                <p class="improvements-eyebrow anim-fade-up">QUICK IMPROVEMENTS</p>
+                <h2 class="anim-fade-up anim-delay-1">Small changes. Real difference.</h2>
             </div>
             <div class="improvements-grid">
-                <div class="improvements-card"><div class="improvements-icon"><i class="fa-solid fa-dollar-sign"></i></div><p>Make income clearer</p></div>
-                <div class="improvements-card"><div class="improvements-icon"><i class="fa-regular fa-file-lines"></i></div><p>Fix missing details</p></div>
-                <div class="improvements-card"><div class="improvements-icon"><i class="fa-solid fa-table-list"></i></div><p>Improve structure</p></div>
-                <div class="improvements-card"><div class="improvements-icon"><i class="fa-regular fa-eye"></i></div><p>Reduce confusion</p></div>
+                <div class="improvements-card anim-scale anim-delay-1"><div class="improvements-icon"><i class="fa-solid fa-dollar-sign"></i></div><p>Make income clearer</p></div>
+                <div class="improvements-card anim-scale anim-delay-2"><div class="improvements-icon"><i class="fa-regular fa-file-lines"></i></div><p>Fix missing details</p></div>
+                <div class="improvements-card anim-scale anim-delay-3"><div class="improvements-icon"><i class="fa-solid fa-table-list"></i></div><p>Improve structure</p></div>
+                <div class="improvements-card anim-scale anim-delay-4"><div class="improvements-icon"><i class="fa-regular fa-eye"></i></div><p>Reduce confusion</p></div>
             </div>
-            <a href="#final-cta" class="improvements-btn">Start Free Readiness Check</a>
+            <a href="#final-cta" class="improvements-btn anim-fade-up anim-delay-5">Start Free Readiness Check</a>
         </div>
     </section>
 
-    <!-- Optional Upgrade Section -->
+    <!-- =========================================
+         OPTIONAL UPGRADE SECTION
+    ========================================= -->
     <section class="upgrade-section">
         <div class="upgrade-container">
             <div class="upgrade-header">
-                <span class="upgrade-eyebrow">OPTIONAL UPGRADE</span>
-                <h2>If you want extra help</h2>
+                <span class="upgrade-eyebrow anim-fade-up">OPTIONAL UPGRADE</span>
+                <h2 class="anim-fade-up anim-delay-1">If you want extra help</h2>
             </div>
             <div class="upgrade-grid">
-                <div class="upgrade-card"><div class="upgrade-icon"><i class="fa-regular fa-file-lines"></i></div><h3>Cover letter generator</h3><p>Personalised cover letters for each property.</p></div>
-                <div class="upgrade-card"><div class="upgrade-icon"><i class="fa-solid fa-list-check"></i></div><h3>Personalised checklist</h3><p>A step-by-step guide based on your results.</p></div>
-                <div class="upgrade-card"><div class="upgrade-icon"><i class="fa-solid fa-print"></i></div><h3>Printable tenant dossier</h3><p>A ready-to-send application package.</p></div>
+                <div class="upgrade-card anim-fade-up anim-delay-2"><div class="upgrade-icon"><i class="fa-regular fa-file-lines"></i></div><h3>Cover letter generator</h3><p>Personalised cover letters for each property.</p></div>
+                <div class="upgrade-card anim-fade-up anim-delay-3"><div class="upgrade-icon"><i class="fa-solid fa-list-check"></i></div><h3>Personalised checklist</h3><p>A step-by-step guide based on your results.</p></div>
+                <div class="upgrade-card anim-fade-up anim-delay-4"><div class="upgrade-icon"><i class="fa-solid fa-print"></i></div><h3>Printable tenant dossier</h3><p>A ready-to-send application package.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- Final CTA Section -->
+    <!-- =========================================
+         FINAL CTA SECTION
+    ========================================= -->
     <section class="cta-section" id="final-cta">
         <div class="cta-overlay"></div>
         <div class="cta-container">
-            <div class="cta-eyebrow"><span class="cta-eyebrow-line"></span>READY TO START?<span class="cta-eyebrow-line"></span></div>
-            <h2>Before your next<br>application...<br><span class="cta-gold">check this first</span></h2>
-            <p class="cta-subtext">It takes 2–3 minutes. No sign-up. No documents.<br>Just clarity.</p>
-            <a href="{% url 'assessment-page' %}" class="cta-btn">Do the Free Readiness Check</a>
-            <div class="cta-badges">
+            <div class="cta-eyebrow anim-fade-up"><span class="cta-eyebrow-line"></span>READY TO START?<span class="cta-eyebrow-line"></span></div>
+            <h2 class="anim-fade-up anim-delay-1">Before your next<br>application...<br><span class="cta-gold">check this first</span></h2>
+            <p class="cta-subtext anim-fade-up anim-delay-2">It takes 2–3 minutes. No sign-up. No documents.<br>Just clarity.</p>
+            <a href="{% url 'assessment-page' %}" class="cta-btn anim-scale anim-delay-3">Do the Free Readiness Check</a>
+            <div class="cta-badges anim-fade anim-delay-4">
                 <span><i class="fa-regular fa-circle-check"></i> Free</span>
                 <span><i class="fa-solid fa-bolt"></i> Fast</span>
                 <span><i class="fa-regular fa-heart"></i> No pressure</span>
@@ -614,7 +782,11 @@
     </section>
 
 {% include "newFooter.html" %}
+
     <script>
+        /* =============================================
+           FAQ ACCORDION (original logic — unchanged)
+        ============================================= */
         document.querySelectorAll('.faq-question').forEach(btn => {
             btn.addEventListener('click', () => {
                 const item = btn.closest('.faq-item');
@@ -629,6 +801,50 @@
                 }
             });
         });
+
+        /* =============================================
+           SCROLL-TRIGGERED ANIMATIONS
+           Uses IntersectionObserver — zero layout cost,
+           fires once per element as it enters viewport.
+        ============================================= */
+        (function () {
+            const ANIM_CLASSES = [
+                'anim-fade-up',
+                'anim-fade',
+                'anim-slide-left',
+                'anim-slide-right',
+                'anim-scale',
+                'anim-reveal-img',
+            ];
+
+            // Build one selector for all animated elements
+            const selector = ANIM_CLASSES.map(c => '.' + c).join(', ');
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            // Special case: gold shimmer on cta heading span
+                            if (entry.target.classList.contains('cta-gold')) {
+                                entry.target.classList.add('in-view');
+                            }
+                            observer.unobserve(entry.target); // fire once
+                        }
+                    });
+                },
+                {
+                    threshold: 0.15,       // element 15% visible before animating
+                    rootMargin: '0px 0px -40px 0px'  // slight bottom offset
+                }
+            );
+
+            // Observe all animated elements
+            document.querySelectorAll(selector).forEach(el => observer.observe(el));
+
+            // Also observe the cta-gold span inside the heading
+            document.querySelectorAll('.cta-gold').forEach(el => observer.observe(el));
+        })();
     </script>
 
 </body>

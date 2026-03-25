@@ -693,3 +693,19 @@ WARNING 2026-03-25 08:15:29,652 log 5568 123810049144512 Not Found: /.well-known
 WARNING 2026-03-25 08:15:29,653 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
 WARNING 2026-03-25 08:15:48,568 log 5568 123810049144512 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-03-25 08:15:48,569 log 5568 123810049144512 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 11:25:26,168 log 5701 125405117802176 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 11:25:28,639 log 5701 125405211145920 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 11:25:39,692 log 5701 125405202753216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 11:25:39,693 log 5701 125405202753216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 11:52:43,365 log 5701 125405202753216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 11:52:43,365 log 5701 125405202753216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 11:54:43,751 log 5701 125405202753216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 11:54:43,752 log 5701 125405202753216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 11:58:37,293 log 5701 125405101016768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 11:58:37,293 log 5701 125405101016768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 11:59:59,734 log 5701 125405101016768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-25 11:59:59,734 log 5701 125405101016768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-25 12:07:40,775 log 5701 125405202753216 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 12:08:11,863 log 5701 125405211145920 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 12:08:14,248 log 5701 125405202753216 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-25 12:08:36,265 log 5701 125405211145920 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
