@@ -5,6 +5,7 @@ def premium_status(request):
     """
     Injects `is_premium` into every template context automatically.
     Always reads fresh from the DB to avoid stale session-cached values.
+
     Add to settings.py TEMPLATES → OPTIONS → context_processors:
         'payments.context_processors.premium_status'
     """
