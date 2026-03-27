@@ -139,6 +139,26 @@
   font-size:14px;
 }
 
+/* PREMIUM GATE STATE */
+
+.premium-state{
+  text-align:center;
+  padding:50px;
+  color:var(--muted);
+  border:1px solid rgba(108,125,255,.35);
+  border-radius:var(--radius);
+  font-size:14px;
+  background:rgba(108,125,255,.06);
+  grid-column:1 / -1;
+}
+
+.premium-state strong{
+  display:block;
+  color:white;
+  font-size:16px;
+  margin-bottom:8px;
+}
+
 /* ================= MODAL ================= */
 
 .modal{
@@ -366,7 +386,13 @@
 
 <script>
 
-const csrfToken = "{{ csrf_token }}";
+function getCSRFToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+}
+
 
 function openModal(){
   document.getElementById("generateModal").style.display="flex";
@@ -379,22 +405,42 @@ function closeModal(){
 function loadLetters(){
 
   fetch("/api/cover-letters/")
-  .then(res=>res.json())
-  .then(data=>{
+  .then(res => {
 
-    const grid=document.getElementById("lettersGrid");
-    grid.innerHTML="";
+    // FIX: handle 403 (non-premium) explicitly instead of silently failing
+    if(res.status === 403){
+      const grid = document.getElementById("lettersGrid");
+      grid.innerHTML = `<div class="premium-state">
+        <strong>Premium required</strong>
+        Upgrade your account to generate and manage cover letters.
+      </div>`;
+      return null;
+    }
 
-    if(data.length===0){
+    if(!res.ok){
+      throw new Error("Failed to load letters");
+    }
 
-      grid.innerHTML=`<div class="empty-state">
-        You haven’t generated any cover letters yet.
+    return res.json();
+
+  })
+  .then(data => {
+
+    if(data === null) return;
+
+    const grid = document.getElementById("lettersGrid");
+    grid.innerHTML = "";
+
+    if(data.length === 0){
+
+      grid.innerHTML = `<div class="empty-state">
+        You haven't generated any cover letters yet.
       </div>`;
 
       return;
     }
 
-    data.forEach(letter=>{
+    data.forEach(letter => {
 
       grid.innerHTML += `
         <div class="card">
@@ -423,6 +469,16 @@ function loadLetters(){
       `;
 
     });
+
+  })
+  .catch(error => {
+
+    const grid = document.getElementById("lettersGrid");
+    grid.innerHTML = `<div class="empty-state">
+      Something went wrong loading your cover letters. Please refresh the page.
+    </div>`;
+
+    console.error(error);
 
   });
 
@@ -463,75 +519,63 @@ function generateLetter(){
     return;
   }
 
-  const btn=document.getElementById("generateBtn");
+  const btn = document.getElementById("generateBtn");
 
   btn.classList.add("loading");
-  btn.innerText="Generating...";
+  btn.innerText = "Generating...";
 
-  fetch("/api/cover-letters/generate/",{
-
-    method:"POST",
-
-    headers:{
-      "Content-Type":"application/json",
-      "X-CSRFToken":csrfToken
+  fetch("/api/cover-letters/generate/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken()
     },
-
-    body:JSON.stringify({
-
-      property_address:document.getElementById("property_address").value,
-      tone:document.getElementById("tone").value,
-      employment_type:document.getElementById("employment_type").value,
-      rental_history_type:document.getElementById("rental_history_type").value,
-      name:document.getElementById("name").value,
-      employment_info:document.getElementById("employment_info").value,
-      income:document.getElementById("income").value,
-      rental_history:document.getElementById("rental_history").value,
-      custom_note:document.getElementById("custom_note").value
-
+    body: JSON.stringify({
+        property_address: document.getElementById("property_address").value,
+        tone: document.getElementById("tone").value,
+        employment_type: document.getElementById("employment_type").value,
+        rental_history_type: document.getElementById("rental_history_type").value,
+        name: document.getElementById("name").value,
+        employment_info: document.getElementById("employment_info").value,
+        income: document.getElementById("income").value,
+        rental_history: document.getElementById("rental_history").value,
+        custom_note: document.getElementById("custom_note").value
     })
+})
+.then(async res => {
 
-  })
+    const data = await res.json();
 
-  .then(res => {
-      if (!res.ok) {
-          throw new Error("Server error");
-      }
-      return res.json();
-  })
+    if(!res.ok){
+        throw new Error(data.error || data.detail || "Server error");
+    }
 
-  .then(data=>{
+    return data;
+})
+.then(data => {
 
-      btn.classList.remove("loading");
-      btn.innerText="Generate Cover Letter";
+    btn.classList.remove("loading");
+    btn.innerText = "Generate Cover Letter";
 
-      if(data && data.id){
+    document.getElementById("generateModal").style.display = "none";
 
-          document.getElementById("generateModal").style.display="none";
+    loadLetters();
 
-          loadLetters();
+    document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
+        .forEach(el => el.value = "");
 
-          document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
-              .forEach(el => el.value="");
+})
+.catch(error => {
 
-      } else {
+    btn.classList.remove("loading");
+    btn.innerText = "Generate Cover Letter";
 
-          alert(data.error || "Error generating letter");
+    alert(error.message);   // ✅ NOW shows real backend error
 
-      }
+    console.error(error);
 
-  })
+});
 
-  .catch(error=>{
-
-      btn.classList.remove("loading");
-      btn.innerText="Generate Cover Letter";
-
-      alert("Something went wrong. Please try again.");
-
-      console.error(error);
-
-  });
 
 }
 

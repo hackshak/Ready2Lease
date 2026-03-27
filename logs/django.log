@@ -733,3 +733,52 @@ WARNING 2026-03-27 14:59:14,879 log 4481 129966418192064 "GET /api/detailed-read
 WARNING 2026-03-27 15:35:26,462 log 4481 129966418192064 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
 WARNING 2026-03-27 15:36:11,297 log 4481 129966045918912 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
 WARNING 2026-03-27 15:40:09,315 log 4481 129966434977472 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 15:59:29,617 log 15740 128348035327680 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 15:59:55,789 log 15740 128348043720384 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:00:08,587 log 15740 128348018542272 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:00:19,584 log 15740 128348052113088 Not Found: /api/detailed-readiness/
+WARNING 2026-03-27 16:00:19,586 log 15740 128348052113088 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+ERROR 2026-03-27 16:01:54,809 log 15740 128348052113088 Internal Server Error: /api/cover-letters/generate/
+ERROR 2026-03-27 16:01:54,810 log 15740 128348052113088 "POST /api/cover-letters/generate/ HTTP/1.1" 500 198
+WARNING 2026-03-27 16:17:51,326 log 4546 139420686472896 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:17:53,633 log 4546 139420678080192 Not Found: /api/detailed-readiness/
+WARNING 2026-03-27 16:17:53,634 log 4546 139420678080192 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-27 16:27:20,677 log 6601 125364098578112 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:27:23,866 log 6601 125364090185408 Not Found: /api/detailed-readiness/
+WARNING 2026-03-27 16:27:23,867 log 6601 125364090185408 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-27 16:37:44,850 log 8574 128100646028992 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:37:48,594 log 8574 128100637636288 Not Found: /api/detailed-readiness/
+WARNING 2026-03-27 16:37:48,596 log 8574 128100637636288 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-27 16:41:48,628 log 8574 128100646028992 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:41:48,628 log 8574 128100646028992 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 16:42:05,758 log 8574 128100646028992 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:42:05,758 log 8574 128100646028992 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+ERROR 2026-03-27 16:47:49,938 log 8574 128100637636288 Internal Server Error: /api/cover-letters/generate/
+WARNING 2026-03-27 16:48:22,869 log 8574 128100646028992 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:48:26,435 log 8574 128100637636288 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:48:26,468 log 8574 128100637636288 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:48:26,469 log 8574 128100637636288 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 16:48:32,420 log 8574 128100528539328 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:48:32,447 log 8574 128100528539328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:48:32,447 log 8574 128100528539328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 16:51:32,007 log 8574 128100553717440 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 16:51:32,045 log 8574 128100536932032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:51:32,045 log 8574 128100536932032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 16:51:40,652 log 8574 128100536932032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 16:51:40,653 log 8574 128100536932032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 16:54:32,256 log 8574 128100545324736 Forbidden: /api/cover-letters/generate/
+WARNING 2026-03-27 16:54:32,256 log 8574 128100545324736 "POST /api/cover-letters/generate/ HTTP/1.1" 403 58
+WARNING 2026-03-27 16:54:52,725 log 8574 128100545324736 Forbidden: /api/cover-letters/generate/
+WARNING 2026-03-27 16:54:52,726 log 8574 128100545324736 "POST /api/cover-letters/generate/ HTTP/1.1" 403 58
+WARNING 2026-03-27 17:01:36,795 log 8574 128100637636288 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 17:01:56,869 log 8574 128100646028992 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 17:01:56,906 log 8574 128100553717440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-27 17:01:56,907 log 8574 128100553717440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-27 17:06:54,670 log 8574 128100520146624 Forbidden: /api/cover-letters/generate/
+WARNING 2026-03-27 17:06:54,670 log 8574 128100520146624 "POST /api/cover-letters/generate/ HTTP/1.1" 403 58
+WARNING 2026-03-27 17:09:53,511 log 15330 137163605800640 Forbidden: /api/cover-letters/generate/
+WARNING 2026-03-27 17:09:53,512 log 15330 137163605800640 "POST /api/cover-letters/generate/ HTTP/1.1" 403 29
+ERROR 2026-03-27 17:24:01,661 log 16492 134134538208960 Internal Server Error: /api/cover-letters/generate/
+WARNING 2026-03-27 17:25:36,818 log 19113 137049130890944 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-27 17:25:55,231 log 19113 137049050969792 Not Found: /api/detailed-readiness/
+WARNING 2026-03-27 17:25:55,233 log 19113 137049050969792 "GET /api/detailed-readiness/ HTTP/1.1" 404 33

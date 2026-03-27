@@ -146,6 +146,12 @@
 .ql-toolbar.ql-snow button:hover .ql-stroke{ stroke:#fff; }
 .ql-toolbar.ql-snow button:hover .ql-fill{ fill:#fff; }
 
+/* Disabled save button style */
+.editor-actions button:disabled{
+  opacity:0.55;
+  cursor:default;
+}
+
 /* ============================= */
 /* RESPONSIVE — TABLET (≤1024px) */
 /* ============================= */
@@ -233,7 +239,8 @@
     </div>
 
     <div class="editor-actions">
-      <button type="button" id="saveBtn" onclick="saveContent()">Saved ✓</button>
+      {# FIX: start with disabled=true so button is never clickable before content loads #}
+      <button type="button" id="saveBtn" onclick="saveContent()" disabled>Saved ✓</button>
       <button class="btnGhost" onclick="exportPDF()">Export PDF</button>
     </div>
   </div>
@@ -273,8 +280,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function loadLetter(){
     fetch(`/api/cover-letters/${letterId}/`)
-    .then(res=>res.json())
-    .then(data=>{
+    .then(res => {
+      if(!res.ok){
+        throw new Error("Failed to load letter");
+      }
+      return res.json();
+    })
+    .then(data => {
 
       let formattedContent = (data.content || "")
         .split("\n")
@@ -291,6 +303,11 @@ document.addEventListener("DOMContentLoaded", function(){
         saveBtn.disabled = true;
       }, 50);
 
+    })
+    .catch(error => {
+      console.error("Failed to load letter:", error);
+      isInitializing = false;
+      alert("Failed to load cover letter content. Please refresh the page.");
     });
   }
 
@@ -322,29 +339,29 @@ document.addEventListener("DOMContentLoaded", function(){
     saveBtn.innerText = "Saving...";
     saveBtn.disabled = true;
 
-    fetch(`/api/cover-letters/${letterId}/save/`,{
-      method:"PATCH",
-      headers:{
-        "Content-Type":"application/json",
-        "X-CSRFToken":csrfToken
+    fetch(`/api/cover-letters/${letterId}/save/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
       },
-      body:JSON.stringify({
-        edited_content:quill.root.innerHTML
+      body: JSON.stringify({
+        edited_content: quill.root.innerHTML
       })
     })
-    .then(res=>{
+    .then(res => {
         if(!res.ok){
             throw new Error("Save failed");
         }
         return res.json();
     })
-    .then(()=>{
+    .then(() => {
         isDirty = false;
         isSaving = false;
         saveBtn.innerText = "Saved ✓";
         saveBtn.disabled = true;
     })
-    .catch(error=>{
+    .catch(error => {
         isSaving = false;
         saveBtn.innerText = "Save";
         saveBtn.disabled = false;

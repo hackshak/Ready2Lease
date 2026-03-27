@@ -54,7 +54,6 @@ class CoverLetterListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -84,7 +83,6 @@ class GenerateCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -97,12 +95,13 @@ class GenerateCoverLetterAPI(APIView):
             "employment_type": request.data.get("employment_type"),
             "rental_history_type": request.data.get("rental_history_type"),
             "base_inputs": {
-                "name": request.data.get("name"),
-                "employment_info": request.data.get("employment_info"),
-                "income": request.data.get("income"),
-                "rental_history": request.data.get("rental_history"),
-                "custom_note": request.data.get("custom_note"),
+                "name": request.data.get("name") or "",
+                "employment_info": request.data.get("employment_info") or "",
+                "income": request.data.get("income") or "",
+                "rental_history": request.data.get("rental_history") or "",
+                "custom_note": request.data.get("custom_note") or "",
             }
+
         })
 
         if not serializer.is_valid():
@@ -118,7 +117,11 @@ class GenerateCoverLetterAPI(APIView):
                 property_address=validated_data.get("property_address"),
             )
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({
+                "error": "Failed to generate cover letter",
+                "details": str(e)
+            }, status=500)
+
 
         letter = CoverLetter.objects.create(
             user=request.user,
@@ -143,7 +146,6 @@ class CoverLetterDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -160,7 +162,6 @@ class SaveCoverLetterAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -187,7 +188,6 @@ class ExportCoverLetterPDFAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required"},
@@ -205,8 +205,10 @@ class ExportCoverLetterPDFAPI(APIView):
         pdf_service = CoverLetterPDFService()
         pdf_file = pdf_service.generate_pdf(letter)
 
+        # FIX: explicitly set content_type so the browser treats it as a PDF
         return FileResponse(
             pdf_file,
             as_attachment=True,
             filename=f"cover_letter_{letter.id}.pdf",
+            content_type="application/pdf",
         )
