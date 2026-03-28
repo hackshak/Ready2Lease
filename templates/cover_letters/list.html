@@ -251,7 +251,9 @@
   grid-column:1 / -1;
 }
 
-/* SUBMIT BUTTON */
+/* ================================ */
+/* SUBMIT BUTTON + PROGRESS BAR     */
+/* ================================ */
 
 .generate-submit{
   margin-top:22px;
@@ -260,14 +262,78 @@
   border-radius:12px;
   border:0;
   font-weight:600;
+  font-size:14px;
   background:linear-gradient(135deg,var(--primary),var(--primary2));
   color:white;
   cursor:pointer;
+  /* needed so the progress bar is clipped to the button's rounded corners */
+  position:relative;
+  overflow:hidden;
+  transition:opacity .2s;
 }
 
 .generate-submit.loading{
-  opacity:.6;
+  opacity:.85;
   pointer-events:none;
+}
+
+/* 3 px strip that sits along the bottom edge of the button */
+.btn-progress-track{
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:3px;
+  background:rgba(255,255,255,.18);
+  display:none;                   /* shown only while loading */
+}
+
+/* the moving fill */
+.btn-progress-bar{
+  height:100%;
+  width:0%;
+  background:rgba(255,255,255,.9);
+  border-radius:0 2px 2px 0;
+  transition:width .45s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+/* shimmer sweep on top of the fill */
+.btn-progress-bar::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,.55) 50%,
+    transparent 100%
+  );
+  animation:bar-shimmer 1.3s infinite;
+}
+
+@keyframes bar-shimmer{
+  0%  { transform:translateX(-100%); }
+  100%{ transform:translateX(300%);  }
+}
+
+/* tiny spinner shown left of the label text */
+.btn-spinner{
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:btn-spin .65s linear infinite;
+  vertical-align:middle;
+  margin-right:8px;
+  margin-bottom:1px;
+}
+
+@keyframes btn-spin{
+  to{ transform:rotate(360deg); }
 }
 
 @media(max-width:900px){
@@ -375,8 +441,16 @@
 
     </div>
 
+    <!--
+      Button now contains:
+        1. #generateBtnLabel  — the visible text / spinner
+        2. .btn-progress-track — the 3px bar track hidden at bottom
+    -->
     <button class="generate-submit" id="generateBtn" onclick="generateLetter()">
-      Generate Cover Letter
+      <span id="generateBtnLabel">Generate Cover Letter</span>
+      <div class="btn-progress-track" id="progressTrack">
+        <div class="btn-progress-bar" id="progressBar"></div>
+      </div>
     </button>
 
   </div>
@@ -393,21 +467,104 @@ function getCSRFToken() {
         ?.split('=')[1];
 }
 
-
 function openModal(){
-  document.getElementById("generateModal").style.display="flex";
+  document.getElementById("generateModal").style.display = "flex";
 }
 
 function closeModal(){
-  document.getElementById("generateModal").style.display="none";
+  document.getElementById("generateModal").style.display = "none";
 }
+
+/* ================================
+   PROGRESS BAR
+================================ */
+
+let _progressInterval = null;
+let _progressValue    = 0;
+
+// Phases shown in the button label while waiting
+const PHASES = [
+  "Analysing your details\u2026",
+  "Drafting your letter\u2026",
+  "Polishing the tone\u2026",
+  "Almost ready\u2026",
+];
+let _phaseIndex    = 0;
+let _phaseInterval = null;
+
+function startProgress() {
+  const track = document.getElementById("progressTrack");
+  const bar   = document.getElementById("progressBar");
+
+  _progressValue = 0;
+  bar.style.transition = "none";
+  bar.style.width = "0%";
+  track.style.display = "block";
+
+  // Advance quickly to ~30 %, crawl to ~85 %, hold there until done
+  _progressInterval = setInterval(() => {
+    if (_progressValue < 30)       _progressValue += 3;
+    else if (_progressValue < 60)  _progressValue += 1.2;
+    else if (_progressValue < 85)  _progressValue += 0.35;
+
+    bar.style.transition = "width .45s ease";
+    bar.style.width = _progressValue + "%";
+  }, 220);
+}
+
+function finishProgress(success) {
+  clearInterval(_progressInterval);
+  const bar   = document.getElementById("progressBar");
+  const track = document.getElementById("progressTrack");
+
+  if (success) {
+    bar.style.transition = "width .2s ease";
+    bar.style.width = "100%";
+    setTimeout(() => {
+      track.style.display = "none";
+      bar.style.width = "0%";
+    }, 300);
+  } else {
+    track.style.display = "none";
+    bar.style.width = "0%";
+  }
+}
+
+function setLoadingState() {
+  const btn   = document.getElementById("generateBtn");
+  const label = document.getElementById("generateBtnLabel");
+
+  btn.classList.add("loading");
+
+  // Cycle through phase labels every 4 s
+  _phaseIndex = 0;
+  label.innerHTML = '<span class="btn-spinner"></span>' + PHASES[0];
+
+  _phaseInterval = setInterval(() => {
+    _phaseIndex = Math.min(_phaseIndex + 1, PHASES.length - 1);
+    label.innerHTML = '<span class="btn-spinner"></span>' + PHASES[_phaseIndex];
+  }, 4000);
+
+  startProgress();
+}
+
+function resetButtonState() {
+  clearInterval(_phaseInterval);
+  const btn   = document.getElementById("generateBtn");
+  const label = document.getElementById("generateBtnLabel");
+  btn.classList.remove("loading");
+  label.textContent = "Generate Cover Letter";
+}
+
+/* ================================
+   LOAD LETTERS
+================================ */
 
 function loadLetters(){
 
   fetch("/api/cover-letters/")
   .then(res => {
 
-    // FIX: handle 403 (non-premium) explicitly instead of silently failing
     if(res.status === 403){
       const grid = document.getElementById("lettersGrid");
       grid.innerHTML = `<div class="premium-state">
@@ -484,6 +641,10 @@ function loadLetters(){
 
 }
 
+/* ================================
+   VALIDATE FORM
+================================ */
+
 function validateForm(){
 
   const fields = [
@@ -513,16 +674,17 @@ function validateForm(){
 
 }
 
+/* ================================
+   GENERATE LETTER
+================================ */
+
 function generateLetter(){
 
   if(!validateForm()){
     return;
   }
 
-  const btn = document.getElementById("generateBtn");
-
-  btn.classList.add("loading");
-  btn.innerText = "Generating...";
+  setLoadingState();
 
   fetch("/api/cover-letters/generate/", {
     method: "POST",
@@ -531,51 +693,51 @@ function generateLetter(){
         "X-CSRFToken": getCSRFToken()
     },
     body: JSON.stringify({
-        property_address: document.getElementById("property_address").value,
-        tone: document.getElementById("tone").value,
-        employment_type: document.getElementById("employment_type").value,
+        property_address:    document.getElementById("property_address").value,
+        tone:                document.getElementById("tone").value,
+        employment_type:     document.getElementById("employment_type").value,
         rental_history_type: document.getElementById("rental_history_type").value,
-        name: document.getElementById("name").value,
-        employment_info: document.getElementById("employment_info").value,
-        income: document.getElementById("income").value,
-        rental_history: document.getElementById("rental_history").value,
-        custom_note: document.getElementById("custom_note").value
+        name:                document.getElementById("name").value,
+        employment_info:     document.getElementById("employment_info").value,
+        income:              document.getElementById("income").value,
+        rental_history:      document.getElementById("rental_history").value,
+        custom_note:         document.getElementById("custom_note").value
     })
-})
-.then(async res => {
+  })
+  .then(async res => {
 
     const data = await res.json();
 
     if(!res.ok){
-        throw new Error(data.error || data.detail || "Server error");
+      throw new Error(data.error || data.detail || "Server error");
     }
 
     return data;
-})
-.then(data => {
 
-    btn.classList.remove("loading");
-    btn.innerText = "Generate Cover Letter";
+  })
+  .then(data => {
+
+    finishProgress(true);
+    resetButtonState();
 
     document.getElementById("generateModal").style.display = "none";
 
     loadLetters();
 
     document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
-        .forEach(el => el.value = "");
+      .forEach(el => el.value = "");
 
-})
-.catch(error => {
+  })
+  .catch(error => {
 
-    btn.classList.remove("loading");
-    btn.innerText = "Generate Cover Letter";
+    finishProgress(false);
+    resetButtonState();
 
-    alert(error.message);   // ✅ NOW shows real backend error
+    alert(error.message);
 
     console.error(error);
 
-});
-
+  });
 
 }
 
