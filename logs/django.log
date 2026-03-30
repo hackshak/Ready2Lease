@@ -841,3 +841,25 @@ WARNING 2026-03-29 10:19:08,851 log 6523 125248061077184 "GET /static/css/newLan
 WARNING 2026-03-29 10:19:08,887 log 6523 125248052684480 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-03-29 10:19:08,887 log 6523 125248052684480 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
 WARNING 2026-03-29 10:19:38,597 log 6523 125248052684480 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:05:00,863 log 4729 140593012418240 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:05:21,553 log 4729 140592910681792 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:05:36,058 log 4729 140592935859904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:05:51,495 log 4729 140592935859904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:06:21,853 log 4729 140592902289088 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:06:25,193 log 4729 140592919074496 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:06:25,215 log 4729 140593020810944 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-30 07:06:25,216 log 4729 140593020810944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-30 07:07:53,850 log 4729 140593020810944 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:07:55,662 log 4729 140592910681792 Not Found: /api/detailed-readiness/
+WARNING 2026-03-30 07:07:55,664 log 4729 140592910681792 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-03-30 07:08:57,155 log 4729 140592910681792 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:09:05,873 log 4729 140592927467200 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:09:09,553 log 4729 140592935859904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:09:21,210 log 4729 140592919074496 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-03-30 07:09:21,236 log 4729 140592902289088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-30 07:09:21,237 log 4729 140592902289088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-30 07:09:44,405 log 4729 140592902289088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-30 07:09:44,405 log 4729 140592902289088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-30 07:09:53,155 log 4729 140592902289088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-30 07:09:53,168 log 4729 140592902289088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-03-30 07:09:53,232 log 4729 140592910681792 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
