@@ -4,7 +4,6 @@ from assessments.models import Assessment
 
 
 class UserDocument(models.Model):
-
     DOCUMENT_TYPES = [
         ("payslip", "Payslip"),
         ("bank_statement", "Bank Statement"),
@@ -16,20 +15,9 @@ class UserDocument(models.Model):
         on_delete=models.CASCADE,
         related_name="ap_documents"
     )
-
-    document_type = models.CharField(
-        max_length=50,
-        choices=DOCUMENT_TYPES
-    )
-
-    file = models.FileField(
-        upload_to="action_plan/documents/"
-    )
-
-    uploaded_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
+    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
+    file = models.FileField(upload_to="action_plan/documents/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     assessment = models.ForeignKey(
         Assessment,
         on_delete=models.CASCADE,
@@ -43,23 +31,13 @@ class UserDocument(models.Model):
 
 
 class ReferenceLetter(models.Model):
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="ap_reference_letters"
     )
-
-    file = models.FileField(
-        upload_to="action_plan/reference_letters/",
-        null=True,
-        blank=True
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
+    file = models.FileField(upload_to="action_plan/reference_letters/", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     assessment = models.ForeignKey(
         Assessment,
         on_delete=models.CASCADE,
@@ -70,23 +48,13 @@ class ReferenceLetter(models.Model):
 
 
 class CoverLetter(models.Model):
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="ap_cover_letters"
     )
-
-    file = models.FileField(
-        upload_to="action_plan/cover_letters/",
-        null=True,
-        blank=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
+    file = models.FileField(upload_to="action_plan/cover_letters/", null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
     assessment = models.ForeignKey(
         Assessment,
         on_delete=models.CASCADE,
@@ -97,26 +65,19 @@ class CoverLetter(models.Model):
 
 
 class CompletedTask(models.Model):
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="ap_completed_tasks"
     )
-
     assessment = models.ForeignKey(
         Assessment,
         on_delete=models.CASCADE,
         related_name="completed_tasks"
     )
-
-    task_key = models.CharField(
-        max_length=100
-    )
-
-    completed_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    task_key = models.CharField(max_length=100)
+    points_earned = models.PositiveIntegerField(default=0)   
+    completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [

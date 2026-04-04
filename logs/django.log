@@ -863,3 +863,251 @@ WARNING 2026-03-30 07:09:44,405 log 4729 140592902289088 "GET /.well-known/appsp
 WARNING 2026-03-30 07:09:53,155 log 4729 140592902289088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-03-30 07:09:53,168 log 4729 140592902289088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
 WARNING 2026-03-30 07:09:53,232 log 4729 140592910681792 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:23:05,294 log 17424 138422475802304 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:23:08,934 log 17424 138422484195008 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:23:43,035 log 17424 138422467409600 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:24:54,768 log 17424 138422492587712 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+ERROR 2026-04-03 10:27:36,604 log 17424 138422492587712 Invalid HTTP_HOST header: 'presidial-unjudged-magda.ngrok-free.dev'. You may need to add 'presidial-unjudged-magda.ngrok-free.dev' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/shakeeb/Desktop/Ready2Lease/env/lib/python3.12/site-packages/django/http/request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'presidial-unjudged-magda.ngrok-free.dev'. You may need to add 'presidial-unjudged-magda.ngrok-free.dev' to ALLOWED_HOSTS.
+WARNING 2026-04-03 10:27:36,606 log 17424 138422492587712 "POST /api/shopify/webhooks/ HTTP/1.1" 400 79437
+WARNING 2026-04-03 10:31:38,780 log 4425 126428636022464 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:47:59,581 __init__ 4425 126428636022464 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 10:47:59,632 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 10:47:59,634 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 10:47:59,635 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 10:47:59,802 images 4425 126428636022464 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 10:48:00,773 tokens 4425 126428636022464 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#f7c948 0deg 162deg,#dde2ed 162deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 10:48:00,785 tokens 4425 126428636022464 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #f7c948 0deg 162deg,
+      rgba(255,255,255,.10) 162deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 10:48:06,642 log 4425 126428636022464 Not Found: /favicon.ico
+WARNING 2026-04-03 10:48:06,644 log 4425 126428636022464 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-03 10:49:31,972 log 4425 126428636022464 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:50:41,816 log 4425 126428636022464 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 10:52:28,685 __init__ 4425 126428636022464 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 10:52:28,704 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 10:52:28,705 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 10:52:28,705 __init__ 4425 126428636022464 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 10:52:28,749 images 4425 126428636022464 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 10:52:29,715 tokens 4425 126428636022464 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#ff5a7a 0deg 90deg,#dde2ed 90deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 10:52:29,733 tokens 4425 126428636022464 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #ff5a7a 0deg 90deg,
+      rgba(255,255,255,.10) 90deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 11:04:58,651 log 5987 134921316857536 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 11:05:08,715 log 5987 134921308464832 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 11:06:19,937 log 5987 134921316857536 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 11:06:38,385 log 5987 134921308464832 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-03 11:06:38,386 log 5987 134921308464832 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-03 11:08:10,140 __init__ 5987 134921316857536 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 11:08:10,190 __init__ 5987 134921316857536 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 11:08:10,191 __init__ 5987 134921316857536 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 11:08:10,192 __init__ 5987 134921316857536 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 11:08:10,363 images 5987 134921316857536 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 11:08:11,384 tokens 5987 134921316857536 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#ff5a7a 0deg 119deg,#dde2ed 119deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 11:08:11,396 tokens 5987 134921316857536 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #ff5a7a 0deg 119deg,
+      rgba(255,255,255,.10) 119deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 11:26:06,210 __init__ 6918 126597841544896 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 11:26:06,231 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 11:26:06,231 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 11:26:06,232 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 11:26:06,366 images 6918 126597841544896 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 11:26:07,342 tokens 6918 126597841544896 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#ff5a7a 0deg 90deg,#dde2ed 90deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 11:26:07,352 tokens 6918 126597841544896 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #ff5a7a 0deg 90deg,
+      rgba(255,255,255,.10) 90deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 11:26:23,404 log 6918 126597841544896 Not Found: /favicon.ico
+WARNING 2026-04-03 11:26:23,406 log 6918 126597841544896 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-03 11:29:22,076 __init__ 6918 126597841544896 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 11:29:22,119 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 11:29:22,120 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 11:29:22,121 __init__ 6918 126597841544896 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 11:29:22,200 images 6918 126597841544896 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 11:29:23,010 tokens 6918 126597841544896 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#f7c948 0deg 169deg,#dde2ed 169deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 11:29:23,022 tokens 6918 126597841544896 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #f7c948 0deg 169deg,
+      rgba(255,255,255,.10) 169deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 11:30:56,196 log 6918 126597841544896 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 13:47:50,125 log 4266 129503598737088 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:04:02,426 log 5162 133945611007680 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:04:11,752 log 5162 133945602614976 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:13:36,906 fonts 5162 133945611007680 Font-face 'DM Sans' cannot be loaded
+WARNING 2026-04-03 14:13:48,815 __init__ 5162 133945611007680 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 14:13:48,836 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 14:13:48,836 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 14:13:48,837 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 14:13:48,981 images 5162 133945611007680 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 14:13:49,991 tokens 5162 133945611007680 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#28d17c 0deg 266deg,#dde2ed 266deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 14:13:50,005 tokens 5162 133945611007680 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #28d17c 0deg 266deg,
+      rgba(255,255,255,.10) 266deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 14:15:28,037 __init__ 5162 133945611007680 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 14:15:28,056 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 14:15:28,057 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 14:15:28,058 __init__ 5162 133945611007680 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+ERROR 2026-04-03 14:15:28,096 images 5162 133945611007680 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/static/images/Main.Logo.png'>
+WARNING 2026-04-03 14:15:29,015 tokens 5162 133945611007680 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#f7c948 0deg 162deg,#dde2ed 162deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 14:15:29,027 tokens 5162 133945611007680 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #f7c948 0deg 162deg,
+      rgba(255,255,255,.10) 162deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 14:20:48,249 log 5788 136414323836608 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:43:33,880 log 5788 136414315443904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:43:38,281 log 5788 136414323836608 Not Found: /api/detailed-readiness/
+WARNING 2026-04-03 14:43:38,282 log 5788 136414323836608 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-04-03 14:43:42,996 log 5788 136414323836608 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:44:33,918 log 5788 136414315443904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:45:05,375 log 5788 136414296561344 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:45:38,158 log 5788 136414296561344 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:47:11,882 log 5788 136414315443904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:47:51,506 log 5788 136414279775936 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:48:07,156 log 5788 136414296561344 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:48:14,675 log 5788 136414315443904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:48:53,808 log 5788 136414288168640 Not Found: /favicon.ico
+WARNING 2026-04-03 14:48:53,810 log 5788 136414288168640 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-03 14:48:57,942 log 5788 136414288168640 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:51:15,759 __init__ 5788 136414304954048 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 14:51:15,815 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 14:51:15,816 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 14:51:15,817 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+WARNING 2026-04-03 14:51:16,865 tokens 5788 136414304954048 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#ff5a7a 0deg 137deg,#dde2ed 137deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 14:51:16,878 tokens 5788 136414304954048 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #ff5a7a 0deg 137deg,
+      rgba(255,255,255,.10) 137deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-03 14:52:08,555 log 5788 136414304954048 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-03 14:55:36,029 __init__ 5788 136414304954048 Ignored `print-color-adjust: exact` at 31:3, unknown property.
+WARNING 2026-04-03 14:55:36,082 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(255,90,122,.2)` at 461:41, unknown property.
+WARNING 2026-04-03 14:55:36,083 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(247,201,72,.2)` at 462:41, unknown property.
+WARNING 2026-04-03 14:55:36,085 __init__ 5788 136414304954048 Ignored `box-shadow: 0 0 0 3px rgba(108,125,255,.2)` at 463:41, unknown property.
+WARNING 2026-04-03 14:55:37,187 tokens 5788 136414304954048 Ignored `background: radial-gradient(circle,#f5f7fc 54%,transparent 55%) , conic-gradient(#f7c948 0deg 202deg,#dde2ed 202deg 360deg)` at 1:53, invalid value.
+WARNING 2026-04-03 14:55:37,198 tokens 5788 136414304954048 Ignored `background: radial-gradient(circle, #111e3c 58%, transparent 59%) , conic-gradient(
+      #f7c948 0deg 202deg,
+      rgba(255,255,255,.10) 202deg 360deg
+    )` at 225:5, invalid value.
+WARNING 2026-04-04 04:11:58,338 log 5249 135783772055232 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:12:05,570 log 5249 135783780447936 Not Found: /ca
+WARNING 2026-04-04 04:12:05,571 log 5249 135783780447936 "GET /ca HTTP/1.1" 404 15199
+WARNING 2026-04-04 04:12:05,682 log 5249 135783780447936 Not Found: /favicon.ico
+WARNING 2026-04-04 04:12:05,686 log 5249 135783780447936 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 04:12:25,752 log 5249 135783746877120 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:18:39,656 log 5964 137548715275968 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:28:25,719 log 5964 137548706883264 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:29:00,027 log 5964 137548466742976 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:29:10,951 log 5964 137548696393408 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 04:33:23,133 log 7962 130640795174592 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 09:13:31,997 log 5223 131677651240640 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 09:17:16,241 log 5223 131677651240640 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 09:17:27,350 log 5223 131677642847936 Not Found: /favicon.ico
+WARNING 2026-04-04 09:17:27,351 log 5223 131677642847936 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 09:17:36,208 descriptors 5223 131677642847936 Ignored `font-weight: 500 600` at 18:3, invalid value.
+WARNING 2026-04-04 09:17:36,232 fonts 5223 131677642847936 Font-face 'DM Serif Display' cannot be loaded
+WARNING 2026-04-04 09:17:36,234 __init__ 5223 131677642847936 Ignored `print-color-adjust: exact` at 55:3, unknown property.
+ERROR 2026-04-04 09:17:37,531 images 5223 131677642847936 Failed to load image at 'file:///home/shakeeb/Desktop/Ready2Lease/media/&#x27;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+PGNpcmNsZSBjeD0iNzAuMCIgY3k9IjcwLjAiIHI9IjU0LjAiIGZpbGw9IiMxMTFlM2MiLz48Y2lyY2xlIGN4PSI3MC4wIiBjeT0iNzAuMCIgcj0iNjAuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTSA3MC4wMDAgMTAuMDAwIEEgNjAuMCA2MC4wIDAgMSAxIDQ3LjkxMyAxMjUuNzg3IiBmaWxsPSJub25lIiBzdHJva2U9IiNmN2M5NDgiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==&#x27;': URLError: <urlopen error [Errno 2] No such file or directory: '/home/shakeeb/Desktop/Ready2Lease/media/&#x27;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+PGNpcmNsZSBjeD0iNzAuMCIgY3k9IjcwLjAiIHI9IjU0LjAiIGZpbGw9IiMxMTFlM2MiLz48Y2lyY2xlIGN4PSI3MC4wIiBjeT0iNzAuMCIgcj0iNjAuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTSA3MC4wMDAgMTAuMDAwIEEgNjAuMCA2MC4wIDAgMSAxIDQ3LjkxMyAxMjUuNzg3IiBmaWxsPSJub25lIiBzdHJva2U9IiNmN2M5NDgiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==&'>
+WARNING 2026-04-04 09:26:36,526 log 6185 135023477950144 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 09:32:54,462 log 6185 135023469557440 Not Found: /api/detailed-readiness/
+WARNING 2026-04-04 09:32:54,464 log 6185 135023469557440 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-04-04 09:32:57,535 log 6185 135023469557440 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 11:14:38,733 log 6185 135023477950144 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 11:39:16,819 fonts 6185 135023469557440 Font-face 'DM Serif Display' cannot be loaded
+WARNING 2026-04-04 11:43:23,230 log 6185 135023469557440 Not Found: /api/detailed-readiness/
+WARNING 2026-04-04 11:43:23,231 log 6185 135023469557440 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-04-04 11:55:17,786 log 8670 134686570333888 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 11:55:32,678 log 8670 134686570333888 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 11:57:03,001 log 8670 134686559844032 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:20:12,187 log 11345 125646805173952 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:27:57,413 log 12552 123769777587904 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:35:23,925 fonts 13123 134658679404224 Font-face 'DM Serif Display' cannot be loaded
+WARNING 2026-04-04 12:35:25,180 log 13123 134658687796928 Not Found: /favicon.ico
+WARNING 2026-04-04 12:35:25,180 log 13123 134658687796928 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 12:40:27,990 log 13823 136145899878080 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:40:31,830 log 13823 136145891485376 Not Found: /api/detailed-readiness/
+WARNING 2026-04-04 12:40:31,831 log 13823 136145891485376 "GET /api/detailed-readiness/ HTTP/1.1" 404 33
+WARNING 2026-04-04 12:40:34,318 log 13823 136145891485376 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:41:29,629 log 13823 136145899878080 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:43:29,634 fonts 13823 136145891485376 Font-face 'DM Serif Display' cannot be loaded
+WARNING 2026-04-04 12:45:25,546 log 13823 136145891485376 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:45:35,433 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:45:35,433 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:47:51,244 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:47:51,245 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:16,208 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:16,210 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:24,196 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:24,197 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:31,844 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:31,845 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:39,787 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:39,789 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:43,162 log 13823 136145899878080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:43,163 log 13823 136145899878080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:48:54,631 log 13823 136145891485376 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:48:54,632 log 13823 136145891485376 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:49:08,415 log 13823 136145891485376 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 12:49:08,417 log 13823 136145891485376 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 12:54:06,661 log 15429 130337637152448 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 12:55:43,533 log 15429 130337628759744 Forbidden: /api/detailed-readiness/
+WARNING 2026-04-04 12:55:43,535 log 15429 130337628759744 "GET /api/detailed-readiness/ HTTP/1.1" 403 49
+WARNING 2026-04-04 12:55:50,904 log 15429 130337628759744 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 12:55:50,905 log 15429 130337628759744 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:00:45,801 log 15929 132901933954752 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:00:45,803 log 15929 132901933954752 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:01:40,417 log 15929 132901933954752 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:01:40,420 log 15929 132901933954752 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:02:17,660 log 15929 132901933954752 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:02:17,660 log 15929 132901933954752 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:02:26,558 log 15929 132901925562048 Forbidden: /tasks/7/
+WARNING 2026-04-04 13:02:26,559 log 15929 132901925562048 "GET /tasks/7/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:02:35,741 fonts 15929 132901925562048 Font-face 'DM Serif Display' cannot be loaded
+WARNING 2026-04-04 13:02:37,745 log 15929 132901925562048 Not Found: /favicon.ico
+WARNING 2026-04-04 13:02:37,746 log 15929 132901925562048 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 13:05:12,443 log 15929 132901925562048 Not Found: /pricing/
+WARNING 2026-04-04 13:05:12,445 log 15929 132901925562048 "GET /pricing/ HTTP/1.1" 404 15217
+WARNING 2026-04-04 13:05:12,517 log 15929 132901925562048 Not Found: /favicon.ico
+WARNING 2026-04-04 13:05:12,518 log 15929 132901925562048 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 13:05:54,378 log 15929 132901925562048 Not Found: /pricing/
+WARNING 2026-04-04 13:05:54,380 log 15929 132901925562048 "GET /pricing/ HTTP/1.1" 404 15217
+WARNING 2026-04-04 13:05:54,463 log 15929 132901925562048 Not Found: /favicon.ico
+WARNING 2026-04-04 13:05:54,464 log 15929 132901925562048 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 13:05:58,044 log 15929 132901925562048 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 13:06:08,458 log 15929 132901933954752 Not Found: /pricing/
+WARNING 2026-04-04 13:06:08,459 log 15929 132901933954752 "GET /pricing/ HTTP/1.1" 404 15217
+WARNING 2026-04-04 13:07:32,971 log 15929 132901933954752 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:07:32,973 log 15929 132901933954752 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:11:53,318 log 15929 132901933954752 Forbidden: /checklist/7/
+WARNING 2026-04-04 13:11:53,323 log 15929 132901933954752 "GET /checklist/7/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:11:53,326 log 15929 132901925562048 Forbidden: /tasks/7/
+WARNING 2026-04-04 13:11:53,328 log 15929 132901925562048 "GET /tasks/7/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:15:40,645 log 15929 132901925562048 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:15:40,647 log 15929 132901925562048 "GET /api/cover-letters/ HTTP/1.1" 403 29
+WARNING 2026-04-04 13:15:46,225 log 15929 132901925562048 Forbidden: /api/detailed-readiness/
+WARNING 2026-04-04 13:15:46,227 log 15929 132901925562048 "GET /api/detailed-readiness/ HTTP/1.1" 403 49
+WARNING 2026-04-04 13:19:13,548 log 15929 132901925562048 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 13:19:13,549 log 15929 132901925562048 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 13:19:21,072 log 15929 132901925562048 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-04-04 13:19:21,073 log 15929 132901925562048 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 15337
+WARNING 2026-04-04 13:19:46,254 log 15929 132901925562048 Not Found: /pricing/
+WARNING 2026-04-04 13:19:46,256 log 15929 132901925562048 "GET /pricing/ HTTP/1.1" 404 15217
+WARNING 2026-04-04 13:19:46,389 log 15929 132901925562048 Not Found: /favicon.ico
+WARNING 2026-04-04 13:19:46,391 log 15929 132901925562048 "GET /favicon.ico HTTP/1.1" 404 15226
+WARNING 2026-04-04 13:25:01,563 log 17757 131855943763648 "GET /static/css/newLandingPage.css HTTP/1.1" 404 1880
+WARNING 2026-04-04 13:25:38,068 log 17757 131855935370944 Forbidden: /api/cover-letters/
+WARNING 2026-04-04 13:25:38,069 log 17757 131855935370944 "GET /api/cover-letters/ HTTP/1.1" 403 29

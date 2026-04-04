@@ -3,7 +3,6 @@
 {% block content %}
 
 <style>
-
 :root{
   --bg:#0b1020;
   --panel:#111a33;
@@ -23,12 +22,10 @@
   --gold:#c9a54c;
 }
 
-/* ─── TYPOGRAPHY ─── */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
 body { font-family: 'DM Sans', sans-serif; }
 
-/* ─── LAYOUT ─── */
 .wrap{
   margin:0 auto;
   padding:28px 20px 80px;
@@ -36,10 +33,7 @@ body { font-family: 'DM Sans', sans-serif; }
   color:var(--text);
 }
 
-/* ─── PAGE HEADER ─── */
-.pageHeader{
-  margin-bottom:28px;
-}
+.pageHeader{ margin-bottom:28px; }
 
 .pageHeader h1{
   font-size:24px;
@@ -50,12 +44,8 @@ body { font-family: 'DM Sans', sans-serif; }
   -webkit-text-fill-color:transparent;
 }
 
-.sub{
-  font-size:13px;
-  color:var(--muted);
-}
+.sub{ font-size:13px; color:var(--muted); }
 
-/* ─── CARDS ─── */
 .card{
   border:1px solid var(--border);
   background:rgba(17,26,51,.80);
@@ -66,20 +56,9 @@ body { font-family: 'DM Sans', sans-serif; }
   margin-bottom:22px;
 }
 
-.cardTitle{
-  font-size:14px;
-  font-weight:600;
-  color:var(--text);
-  margin-bottom:4px;
-}
+.cardTitle{ font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.cardSub{ font-size:12px; color:var(--muted); margin-bottom:18px; }
 
-.cardSub{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:18px;
-}
-
-/* ─── HERO GRID ─── */
 .hero{
   display:grid;
   grid-template-columns:1fr 300px;
@@ -87,16 +66,11 @@ body { font-family: 'DM Sans', sans-serif; }
   margin-top:10px;
 }
 
-/* ─── SELECT ─── */
-.selectWrap{
-  position:relative;
-}
-
+.selectWrap{ position:relative; }
 .selectWrap::after{
   content:"▾";
   position:absolute;
-  right:14px;
-  top:50%;
+  right:14px; top:50%;
   transform:translateY(-50%);
   color:var(--muted);
   pointer-events:none;
@@ -104,326 +78,145 @@ body { font-family: 'DM Sans', sans-serif; }
 }
 
 select{
-  appearance:none;
-  -webkit-appearance:none;
+  appearance:none; -webkit-appearance:none;
   background:rgba(255,255,255,.04);
   color:var(--text);
   border:1px solid var(--border);
   padding:12px 36px 12px 14px;
   border-radius:12px;
-  font-size:13px;
-  font-family:inherit;
-  outline:none;
-  width:100%;
-  cursor:pointer;
-  transition:.2s border-color, .2s box-shadow;
+  font-size:13px; font-family:inherit;
+  outline:none; width:100%; cursor:pointer;
+  transition:.2s border-color,.2s box-shadow;
 }
+select option{ background:#111a33; color:#e9eefc; }
+select:focus{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(108,125,255,.2); }
 
-select option{
-  background:#111a33;
-  color:#e9eefc;
-}
-
-select:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(108,125,255,.2);
-}
-
-/* ─── BUTTON ─── */
 .genBtn{
-  margin-top:14px;
-  padding:12px 20px;
-  border:none;
-  border-radius:12px;
+  margin-top:14px; padding:12px 20px;
+  border:none; border-radius:12px;
   background:linear-gradient(135deg,var(--primary),var(--primary2));
-  color:white;
-  font-size:13px;
-  font-weight:600;
-  font-family:inherit;
-  cursor:pointer;
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  transition:.2s opacity, .2s transform;
+  color:white; font-size:13px; font-weight:600; font-family:inherit;
+  cursor:pointer; width:100%;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:.2s opacity,.2s transform;
 }
-
 .genBtn:hover{ opacity:.88; transform:translateY(-1px); }
 .genBtn:active{ transform:translateY(0); }
 .genBtn.loading{ opacity:.6; cursor:not-allowed; }
 
-/* Spinner */
 .spinner{
-  width:14px;height:14px;
+  width:14px; height:14px;
   border:2px solid rgba(255,255,255,.3);
   border-top-color:#fff;
   border-radius:50%;
   animation:spin .7s linear infinite;
   display:none;
 }
-
 @keyframes spin{ to{transform:rotate(360deg)} }
 
-/* ─── SCORE RING ─── */
-.ringCard{
-  text-align:center;
-}
+.ringCard{ text-align:center; }
 
 .ring{
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:130px; height:130px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
   margin:0 auto 14px;
   transition:.5s background;
 }
 
-.scoreText{
-  font-size:28px;
-  font-weight:700;
-  color:var(--text);
-}
+.scoreText{ font-size:28px; font-weight:700; color:var(--text); }
 
 .scoreLabel{
-  font-size:11px;
-  color:var(--muted);
-  text-transform:uppercase;
-  letter-spacing:1px;
+  font-size:11px; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1px;
   margin-bottom:6px;
 }
 
 .profileBadge{
-  display:inline-block;
-  padding:3px 12px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:600;
-  background:rgba(201,165,76,.15);
-  color:var(--gold);
+  display:inline-block; padding:3px 12px;
+  border-radius:20px; font-size:11px; font-weight:600;
+  background:rgba(201,165,76,.15); color:var(--gold);
   border:1px solid rgba(201,165,76,.3);
 }
 
-/* ─── REPORTS LIST ─── */
-.reportList{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
+.reportList{ display:flex; flex-direction:column; gap:10px; }
 
 .reportItem{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border:1px solid var(--border);
-  padding:14px 16px;
-  border-radius:12px;
-  background:rgba(255,255,255,.025);
-  transition:.18s background, .18s border-color;
-  gap:12px;
+  display:flex; justify-content:space-between; align-items:center;
+  border:1px solid var(--border); padding:14px 16px;
+  border-radius:12px; background:rgba(255,255,255,.025);
+  transition:.18s background,.18s border-color; gap:12px;
 }
+.reportItem:hover{ background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.18); }
 
-.reportItem:hover{
-  background:rgba(255,255,255,.05);
-  border-color:rgba(255,255,255,.18);
-}
-
-.reportLeft{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  min-width:0;
-}
+.reportLeft{ display:flex; align-items:center; gap:14px; min-width:0; }
 
 .scoreChip{
-  width:44px;height:44px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
-  flex-shrink:0;
+  width:44px; height:44px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:700; flex-shrink:0;
 }
 
-.reportMeta{
-  display:flex;
-  flex-direction:column;
-  gap:3px;
-  min-width:0;
-}
-
-.reportName{
-  font-size:13px;
-  font-weight:600;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.reportDate{
-  font-size:11px;
-  color:var(--muted);
-}
+.reportMeta{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.reportName{ font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.reportDate{ font-size:11px; color:var(--muted); }
 
 .downloadBtn{
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--border);
-  padding:7px 16px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:500;
-  font-family:inherit;
-  color:var(--text);
-  transition:.15s background;
-  white-space:nowrap;
-  flex-shrink:0;
+  background:rgba(255,255,255,.06); border:1px solid var(--border);
+  padding:7px 16px; border-radius:10px; cursor:pointer;
+  font-size:12px; font-weight:500; font-family:inherit; color:var(--text);
+  transition:.15s background; white-space:nowrap; flex-shrink:0;
+}
+.downloadBtn:hover{ background:rgba(255,255,255,.12); }
+
+.emptyState{ text-align:center; padding:32px; color:var(--muted); font-size:13px; }
+
+.premium-card{
+  text-align:center; padding:40px 20px;
+  background:rgba(108,125,255,.06); border:1px solid rgba(108,125,255,.35);
+  border-radius:var(--radius);
+}
+.premium-card h3{ margin:0 0 8px; color:var(--text); font-size:18px; }
+.premium-card p{ color:var(--muted); font-size:13px; margin-bottom:20px; }
+.upgrade-btn{
+  display:inline-block; background:linear-gradient(135deg,var(--primary),var(--primary2));
+  padding:10px 24px; border-radius:40px; color:white; text-decoration:none;
+  font-size:13px; font-weight:600;
 }
 
-.downloadBtn:hover{
-  background:rgba(255,255,255,.12);
-}
-
-.emptyState{
-  text-align:center;
-  padding:32px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* ─── TOAST ─── */
 .toast{
-  position:fixed;
-  bottom:28px;right:28px;
-  background:#1d2b4f;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:12px 18px;
-  border-radius:12px;
-  font-size:13px;
-  box-shadow:var(--shadow);
-  opacity:0;
-  transform:translateY(8px);
-  transition:.3s;
-  pointer-events:none;
-  z-index:999;
+  position:fixed; bottom:28px; right:28px;
+  background:#1d2b4f; border:1px solid var(--border); color:var(--text);
+  padding:12px 18px; border-radius:12px; font-size:13px;
+  box-shadow:var(--shadow); opacity:0; transform:translateY(8px);
+  transition:.3s; pointer-events:none; z-index:999;
 }
-
-.toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* ============================= */
-/* RESPONSIVE — TABLET (≤860px)  */
-/* ============================= */
+.toast.show{ opacity:1; transform:translateY(0); }
 
 @media(max-width:860px){
-  .hero{
-    grid-template-columns:1fr;
-  }
-
-  /* On tablet, score ring sits below the generator — make it horizontal */
-  .ringCard{
-    display:flex;
-    align-items:center;
-    gap:20px;
-    text-align:left;
-  }
-
-  .ringCard .ring{
-    margin:0;
-    flex-shrink:0;
-    width:100px;
-    height:100px;
-  }
-
+  .hero{ grid-template-columns:1fr; }
+  .ringCard{ display:flex; align-items:center; gap:20px; text-align:left; }
+  .ringCard .ring{ margin:0; flex-shrink:0; width:100px; height:100px; }
   .ringCard .scoreText{ font-size:22px; }
 }
 
-/* ============================= */
-/* RESPONSIVE — MOBILE (≤640px)  */
-/* ============================= */
-
 @media(max-width:640px){
-
-  .wrap{
-    padding:62px 12px 60px; /* 62px top clears mobile hamburger */
-  }
-
-  .pageHeader{
-    margin-bottom:18px;
-  }
-
+  .wrap{ padding:62px 12px 60px; }
+  .pageHeader{ margin-bottom:18px; }
   .pageHeader h1{ font-size:20px; }
-
-  .card{
-    padding:16px 14px;
-    border-radius:14px;
-    margin-bottom:14px;
-  }
-
+  .card{ padding:16px 14px; border-radius:14px; margin-bottom:14px; }
   .cardTitle{ font-size:13px; }
-
-  /* Ring card: compact horizontal layout */
-  .ringCard{
-    flex-direction:row;
-    gap:16px;
-    text-align:left;
-  }
-
-  .ringCard .ring{
-    width:80px;
-    height:80px;
-    margin:0;
-    flex-shrink:0;
-  }
-
+  .ringCard{ flex-direction:row; gap:16px; text-align:left; }
+  .ringCard .ring{ width:80px; height:80px; margin:0; flex-shrink:0; }
   .ringCard .scoreText{ font-size:18px; }
   .ringCard .scoreLabel{ font-size:10px; }
-
-  /* Report items: stack on very small screens */
-  .reportItem{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-    padding:12px 14px;
-  }
-
-  .reportLeft{
-    width:100%;
-  }
-
-  .downloadBtn{
-    width:100%;
-    text-align:center;
-    padding:9px 14px;
-  }
-
-  /* Score chip: slightly smaller */
-  .scoreChip{
-    width:38px;
-    height:38px;
-    font-size:12px;
-  }
-
+  .reportItem{ flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; }
+  .reportLeft{ width:100%; }
+  .downloadBtn{ width:100%; text-align:center; padding:9px 14px; }
+  .scoreChip{ width:38px; height:38px; font-size:12px; }
   .reportName{ font-size:12px; }
   .reportDate{ font-size:10px; }
-
-  /* Toast: full width at bottom */
-  .toast{
-    bottom:16px;
-    right:12px;
-    left:12px;
-    text-align:center;
-    transform:translateY(8px);
-  }
+  .toast{ bottom:16px; right:12px; left:12px; text-align:center; transform:translateY(8px); }
 }
-
-/* ============================= */
-/* RESPONSIVE — SMALL (≤400px)   */
-/* ============================= */
 
 @media(max-width:400px){
   .pageHeader h1{ font-size:18px; }
@@ -435,57 +228,67 @@ select:focus{
 
 <div class="wrap">
 
-  <!-- ── PAGE HEADER ── -->
   <div class="pageHeader">
     <h1>Tenant Reports</h1>
     <div class="sub">Generate and download professional tenant readiness dossiers</div>
   </div>
 
-  <!-- ── HERO: GENERATOR + SCORE ── -->
-  <div class="hero">
+  {% if is_premium %}
+
+    <!-- PREMIUM CONTENT -->
+    <div class="hero">
+
+      <div class="card">
+        <div class="cardTitle">Generate Tenant Dossier</div>
+        <div class="cardSub">Select an assessment to generate a full professional PDF report</div>
+
+        <div class="selectWrap">
+          <select id="assessmentSelect"></select>
+        </div>
+
+        <button class="genBtn" id="genBtn" onclick="generateReport()">
+          <span class="spinner" id="spinner"></span>
+          <span id="genLabel">Generate Tenant Dossier</span>
+        </button>
+      </div>
+
+      <div class="card ringCard">
+        <div class="ring" id="scoreRing">
+          <div class="scoreText" id="scoreText">—</div>
+        </div>
+        <div>
+          <div class="cardTitle">Assessment Score</div>
+          <div class="cardSub" style="margin-bottom:10px;">Preview for selected assessment</div>
+          <div class="scoreLabel">Readiness Score</div>
+          <div class="profileBadge" id="profileBadge">Select an assessment</div>
+        </div>
+      </div>
+
+    </div>
 
     <div class="card">
-      <div class="cardTitle">Generate Tenant Dossier</div>
-      <div class="cardSub">Select an assessment to generate a full professional PDF report</div>
-
-      <div class="selectWrap">
-        <select id="assessmentSelect"></select>
-      </div>
-
-      <button class="genBtn" id="genBtn" onclick="generateReport()">
-        <span class="spinner" id="spinner"></span>
-        <span id="genLabel">Generate Tenant Dossier</span>
-      </button>
+      <div class="cardTitle">Previous Reports</div>
+      <div class="cardSub">Download your previously generated tenant dossiers</div>
+      <div id="reportList" class="reportList"></div>
     </div>
 
-    <div class="card ringCard">
-      <div class="ring" id="scoreRing">
-        <div class="scoreText" id="scoreText">—</div>
-      </div>
-      <div>
-        <div class="cardTitle">Assessment Score</div>
-        <div class="cardSub" style="margin-bottom:10px;">Preview for selected assessment</div>
-        <div class="scoreLabel">Readiness Score</div>
-        <div class="profileBadge" id="profileBadge">Select an assessment</div>
-      </div>
+  {% else %}
+
+    <!-- NON-PREMIUM UPGRADE CARD -->
+    <div class="premium-card">
+      <h3>🔒 Premium Feature</h3>
+      <p>Tenant dossiers and PDF reports are available with a premium subscription.</p>
+      <a href="{% url 'create_checkout_session' %}" class="upgrade-btn">Upgrade to Premium</a>
     </div>
 
-  </div>
-
-  <!-- ── PREVIOUS REPORTS ── -->
-  <div class="card">
-    <div class="cardTitle">Previous Reports</div>
-    <div class="cardSub">Download your previously generated tenant dossiers</div>
-    <div id="reportList" class="reportList"></div>
-  </div>
+  {% endif %}
 
 </div>
 
 <div class="toast" id="toast"></div>
 
-
+{% if is_premium %}
 <script>
-
 function getCookie(name){
   let v=null;
   if(document.cookie){
@@ -500,9 +303,6 @@ function getCookie(name){
 const API_ASSESSMENTS = "/api/assessment/list/";
 const API_REPORTS     = "/list/";
 const API_GENERATE    = "/generate/";
-
-
-/* ── SCORE RING HELPERS ── */
 
 function scoreColor(score){
   if(score>=80) return "#28d17c";
@@ -522,79 +322,73 @@ function updateScoreRing(score){
   const col = scoreColor(score);
   const deg = (score/100)*360;
   const ring = document.getElementById("scoreRing");
-
   ring.style.background = `
     radial-gradient(circle,rgba(17,26,51,.95) 57%,transparent 58%),
     conic-gradient(${col} 0deg, ${col} ${deg}deg, rgba(255,255,255,.08) ${deg}deg)
   `;
-
-  document.getElementById("scoreText").innerText = score!=null ? score+"%" : "—";
+  document.getElementById("scoreText").innerText    = score!=null ? score+"%" : "—";
   document.getElementById("profileBadge").innerText = score!=null ? scoreProfile(score) : "Select an assessment";
 }
-
-
-/* ── LOAD ASSESSMENTS ── */
 
 async function loadAssessments(){
   let res  = await fetch(API_ASSESSMENTS);
   let data = await res.json();
   let sel  = document.getElementById("assessmentSelect");
-
   sel.innerHTML = "";
-
   if(!data.length){
     sel.innerHTML = '<option value="">No assessments found</option>';
     return;
   }
-
   data.forEach(a=>{
     let opt  = document.createElement("option");
     let date = a.created_at.slice(0,10);
-    let sc   = a.readiness_score!=null ? ` · ${a.readiness_score}%` : "";
-    opt.value   = a.id;
-    opt.textContent = `${a.full_name} — ${date}${sc}`;
+    opt.value = a.id;
+    opt.dataset.name = a.full_name || "Assessment";
+    opt.dataset.date = date;
+    opt.textContent = `${a.full_name} — ${date}`;
     sel.appendChild(opt);
   });
-
   sel.value = data[0].id;
   loadAssessmentScore();
 }
 
-
-/* ── SCORE PREVIEW ON SELECT ── */
-
 document.getElementById("assessmentSelect").addEventListener("change", loadAssessmentScore);
 
 async function loadAssessmentScore(){
-  let id = document.getElementById("assessmentSelect").value;
+  const sel = document.getElementById("assessmentSelect");
+  const id  = sel.value;
   if(!id) return;
-  let res  = await fetch("/api/assessment/"+id+"/");
-  let data = await res.json();
-  updateScoreRing(data.readiness_score);
+  try{
+    const res  = await fetch(`/tasks/${id}/`, { credentials: "same-origin" });
+    if(!res.ok) return;
+    const data = await res.json();
+    const finalScore = data.final_score;
+    if(finalScore == null) return;
+    updateScoreRing(finalScore);
+    const opt = sel.options[sel.selectedIndex];
+    if(opt){
+      const name = opt.dataset.name || opt.textContent.split(" — ")[0];
+      const date = opt.dataset.date || "";
+      opt.textContent = `${name} — ${date} · ${finalScore}%`;
+    }
+  } catch(e){ /* silent */ }
 }
 
-
-/* ── LOAD REPORT LIST ── */
-
 async function loadReports(){
-  let res     = await fetch(API_REPORTS);
-  let reports = await res.json();
+  let res       = await fetch(API_REPORTS);
+  let reports   = await res.json();
   let container = document.getElementById("reportList");
-
   container.innerHTML = "";
-
   if(!reports.length){
     container.innerHTML = `<div class="emptyState">No reports generated yet</div>`;
     return;
   }
-
   reports.forEach(r=>{
-    let name   = r.assessment_name || "Assessment";
-    let aDate  = r.assessment_date ? r.assessment_date.slice(0,10) : "";
-    let rDate  = r.created_at.slice(0,10);
-    let score  = r.score!=null ? r.score : null;
-    let col    = score!=null ? scoreColor(score) : "var(--muted)";
-
+    let name  = r.assessment_name || "Assessment";
+    let aDate = r.assessment_date ? r.assessment_date.slice(0,10) : "";
+    let rDate = r.created_at.slice(0,10);
+    let score = r.score!=null ? r.score : null;
+    let col   = score!=null ? scoreColor(score) : "var(--muted)";
     container.innerHTML += `
       <div class="reportItem">
         <div class="reportLeft">
@@ -615,33 +409,26 @@ async function loadReports(){
   });
 }
 
-
-/* ── GENERATE REPORT ── */
-
 async function generateReport(){
   let id = document.getElementById("assessmentSelect").value;
   if(!id) return;
-
-  let btn    = document.getElementById("genBtn");
-  let spin   = document.getElementById("spinner");
-  let label  = document.getElementById("genLabel");
+  let btn   = document.getElementById("genBtn");
+  let spin  = document.getElementById("spinner");
+  let label = document.getElementById("genLabel");
   btn.classList.add("loading");
   spin.style.display = "block";
   label.textContent  = "Generating…";
   btn.disabled = true;
-
   try{
     let res  = await fetch(API_GENERATE+id+"/",{
       method:"POST",
       headers:{"X-CSRFToken":getCookie("csrftoken")}
     });
     let data = await res.json();
-
     updateScoreRing(data.score);
     loadReports();
     window.open(data.pdf);
     showToast("Dossier generated successfully!");
-
   }catch(e){
     showToast("Error generating report. Please try again.");
   }finally{
@@ -652,15 +439,9 @@ async function generateReport(){
   }
 }
 
-
-/* ── DOWNLOAD ── */
-
 function downloadReport(url){
   if(url) window.open(url);
 }
-
-
-/* ── TOAST ── */
 
 function showToast(msg){
   let t = document.getElementById("toast");
@@ -669,10 +450,9 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove("show"), 3200);
 }
 
-
 loadAssessments();
 loadReports();
-
 </script>
+{% endif %}
 
 {% endblock content %}
