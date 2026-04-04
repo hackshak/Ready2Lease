@@ -64,6 +64,16 @@ body{
 .card h2{margin:0 0 15px;font-size:15px;font-weight:600;}
 
 /* ============================= */
+/* LOADING & EMPTY STATES        */
+/* ============================= */
+
+.loading, .empty-message{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+}
+
+/* ============================= */
 /* SCORE                         */
 /* ============================= */
 
@@ -248,7 +258,6 @@ body{
 
   .card h2{font-size:14px;margin-bottom:10px;}
 
-  /* Score ring: shrink on mobile */
   .score-ring{
     width:88px;
     height:88px;
@@ -258,7 +267,6 @@ body{
 
   .score-wrap{gap:16px;}
 
-  /* Bar rows: stack label above bar on mobile */
   .bar-row{
     grid-template-columns:1fr 40px;
     grid-template-rows:auto auto;
@@ -282,7 +290,6 @@ body{
     text-align:right;
   }
 
-  /* KPI grid: single column */
   .kpi-grid{
     grid-template-columns:1fr 1fr;
     gap:10px;
@@ -301,10 +308,6 @@ body{
   }
 }
 
-/* ============================= */
-/* RESPONSIVE — SMALL (≤400px)   */
-/* ============================= */
-
 @media(max-width:400px){
   .kpi-grid{grid-template-columns:1fr;}
 }
@@ -319,7 +322,9 @@ body{
     </button>
     <div class="mob-history-panel" id="mobHistoryPanel">
       <h2 style="margin:0 0 4px;font-size:15px;font-weight:600;">Previous Assessments</h2>
-      <div id="assessmentListMob"></div>
+      <div id="assessmentListMob">
+        <div class="loading">Loading assessments...</div>
+      </div>
     </div>
 
     <div class="card">
@@ -359,63 +364,87 @@ body{
   <!-- Desktop: right sidebar -->
   <div class="right">
     <h2>Previous Assessments</h2>
-    <div id="assessmentList"></div>
+    <div id="assessmentList">
+      <div class="loading">Loading assessments...</div>
+    </div>
   </div>
 </div>
 
 <script>
+const USER_IS_PREMIUM = {{ is_premium|yesno:"true,false" }};
+
+// If not premium, show upgrade message and prevent API calls
+if (!USER_IS_PREMIUM) {
+  const wrapper = document.getElementById('mainWrapper');
+  if (wrapper) {
+    wrapper.innerHTML = `
+      <div class="card" style="text-align:center; padding:40px; max-width:600px; margin:40px auto;">
+        <h2>🔒 Premium Feature</h2>
+        <p style="color: var(--muted); margin:15px 0;">Detailed analysis is available only to premium users.</p>
+        <a href="{% url 'create_checkout_session' %}" class="upgrade-btn" style="display:inline-block; background:linear-gradient(135deg,#6c7dff,#8b5cf6); padding:10px 24px; border-radius:40px; color:white; text-decoration:none;">Upgrade Now</a>
+      </div>
+    `;
+  }
+  throw new Error("Premium required"); // Stop script execution
+}
+
 function $(id){return document.getElementById(id);}
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-let scoreInterval=null;
-let currentController=null;
-let hasLoadedInitial=false;
+let scoreInterval = null;
+let currentController = null;
+let allAssessments = [];
 
 /* Mobile history panel toggle */
 function toggleMobHistory(){
-  const panel=document.getElementById("mobHistoryPanel");
-  const arrow=document.getElementById("mobToggleArrow");
-  const isOpen=panel.classList.toggle("open");
-  arrow.textContent=isOpen?"▲":"▼";
+  const panel = document.getElementById("mobHistoryPanel");
+  const arrow = document.getElementById("mobToggleArrow");
+  const isOpen = panel.classList.toggle("open");
+  arrow.textContent = isOpen ? "▲" : "▼";
 }
 
 /* Animate Score */
 function animateScore(newScore){
   if(scoreInterval) clearInterval(scoreInterval);
-
-  const el=$("scoreValue");
-  el.textContent="0%";
-
-  let current=0;
-  const step=Math.max(1,Math.ceil(newScore/25));
-
-  scoreInterval=setInterval(()=>{
-    current+=step;
-    if(current>=newScore){
-      current=newScore;
+  const el = $("scoreValue");
+  el.textContent = "0%";
+  let current = 0;
+  const step = Math.max(1, Math.ceil(newScore / 25));
+  scoreInterval = setInterval(()=>{
+    current += step;
+    if(current >= newScore){
+      current = newScore;
       clearInterval(scoreInterval);
     }
-    el.textContent=current + "%";
-  },15);
+    el.textContent = current + "%";
+  }, 15);
 }
 
 /* Render assessment items into a given container */
-function renderAssessmentItems(containerId, assessments){
-  const list=$(containerId);
-  list.innerHTML="";
+function renderAssessmentItems(containerId, assessments, activeId = null){
+  const list = $(containerId);
+  if(!list) return;
+  list.innerHTML = "";
 
-  assessments.forEach(a=>{
-    const div=document.createElement("div");
-    div.className="assessment-item";
-    div.dataset.id=a.id;
+  if(!assessments || assessments.length === 0){
+    list.innerHTML = '<div class="empty-message">No previous assessments found.</div>';
+    return;
+  }
 
-    div.innerHTML=`
+  assessments.forEach(a => {
+    const div = document.createElement("div");
+    div.className = "assessment-item";
+    if(activeId && a.id === activeId) div.classList.add("active");
+    div.dataset.id = a.id;
+
+    div.innerHTML = `
       <strong>Score: ${a.score}%</strong>
       <div style="font-size:12px;color:#9fb0ff">${a.created_at}</div>
       <button type="button">Detailed Analysis</button>
     `;
 
-    div.querySelector("button").addEventListener("click",()=>{
+    div.querySelector("button").addEventListener("click", (e) => {
+      e.stopPropagation();
       loadDetailed(a.id);
     });
 
@@ -423,142 +452,147 @@ function renderAssessmentItems(containerId, assessments){
   });
 }
 
-/* Load All Assessments */
+/* Load All Assessments from list endpoint */
 async function loadAssessments(){
+  try{
+    const res = await fetch("/api/calculate-detailed-analysis/", {
+      credentials: "same-origin"
+    });
+    if(!res.ok) throw new Error("Failed to load assessments");
+    const data = await res.json();
+    allAssessments = data.assessments || [];
 
-  const res=await fetch("/api/detailed-readiness/",{
-    credentials:"same-origin"
-  });
+    // Sort by date descending (already done by API)
+    // Render empty state if none
+    if(allAssessments.length === 0){
+      renderAssessmentItems("assessmentList", []);
+      renderAssessmentItems("assessmentListMob", []);
+      // Show empty state in main content
+      $("breakdownList").innerHTML = '<div class="empty-message">Complete your first assessment to see detailed analysis.</div>';
+      $("gapsList").innerHTML = '';
+      $("recommendationsList").innerHTML = '';
+      $("scoreValue").textContent = "—";
+      return;
+    }
 
-  const data=await res.json();
+    // Render sidebars
+    renderAssessmentItems("assessmentList", allAssessments);
+    renderAssessmentItems("assessmentListMob", allAssessments);
 
-  /* Render into both desktop sidebar and mobile panel */
-  renderAssessmentItems("assessmentList", data.previous_assessments);
-  renderAssessmentItems("assessmentListMob", data.previous_assessments);
-
-  if(!hasLoadedInitial){
-    hasLoadedInitial=true;
-    loadDetailed(data.previous_assessments[0].id);
+    // Load the most recent assessment
+    const latest = allAssessments[0];
+    loadDetailed(latest.id);
+  } catch(err){
+    console.error("loadAssessments error:", err);
+    $("assessmentList").innerHTML = '<div class="empty-message">Error loading assessments. Please refresh.</div>';
+    $("assessmentListMob").innerHTML = '<div class="empty-message">Error loading assessments.</div>';
   }
 }
 
 /* Mark active item in both lists */
 function setActiveItems(id){
   document.querySelectorAll(".assessment-item")
-    .forEach(el=>{
-      el.classList.toggle("active",Number(el.dataset.id)===Number(id));
+    .forEach(el => {
+      const elId = Number(el.dataset.id);
+      if(elId === id) el.classList.add("active");
+      else el.classList.remove("active");
     });
 }
 
-/* Load Single Assessment */
+/* Load Single Assessment Details */
 async function loadDetailed(id){
-
   setActiveItems(id);
+  // Show loading state in detail cards
+  $("breakdownList").innerHTML = '<div class="loading">Loading analysis...</div>';
+  $("gapsList").innerHTML = '';
+  $("recommendationsList").innerHTML = '';
 
-  const res=await fetch(`/api/detailed-readiness/?assessment_id=${id}`,{
-    credentials:"same-origin"
-  });
-
-  const data=await res.json();
-  const score=data.score ?? 0;
-
-  animateScore(score);
-
-  /* Hide gap + recommendations if score 100 */
-  if(score===100){
-    $("gapCard").style.display="none";
-    $("recommendationCard").style.display="none";
-  }else{
-    $("gapCard").style.display="block";
-    $("recommendationCard").style.display="block";
-  }
-
-  const deg=Math.round(score/100*360);
-  const color=
-    score>=80?"var(--good)":
-    score>=55?"var(--mid)":
-    "var(--bad)";
-
-  $("scoreRing").style.background=
-    `radial-gradient(circle,#121c36 60%,transparent 61%),
-     conic-gradient(${color} 0deg,${color} ${deg}deg,rgba(255,255,255,.08) ${deg}deg)`;
-
-  $("riskLevel").textContent=data.risk_level ?? "—";
-
-  $("lastAssessment").textContent=
-    data.last_assessment
-      ? new Date(data.last_assessment).toLocaleDateString()
-      : "—";
-
-  if(data.score_prev !== undefined){
-    const diff=score-data.score_prev;
-    $("scoreTrend").textContent=
-      diff>0?`+${diff}`:diff;
-  } else {
-    $("scoreTrend").textContent="—";
-  }
-
-  $("incomeRent").textContent=
-    data.income_weekly && data.target_rent_weekly
-      ? (data.income_weekly/data.target_rent_weekly).toFixed(2)
-      : "—";
-
-  $("statusText").textContent=
-    score>=80?"Strong Approval Odds":
-    score>=55?"Moderate Competitiveness":
-    "High Risk";
-
-  /* Breakdown */
-  const br=$("breakdownList");
-  br.innerHTML="";
-  data.breakdown?.forEach(cat=>{
-    const row=document.createElement("div");
-    row.className="bar-row";
-    row.innerHTML=`
-      <div>${cat.key.replace(/_/g," ")}</div>
-      <div class="bar-track"><div class="bar-fill"></div></div>
-      <div>${cat.value}%</div>
-    `;
-    br.appendChild(row);
-
-    requestAnimationFrame(()=>{
-      row.querySelector(".bar-fill").style.width=
-        clamp(cat.value,0,100)+"%";
+  try{
+    const res = await fetch(`/api/detailed-readiness/?assessment_id=${id}`, {
+      credentials: "same-origin"
     });
-  });
+    if(!res.ok) throw new Error("Failed to load assessment details");
+    const data = await res.json();
+    const score = data.score ?? 0;
 
-  /* Gaps */
-  const gaps=$("gapsList");
-  gaps.innerHTML="";
-  Object.entries(data.gaps || {}).forEach(([k,v])=>{
-    const div=document.createElement("div");
-    div.className="item-box";
-    div.innerHTML=`
-      <strong>${k.replace(/_/g," ")}</strong>
-      <p style="color:#9fb0ff;font-size:13px">${v}</p>
-    `;
-    gaps.appendChild(div);
-  });
+    animateScore(score);
 
-  /* Recommendations */
-  const rec=$("recommendationsList");
-  rec.innerHTML="";
-  data.recommendations?.forEach(r=>{
-    const div=document.createElement("div");
-    div.className="item-box";
-    div.innerHTML=`
-      <strong>${r.category.replace(/_/g," ")}</strong>
-      <p style="color:#9fb0ff;font-size:13px">${r.suggestion}</p>
-      <span class="priority ${r.priority}">
-        ${r.priority.toUpperCase()}
-      </span>
-    `;
-    rec.appendChild(div);
-  });
+    /* Hide gap + recommendations if score 100 */
+    if(score === 100){
+      $("gapCard").style.display = "none";
+      $("recommendationCard").style.display = "none";
+    } else {
+      $("gapCard").style.display = "block";
+      $("recommendationCard").style.display = "block";
+    }
 
+    const deg = Math.round(score/100 * 360);
+    const color = score >= 80 ? "var(--good)" : (score >= 55 ? "var(--mid)" : "var(--bad)");
+    $("scoreRing").style.background =
+      `radial-gradient(circle,#121c36 60%,transparent 61%),
+       conic-gradient(${color} 0deg,${color} ${deg}deg,rgba(255,255,255,.08) ${deg}deg)`;
+
+    $("riskLevel").textContent = data.risk_level ?? "—";
+    $("lastAssessment").textContent = data.last_assessment ? new Date(data.last_assessment).toLocaleDateString() : "—";
+
+    if(data.score_prev !== undefined){
+      const diff = score - data.score_prev;
+      $("scoreTrend").textContent = diff > 0 ? `+${diff}` : diff;
+    } else {
+      $("scoreTrend").textContent = "—";
+    }
+
+    $("incomeRent").textContent = (data.income_weekly && data.target_rent_weekly) ? (data.income_weekly / data.target_rent_weekly).toFixed(2) : "—";
+    $("statusText").textContent = score >= 80 ? "Strong Approval Odds" : (score >= 55 ? "Moderate Competitiveness" : "High Risk");
+
+    /* Breakdown bars */
+    const br = $("breakdownList");
+    br.innerHTML = "";
+    (data.breakdown || []).forEach(cat => {
+      const row = document.createElement("div");
+      row.className = "bar-row";
+      row.innerHTML = `
+        <div>${cat.key.replace(/_/g, " ")}</div>
+        <div class="bar-track"><div class="bar-fill"></div></div>
+        <div>${cat.value}%</div>
+      `;
+      br.appendChild(row);
+      requestAnimationFrame(() => {
+        row.querySelector(".bar-fill").style.width = clamp(cat.value, 0, 100) + "%";
+      });
+    });
+
+    /* Gaps */
+    const gapsDiv = $("gapsList");
+    gapsDiv.innerHTML = "";
+    Object.entries(data.gaps || {}).forEach(([k, v]) => {
+      const div = document.createElement("div");
+      div.className = "item-box";
+      div.innerHTML = `<strong>${k.replace(/_/g, " ")}</strong><p style="color:#9fb0ff;font-size:13px">${v}</p>`;
+      gapsDiv.appendChild(div);
+    });
+
+    /* Recommendations */
+    const recDiv = $("recommendationsList");
+    recDiv.innerHTML = "";
+    (data.recommendations || []).forEach(r => {
+      const div = document.createElement("div");
+      div.className = "item-box";
+      div.innerHTML = `
+        <strong>${r.category.replace(/_/g, " ")}</strong>
+        <p style="color:#9fb0ff;font-size:13px">${r.suggestion}</p>
+        <span class="priority ${r.priority}">${r.priority.toUpperCase()}</span>
+      `;
+      recDiv.appendChild(div);
+    });
+
+  } catch(err){
+    console.error("loadDetailed error:", err);
+    $("breakdownList").innerHTML = '<div class="empty-message">Failed to load analysis. Please try again.</div>';
+  }
 }
 
-document.addEventListener("DOMContentLoaded",loadAssessments);
+document.addEventListener("DOMContentLoaded", loadAssessments);
 </script>
 
 {% endblock %}

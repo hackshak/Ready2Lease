@@ -11,7 +11,6 @@ def normalize_income_to_annual(income, period):
     return income
 
 
-
 def parse_months_in_role(time_in_role: str) -> int:
     try:
         parts = (time_in_role or "").split()
@@ -23,10 +22,8 @@ def parse_months_in_role(time_in_role: str) -> int:
         if "week" in unit:
             return max(1, number // 4)
         return number
-
     except (ValueError, IndexError, TypeError):
         return 0
-
 
 
 def risk_from_score(score: int) -> str:
@@ -40,198 +37,186 @@ def risk_from_score(score: int) -> str:
 def build_detailed_breakdown(a):
     categories = []
 
-    # -------------------------
     # Income strength
-    # -------------------------
-    landlord = [
+    landlord_income = [
         "Consistent income that covers rent comfortably",
         "Rent typically ≤ 30–35% of income",
         "Clear proof of income (payslips/bank statements)"
     ]
-    why = []
+    why_income = []
 
     annual_income = normalize_income_to_annual(a.household_income, a.household_income_period)
     monthly_income = (annual_income / 12) if annual_income else 0
     monthly_rent = float(a.monthly_rent_budget or 0)
 
     if annual_income <= 0:
-        score = 10
-        explanation = "Income is missing or invalid, so affordability can’t be verified."
-        why.append("Household income not provided.")
+        score_income = 10
+        explanation_income = "Income is missing or invalid, so affordability can’t be verified."
+        why_income.append("Household income not provided.")
     elif monthly_rent <= 0:
-        score = 20
-        explanation = "Your rent target is missing, so affordability can’t be assessed."
-        why.append("Monthly rent budget not provided.")
+        score_income = 20
+        explanation_income = "Your rent target is missing, so affordability can’t be assessed."
+        why_income.append("Monthly rent budget not provided.")
     else:
         rent_ratio = monthly_rent / monthly_income if monthly_income else 1
         pct = int(rent_ratio * 100)
 
         if rent_ratio <= 0.30:
-            score = 85
-            why.append(f"Rent is ~{pct}% of income (strong).")
+            score_income = 85
+            why_income.append(f"Rent is ~{pct}% of income (strong).")
         elif rent_ratio <= 0.35:
-            score = 70
-            why.append(f"Rent is ~{pct}% of income (acceptable).")
+            score_income = 70
+            why_income.append(f"Rent is ~{pct}% of income (acceptable).")
         elif rent_ratio <= 0.45:
-            score = 50
-            why.append(f"Rent is ~{pct}% of income (tight).")
+            score_income = 50
+            why_income.append(f"Rent is ~{pct}% of income (tight).")
         else:
-            score = 30
-            why.append(f"Rent is ~{pct}% of income (high risk).")
+            score_income = 30
+            why_income.append(f"Rent is ~{pct}% of income (high risk).")
 
-        explanation = "Income strength is mainly based on rent affordability relative to your household income."
+        explanation_income = "Income strength is mainly based on rent affordability relative to your household income."
 
     categories.append({
         "category": "income_strength",
-        "score": score,
-        "risk_level": risk_from_score(score),
-        "explanation": explanation,
-        "why_risk": why,
-        "landlords_look_for": landlord
+        "score": score_income,
+        "risk_level": risk_from_score(score_income),
+        "explanation": explanation_income,
+        "why_risk": why_income,
+        "landlords_look_for": landlord_income
     })
 
-    # -------------------------
     # Employment stability
-    # -------------------------
-    landlord = [
+    landlord_emp = [
         "Stable employment type (full-time tends to score highest)",
         "Longer tenure reduces perceived risk",
         "Verifiable details (employer + payslips)"
     ]
-    why = []
+    why_emp = []
 
     emp = (a.employment_status or "").lower()
     months = parse_months_in_role(a.time_in_role)
 
     if emp == "full_time":
-        score = 80
-        why.append("Full-time employment.")
+        score_emp = 80
+        why_emp.append("Full-time employment.")
     elif emp == "self_employed":
-        score = 65
-        why.append("Self-employed (often requires stronger documentation).")
+        score_emp = 65
+        why_emp.append("Self-employed (often requires stronger documentation).")
     elif emp:
-        score = 45
-        why.append(f"Employment is {emp.replace('_',' ')} (less stable).")
+        score_emp = 45
+        why_emp.append(f"Employment is {emp.replace('_',' ')} (less stable).")
     else:
-        score = 20
-        why.append("Employment status missing.")
+        score_emp = 20
+        why_emp.append("Employment status missing.")
 
     if months >= 12:
-        score += 15
-        why.append("Tenure 12+ months.")
+        score_emp += 15
+        why_emp.append("Tenure 12+ months.")
     elif 6 <= months < 12:
-        score += 8
-        why.append("Tenure 6–11 months.")
+        score_emp += 8
+        why_emp.append("Tenure 6–11 months.")
     elif 1 <= months < 6:
-        score += 3
-        why.append("Tenure under 6 months.")
+        score_emp += 3
+        why_emp.append("Tenure under 6 months.")
     else:
-        why.append("Time in role missing or invalid.")
+        why_emp.append("Time in role missing or invalid.")
 
-    score = max(0, min(score, 100))
-    explanation = "Employment stability is based on employment type and how long you’ve been in your role."
+    score_emp = max(0, min(score_emp, 100))
+    explanation_emp = "Employment stability is based on employment type and how long you’ve been in your role."
 
     categories.append({
         "category": "employment_stability",
-        "score": score,
-        "risk_level": risk_from_score(score),
-        "explanation": explanation,
-        "why_risk": why,
-        "landlords_look_for": landlord
+        "score": score_emp,
+        "risk_level": risk_from_score(score_emp),
+        "explanation": explanation_emp,
+        "why_risk": why_emp,
+        "landlords_look_for": landlord_emp
     })
 
-    # -------------------------
     # Rental history
-    # -------------------------
-    landlord = [
+    landlord_rental = [
         "Previous rentals with positive references",
         "No arrears/eviction history",
         "Consistency and reliability"
     ]
-    why = []
+    why_rental = []
 
     rh = (a.rental_history or "").lower()
     if rh == "rented_locally":
-        score = 80
-        why.append("Rented locally (strong reference signal).")
-        explanation = "Local rental history usually provides verifiable references."
+        score_rental = 80
+        why_rental.append("Rented locally (strong reference signal).")
+        explanation_rental = "Local rental history usually provides verifiable references."
     elif rh == "owned_home":
-        score = 75
-        why.append("Previously owned a home (stability signal).")
-        explanation = "Ownership can signal stability, though rental references may be different."
+        score_rental = 75
+        why_rental.append("Previously owned a home (stability signal).")
+        explanation_rental = "Ownership can signal stability, though rental references may be different."
     elif rh:
-        score = 45
-        why.append("Limited/non-standard rental history.")
-        explanation = "Limited rental history can reduce reference strength."
+        score_rental = 45
+        why_rental.append("Limited/non-standard rental history.")
+        explanation_rental = "Limited rental history can reduce reference strength."
     else:
-        score = 30
-        why.append("Rental history missing.")
-        explanation = "Landlords typically want a clear rental track record or strong substitutes."
+        score_rental = 30
+        why_rental.append("Rental history missing.")
+        explanation_rental = "Landlords typically want a clear rental track record or strong substitutes."
 
-    # optional: context issues can reduce confidence
     if a.context_issues:
-        score = max(0, score - 10)
-        why.append("Context/history issues reported.")
+        score_rental = max(0, score_rental - 10)
+        why_rental.append("Context/history issues reported.")
 
     categories.append({
         "category": "rental_history",
-        "score": score,
-        "risk_level": risk_from_score(score),
-        "explanation": explanation,
-        "why_risk": why,
-        "landlords_look_for": landlord
+        "score": score_rental,
+        "risk_level": risk_from_score(score_rental),
+        "explanation": explanation_rental,
+        "why_risk": why_rental,
+        "landlords_look_for": landlord_rental
     })
 
-    # -------------------------
     # Documentation readiness
-    # -------------------------
-    landlord = [
+    landlord_docs = [
         "Proof of income (payslips/bank statements)",
         "ID documents",
         "References (landlord/employer)",
         "Fast, complete submission"
     ]
-    why = []
+    why_docs = []
 
     docs = a.documents if isinstance(a.documents, list) else []
     num_docs = len(docs)
 
-    # 0–80 from docs count
-    score = min(num_docs * 20, 80)
+    score_docs = min(num_docs * 20, 80)
     if num_docs >= 3:
-        why.append(f"{num_docs} documents selected (good).")
-        explanation = "Having key documents ready improves speed and credibility."
+        why_docs.append(f"{num_docs} documents selected (good).")
+        explanation_docs = "Having key documents ready improves speed and credibility."
     else:
-        why.append(f"Only {num_docs} documents selected (missing items).")
-        explanation = "Missing documents can slow approval or lower confidence."
+        why_docs.append(f"Only {num_docs} documents selected (missing items).")
+        explanation_docs = "Missing documents can slow approval or lower confidence."
 
     poi = (a.proof_of_income or "").lower()
     if poi and poi != "none":
-        score += 20
-        why.append("Proof of income selected.")
+        score_docs += 20
+        why_docs.append("Proof of income selected.")
     else:
-        why.append("No proof of income selected.")
+        why_docs.append("No proof of income selected.")
 
-    score = max(0, min(score, 100))
+    score_docs = max(0, min(score_docs, 100))
 
     categories.append({
         "category": "documentation_readiness",
-        "score": score,
-        "risk_level": risk_from_score(score),
-        "explanation": explanation,
-        "why_risk": why,
-        "landlords_look_for": landlord
+        "score": score_docs,
+        "risk_level": risk_from_score(score_docs),
+        "explanation": explanation_docs,
+        "why_risk": why_docs,
+        "landlords_look_for": landlord_docs
     })
 
-    # -------------------------
     # Overall competitiveness (weighted)
-    # -------------------------
-    landlord = [
+    landlord_overall = [
         "Affordability + stability + references",
         "Complete application with minimal friction",
         "Low perceived risk vs other applicants"
     ]
-    why = []
+    why_overall = []
 
     income_score = categories[0]["score"]
     emp_score = categories[1]["score"]
@@ -245,9 +230,9 @@ def build_detailed_breakdown(a):
     }
     median_rent = suburb_median_rent.get(a.suburb or "", 2500)
     location_score = 70 if float(a.monthly_rent_budget or 0) <= median_rent else 40
-    why.append("Target rent compared to typical rent in your chosen suburb.")
+    why_overall.append("Target rent compared to typical rent in your chosen suburb.")
 
-    score = round(
+    score_overall = round(
         income_score * 0.30 +
         emp_score * 0.25 +
         rental_score * 0.20 +
@@ -255,26 +240,22 @@ def build_detailed_breakdown(a):
         location_score * 0.10
     )
 
-    if score >= 70:
-        why.append("Overall signals are competitive for typical screening.")
-    elif score >= 40:
-        why.append("Moderately competitive—fixing 1–2 gaps can improve outcomes.")
+    if score_overall >= 70:
+        why_overall.append("Overall signals are competitive for typical screening.")
+    elif score_overall >= 40:
+        why_overall.append("Moderately competitive—fixing 1–2 gaps can improve outcomes.")
     else:
-        why.append("Less competitive—address key gaps before applying widely.")
+        why_overall.append("Less competitive—address key gaps before applying widely.")
 
-    explanation = "Competitiveness estimates how strong your application looks against typical landlord screening expectations."
+    explanation_overall = "Competitiveness estimates how strong your application looks against typical landlord screening expectations."
 
     categories.append({
         "category": "overall_competitiveness",
-        "score": score,
-        "risk_level": risk_from_score(score),
-        "explanation": explanation,
-        "why_risk": why,
-        "landlords_look_for": landlord
+        "score": score_overall,
+        "risk_level": risk_from_score(score_overall),
+        "explanation": explanation_overall,
+        "why_risk": why_overall,
+        "landlords_look_for": landlord_overall
     })
 
     return categories
-
-
-
-

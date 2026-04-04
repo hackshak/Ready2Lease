@@ -32,19 +32,16 @@ DOCUMENTS_CHOICES = [
 
 
 class Assessment(models.Model):
-    # ✅ Allows both anonymous + authenticated
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True, blank=True,
         on_delete=models.SET_NULL,
         related_name="assessments"
     )
-
-    # ✅ used for anonymous persistence + upgrade linking
     session_key = models.CharField(max_length=100, db_index=True)
 
     full_name = models.CharField(max_length=255, blank=True)
-    postcode = models.CharField(max_length=20, blank=True, null=True)   # ✅ keep only ONE postcode field
+    postcode = models.CharField(max_length=20, blank=True, null=True)
     suburb = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
 
@@ -72,7 +69,7 @@ class Assessment(models.Model):
         blank=True
     )
 
-    documents = models.JSONField(default=list, blank=True)  # expects list like ["passport","bank_statement"]
+    documents = models.JSONField(default=list, blank=True)
     proof_of_income = models.CharField(max_length=20, choices=PROOF_OF_INCOME_CHOICES, blank=True)
 
     moving_with_adults = models.PositiveIntegerField(null=True, blank=True)
@@ -81,7 +78,6 @@ class Assessment(models.Model):
 
     context_issues = models.TextField(blank=True)
 
-    # computed
     readiness_score = models.IntegerField(null=True, blank=True)
     risk_level = models.CharField(max_length=20, blank=True)
     strengths = models.JSONField(default=list, blank=True)
@@ -89,10 +85,8 @@ class Assessment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-
     gap_analysis = models.JSONField(default=dict, blank=True)
     recommendations = models.JSONField(default=list, blank=True)
-    
 
     def __str__(self):
         who = self.full_name or (self.user.email if self.user else "Anonymous")

@@ -5,6 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* (same as original – no changes needed) */
 :root{
   --bg:#0b1020;
   --panel:#111a33;
@@ -361,7 +362,6 @@ select:focus{
 </div>
 
 <script>
-
 const USER_IS_PREMIUM = {{ is_premium|yesno:"true,false" }};
 
 function $(id){return document.getElementById(id);}
@@ -377,7 +377,6 @@ function formatDate(dateString){
 }
 
 async function loadAssessment(id=null){
-
   if(isLoading) return;
   isLoading=true;
 
@@ -399,7 +398,6 @@ async function loadAssessment(id=null){
 }
 
 function renderRadarChart(breakdown){
-
   if(!breakdown || breakdown.length===0) return;
 
   const labels = breakdown.map(b=>b.key.replaceAll("_"," "));
@@ -439,11 +437,9 @@ function renderRadarChart(breakdown){
       plugins:{legend:{display:false}}
     }
   });
-
 }
 
 function render(data){
-
   // Reset UI
   $("nextActionCard").innerHTML = `
     <h2>🔥 Next Best Actions</h2>
@@ -474,18 +470,14 @@ function render(data){
   $("competRank").textContent="Top "+data.competitiveness_percentile+"%";
 
   if(score===100){
-
     $("nextActionCard").innerHTML=`
       <div class="successCard">
         <h2>🎉 Perfect Readiness Score</h2>
         <div class="sub">Your rental application profile is fully optimized.</div>
       </div>
     `;
-
     $("premiumSections").style.display="none";
-
   }else{
-
     if(data.next_best_action){
       data.next_best_action.forEach(a=>{
         $("nextActionContent").innerHTML +=
@@ -494,7 +486,6 @@ function render(data){
     }
 
     if(data.is_premium){
-
       $("postcodeVal").textContent=data.postcode;
       $("avgRent").textContent=formatAUD(data.avg_rent_weekly);
       $("targetRent").textContent=formatAUD(data.target_rent_weekly);
@@ -524,7 +515,6 @@ function render(data){
         div.innerHTML="<b>"+s.title+"</b><br>"+s.desc;
         $("stepsList").appendChild(div);
       });
-
     }
   }
 
@@ -532,31 +522,23 @@ function render(data){
 }
 
 function populateAssessmentDropdown(list,activeId){
-
   const select=$("assessmentSelect");
-
   if(select.options.length !== list.length){
-
     select.innerHTML="";
-
     list.forEach(a=>{
       const opt=document.createElement("option");
       opt.value=a.id;
       opt.textContent=formatDate(a.created_at)+" • "+a.score+"% Ready";
       select.appendChild(opt);
     });
-
     select.addEventListener("change",function(){
       loadAssessment(this.value);
     });
-
   }
-
   select.value=activeId;
 }
 
 document.addEventListener("DOMContentLoaded",()=>loadAssessment());
-
 </script>
 
 {% endblock %}

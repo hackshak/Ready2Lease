@@ -30,12 +30,15 @@
   justify-content:space-between;
   align-items:center;
   margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:15px;
 }
 
 .topbar h2{
   color:white;
   font-size:22px;
   font-weight:600;
+  margin:0;
 }
 
 .generate-btn{
@@ -48,6 +51,7 @@
   cursor:pointer;
   box-shadow:0 10px 25px rgba(108,125,255,.35);
   transition:.25s;
+  white-space:nowrap;
 }
 
 .generate-btn:hover{
@@ -164,21 +168,40 @@
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.75);
+  background:rgba(0,0,0,.85);
   display:none;
   align-items:center;
   justify-content:center;
   z-index:1000;
-  backdrop-filter:blur(4px);
+  backdrop-filter:blur(6px);
+  padding:20px;
+  overflow-y:auto;  /* allows scrolling of the modal overlay if needed */
 }
 
 .modal-content{
   background:var(--panel2);
-  width:820px;
+  width:100%;
+  max-width:860px;
+  max-height:90vh;           /* prevent overflow beyond viewport */
   padding:28px;
   border-radius:var(--radius);
   border:1px solid var(--border);
   box-shadow:var(--shadow);
+  overflow-y:auto;           /* scroll inside the modal */
+  scrollbar-width:thin;
+}
+
+/* custom scrollbar for webkit */
+.modal-content::-webkit-scrollbar{
+  width:5px;
+}
+.modal-content::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.05);
+  border-radius:10px;
+}
+.modal-content::-webkit-scrollbar-thumb{
+  background:rgba(108,125,255,.6);
+  border-radius:10px;
 }
 
 /* HEADER */
@@ -188,6 +211,11 @@
   justify-content:space-between;
   align-items:center;
   margin-bottom:22px;
+  position:sticky;
+  top:0;
+  background:var(--panel2);
+  padding-bottom:10px;
+  z-index:5;
 }
 
 .modal-header h3{
@@ -232,11 +260,13 @@
   border-radius:10px;
   color:white;
   font-size:12px;
+  font-family:inherit;
+  width:100%;
 }
 
 .modal textarea{
   min-height:70px;
-  resize:none;
+  resize:vertical;
 }
 
 .modal input:focus,
@@ -266,7 +296,6 @@
   background:linear-gradient(135deg,var(--primary),var(--primary2));
   color:white;
   cursor:pointer;
-  /* needed so the progress bar is clipped to the button's rounded corners */
   position:relative;
   overflow:hidden;
   transition:opacity .2s;
@@ -277,7 +306,6 @@
   pointer-events:none;
 }
 
-/* 3 px strip that sits along the bottom edge of the button */
 .btn-progress-track{
   position:absolute;
   bottom:0;
@@ -285,10 +313,9 @@
   width:100%;
   height:3px;
   background:rgba(255,255,255,.18);
-  display:none;                   /* shown only while loading */
+  display:none;
 }
 
-/* the moving fill */
 .btn-progress-bar{
   height:100%;
   width:0%;
@@ -296,10 +323,8 @@
   border-radius:0 2px 2px 0;
   transition:width .45s ease;
   position:relative;
-  overflow:hidden;
 }
 
-/* shimmer sweep on top of the fill */
 .btn-progress-bar::after{
   content:'';
   position:absolute;
@@ -318,7 +343,6 @@
   100%{ transform:translateX(300%);  }
 }
 
-/* tiny spinner shown left of the label text */
 .btn-spinner{
   display:inline-block;
   width:9px;
@@ -336,16 +360,85 @@
   to{ transform:rotate(360deg); }
 }
 
-@media(max-width:900px){
+/* ================================ */
+/* RESPONSIVE (mobile & tablet)     */
+/* ================================ */
 
+@media(max-width:900px){
   .form-grid{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr;  /* single column on tablet/mobile */
+    gap:12px;
   }
 
   .modal-content{
-    width:92%;
+    padding:20px;
+    max-height:85vh;
   }
 
+  .wrap{
+    padding:20px 16px;
+  }
+
+  .topbar h2{
+    font-size:19px;
+  }
+
+  .generate-btn{
+    padding:8px 14px;
+    font-size:13px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;   /* full width cards on small screens */
+    gap:16px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .card h3{
+    font-size:14px;
+  }
+
+  .card-actions{
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .btn-view, .btn-edit{
+    width:100%;
+    padding:10px;
+  }
+}
+
+@media(max-width:560px){
+  .modal-content{
+    padding:16px;
+    max-height:90vh;
+  }
+
+  .modal-header h3{
+    font-size:15px;
+  }
+
+  .form-group label{
+    font-size:10px;
+  }
+
+  .modal input, .modal textarea, .modal select{
+    font-size:11px;
+    padding:8px 10px;
+  }
+
+  .generate-submit{
+    padding:11px;
+    font-size:13px;
+  }
+
+  .empty-state, .premium-state{
+    padding:30px 20px;
+  }
 }
 </style>
 
@@ -354,9 +447,15 @@
 
   <div class="topbar">
     <h2>My Cover Letters</h2>
-    <button class="generate-btn" onclick="openModal()">
-      + Generate New Cover Letter
-    </button>
+    {% if is_premium %}
+      <button class="generate-btn" onclick="openModal()">
+        + Generate New Cover Letter
+      </button>
+    {% else %}
+      <button class="generate-btn">
+        🔒Premium feature
+      </button>
+    {% endif %}
   </div>
 
   <div class="grid" id="lettersGrid"></div>
@@ -365,9 +464,7 @@
 
 
 <!-- Modal -->
-
 <div class="modal" id="generateModal">
-
   <div class="modal-content">
 
     <div class="modal-header">
@@ -378,17 +475,17 @@
     <div class="form-grid">
 
       <div class="form-group full-width">
-        <label>Property Address</label>
+        <label>Property Address *</label>
         <input id="property_address" required>
       </div>
 
       <div class="form-group">
-        <label>Full Name</label>
+        <label>Full Name *</label>
         <input id="name" required>
       </div>
 
       <div class="form-group">
-        <label>Tone</label>
+        <label>Tone *</label>
         <select id="tone" required>
           <option value="">Select</option>
           <option value="professional">Professional</option>
@@ -399,7 +496,7 @@
       </div>
 
       <div class="form-group">
-        <label>Employment Type</label>
+        <label>Employment Type *</label>
         <select id="employment_type" required>
           <option value="">Select</option>
           <option value="full_time">Full Time</option>
@@ -410,17 +507,17 @@
       </div>
 
       <div class="form-group full-width">
-        <label>Employment Details</label>
-        <textarea id="employment_info" required></textarea>
+        <label>Employment Details *</label>
+        <textarea id="employment_info" required placeholder="e.g., Software Engineer at XYZ Corp, 2 years"></textarea>
       </div>
 
       <div class="form-group">
-        <label>Income Details</label>
-        <textarea id="income" required></textarea>
+        <label>Income Details *</label>
+        <textarea id="income" required placeholder="e.g., $75,000 annually, stable income"></textarea>
       </div>
 
       <div class="form-group">
-        <label>Rental History Type</label>
+        <label>Rental History Type *</label>
         <select id="rental_history_type" required>
           <option value="">Select</option>
           <option value="first_time">First Time Renter</option>
@@ -430,22 +527,17 @@
       </div>
 
       <div class="form-group full-width">
-        <label>Rental History</label>
-        <textarea id="rental_history" required></textarea>
+        <label>Rental History *</label>
+        <textarea id="rental_history" required placeholder="Describe your past rental experience (or 'none' if first time)"></textarea>
       </div>
 
       <div class="form-group full-width">
         <label>Additional Notes</label>
-        <textarea id="custom_note" required></textarea>
+        <textarea id="custom_note" placeholder="Any other info: pets, references, special requests..."></textarea>
       </div>
 
     </div>
 
-    <!--
-      Button now contains:
-        1. #generateBtnLabel  — the visible text / spinner
-        2. .btn-progress-track — the 3px bar track hidden at bottom
-    -->
     <button class="generate-submit" id="generateBtn" onclick="generateLetter()">
       <span id="generateBtnLabel">Generate Cover Letter</span>
       <div class="btn-progress-track" id="progressTrack">
@@ -454,12 +546,10 @@
     </button>
 
   </div>
-
 </div>
 
 
 <script>
-
 function getCSRFToken() {
     return document.cookie
         .split('; ')
@@ -478,16 +568,14 @@ function closeModal(){
 /* ================================
    PROGRESS BAR
 ================================ */
-
 let _progressInterval = null;
 let _progressValue    = 0;
 
-// Phases shown in the button label while waiting
 const PHASES = [
-  "Analysing your details\u2026",
-  "Drafting your letter\u2026",
-  "Polishing the tone\u2026",
-  "Almost ready\u2026",
+  "Analysing your details…",
+  "Drafting your letter…",
+  "Polishing the tone…",
+  "Almost ready…",
 ];
 let _phaseIndex    = 0;
 let _phaseInterval = null;
@@ -501,7 +589,6 @@ function startProgress() {
   bar.style.width = "0%";
   track.style.display = "block";
 
-  // Advance quickly to ~30 %, crawl to ~85 %, hold there until done
   _progressInterval = setInterval(() => {
     if (_progressValue < 30)       _progressValue += 3;
     else if (_progressValue < 60)  _progressValue += 1.2;
@@ -536,7 +623,6 @@ function setLoadingState() {
 
   btn.classList.add("loading");
 
-  // Cycle through phase labels every 4 s
   _phaseIndex = 0;
   label.innerHTML = '<span class="btn-spinner"></span>' + PHASES[0];
 
@@ -559,12 +645,9 @@ function resetButtonState() {
 /* ================================
    LOAD LETTERS
 ================================ */
-
 function loadLetters(){
-
   fetch("/api/cover-letters/")
   .then(res => {
-
     if(res.status === 403){
       const grid = document.getElementById("lettersGrid");
       grid.innerHTML = `<div class="premium-state">
@@ -573,176 +656,119 @@ function loadLetters(){
       </div>`;
       return null;
     }
-
-    if(!res.ok){
-      throw new Error("Failed to load letters");
-    }
-
+    if(!res.ok) throw new Error("Failed to load letters");
     return res.json();
-
   })
   .then(data => {
-
     if(data === null) return;
-
     const grid = document.getElementById("lettersGrid");
     grid.innerHTML = "";
-
     if(data.length === 0){
-
       grid.innerHTML = `<div class="empty-state">
         You haven't generated any cover letters yet.
       </div>`;
-
       return;
     }
-
     data.forEach(letter => {
-
       grid.innerHTML += `
         <div class="card">
-
           <div>
-
-            <h3>${letter.property_address || "No Property"}</h3>
-
+            <h3>${escapeHtml(letter.property_address || "No Property")}</h3>
             <small>${new Date(letter.created_at).toLocaleDateString()}</small>
-
           </div>
-
           <div class="card-actions">
-
-            <a class="btn-view" href="/cover-letters/${letter.id}/">
-              View
-            </a>
-
-            <a class="btn-edit" href="/cover-letters/${letter.id}/">
-              Edit
-            </a>
-
+            <a class="btn-view" href="/cover-letters/${letter.id}/">View</a>
+            <a class="btn-edit" href="/cover-letters/${letter.id}/">Edit</a>
           </div>
-
         </div>
       `;
-
     });
-
   })
   .catch(error => {
-
     const grid = document.getElementById("lettersGrid");
     grid.innerHTML = `<div class="empty-state">
       Something went wrong loading your cover letters. Please refresh the page.
     </div>`;
-
     console.error(error);
-
   });
+}
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
 }
 
 /* ================================
    VALIDATE FORM
 ================================ */
-
 function validateForm(){
-
   const fields = [
-    "property_address",
-    "name",
-    "tone",
-    "employment_type",
-    "employment_info",
-    "income",
-    "rental_history_type",
-    "rental_history",
-    "custom_note"
+    "property_address", "name", "tone", "employment_type",
+    "employment_info", "income", "rental_history_type", "rental_history"
   ];
-
   for(let id of fields){
-
     const el = document.getElementById(id);
-
     if(!el.value.trim()){
-      alert("Please fill out all fields before generating the cover letter.");
+      alert("Please fill out all required fields.");
       return false;
     }
-
   }
-
   return true;
-
 }
 
 /* ================================
    GENERATE LETTER
 ================================ */
-
 function generateLetter(){
-
-  if(!validateForm()){
-    return;
-  }
-
+  if(!validateForm()) return;
   setLoadingState();
 
   fetch("/api/cover-letters/generate/", {
     method: "POST",
     headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCSRFToken()
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken()
     },
     body: JSON.stringify({
-        property_address:    document.getElementById("property_address").value,
-        tone:                document.getElementById("tone").value,
-        employment_type:     document.getElementById("employment_type").value,
-        rental_history_type: document.getElementById("rental_history_type").value,
-        name:                document.getElementById("name").value,
-        employment_info:     document.getElementById("employment_info").value,
-        income:              document.getElementById("income").value,
-        rental_history:      document.getElementById("rental_history").value,
-        custom_note:         document.getElementById("custom_note").value
+      property_address:    document.getElementById("property_address").value,
+      tone:                document.getElementById("tone").value,
+      employment_type:     document.getElementById("employment_type").value,
+      rental_history_type: document.getElementById("rental_history_type").value,
+      name:                document.getElementById("name").value,
+      employment_info:     document.getElementById("employment_info").value,
+      income:              document.getElementById("income").value,
+      rental_history:      document.getElementById("rental_history").value,
+      custom_note:         document.getElementById("custom_note").value
     })
   })
   .then(async res => {
-
     const data = await res.json();
-
-    if(!res.ok){
-      throw new Error(data.error || data.detail || "Server error");
-    }
-
+    if(!res.ok) throw new Error(data.error || data.detail || "Server error");
     return data;
-
   })
-  .then(data => {
-
+  .then(() => {
     finishProgress(true);
     resetButtonState();
-
-    document.getElementById("generateModal").style.display = "none";
-
+    closeModal();
     loadLetters();
-
+    // clear all form fields
     document.querySelectorAll("#generateModal input, #generateModal textarea, #generateModal select")
       .forEach(el => el.value = "");
-
   })
   .catch(error => {
-
     finishProgress(false);
     resetButtonState();
-
     alert(error.message);
-
     console.error(error);
-
   });
-
 }
 
 document.addEventListener("DOMContentLoaded", loadLetters);
-
 </script>
 
 {% endblock content %}

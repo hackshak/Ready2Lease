@@ -34,9 +34,12 @@ def require_premium(user):
         return False
 
 
+
 @login_required
 def cover_letter_list_view(request):
-    return render(request, "cover_letters/list.html")
+    return render(request, "cover_letters/list.html", {
+        "is_premium": require_premium(request.user)
+    })
 
 
 @login_required

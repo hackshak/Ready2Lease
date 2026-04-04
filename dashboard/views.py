@@ -8,42 +8,32 @@ from rest_framework import status
 from .services import build_detailed_breakdown, normalize_income_to_annual
 from django.utils import timezone
 from assessments.gap_analysis import generate_gap_analysis
-from action_plan.services import ActionPlanService
 
 User = get_user_model()
 
 
-# HELPER — always reads fresh from DB, never the session cache
 def require_premium(user):
-    """
-    Re-fetches the user from the DB on every call so we never
-    read a stale is_premium value from the Django session cache.
-    """
-    try:
-        fresh = User.objects.get(pk=user.pk)
-        return fresh.is_premium
-    except User.DoesNotExist:
-        return False
-
+    """Check if user has premium access (cached on user model)."""
+    return getattr(user, 'is_premium', False)
 
 
 def dashboard_home(request):
     if not request.user.is_authenticated:
         return redirect("login")
-
-    return render(request, "dashboard/dashboard_home.html")
+    return render(request, "dashboard/dashboard_home.html", {
+        "is_premium": require_premium(request.user)
+    })
 
 
 def detailed_analysis(request):
     if not request.user.is_authenticated:
         return redirect("login")
+    return render(request, "dashboard/detailed_analysis.html", {
+        "is_premium": require_premium(request.user)
+    })
 
-    return render(request, "dashboard/detailed_analysis.html")
 
-
-# CORE READINESS LOGIC (SHARED)
 def build_readiness_response(request, premium=False):
-
     assessment_id = request.query_params.get("assessment_id")
 
     if assessment_id:
@@ -71,13 +61,12 @@ def build_readiness_response(request, premium=False):
             status=status.HTTP_404_NOT_FOUND
         )
 
-    base_score = assessment.readiness_score or 0
+    # Use the stored readiness score from database
+    final_score = assessment.readiness_score or 0
+    # Ensure it's within 0-100
+    final_score = max(0, min(final_score, 100))
 
-    final_score = ActionPlanService.get_final_score_for_assessment(
-        request.user,
-        assessment
-    )
-
+    # Get previous assessment for trend
     previous_assessment = (
         Assessment.objects
         .filter(user=request.user)
@@ -86,10 +75,10 @@ def build_readiness_response(request, premium=False):
         .first()
     )
 
-    score_prev = (
-        previous_assessment.readiness_score
-        if previous_assessment else base_score
-    )
+    score_prev = previous_assessment.readiness_score if previous_assessment else final_score
+    if score_prev is None:
+        score_prev = final_score
+    score_prev = max(0, min(score_prev, 100))
 
     annual_income = normalize_income_to_annual(
         assessment.household_income or assessment.individual_income,
@@ -152,19 +141,23 @@ def build_readiness_response(request, premium=False):
     ]
 
     now = timezone.now()
-    previous_list = []
 
-    for item in Assessment.objects.filter(user=request.user).order_by("-created_at"):
-        score_value = ActionPlanService.get_final_score_for_assessment(
-            request.user,
-            item
-        )
-        previous_list.append({
+    # Limit to last 10 assessments for performance
+    all_assessments = list(
+        Assessment.objects
+        .filter(user=request.user)
+        .order_by("-created_at")[:10]
+    )
+
+    previous_list = [
+        {
             "id": item.id,
-            "score": score_value,
+            "score": item.readiness_score or 0,
             "created_at": item.created_at.date().isoformat(),
             "days_ago": (now - item.created_at).days,
-        })
+        }
+        for item in all_assessments
+    ]
 
     steps = [
         {
@@ -198,11 +191,10 @@ def build_readiness_response(request, premium=False):
         "steps": steps,
         "previous_assessments": previous_list,
         "risk_level": assessment.risk_level,
-        "is_premium": premium   # kept for API JSON responses only
+        "is_premium": premium
     }, status=status.HTTP_200_OK)
 
 
-# FREE DASHBOARD API
 class FreeReadinessView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -210,27 +202,26 @@ class FreeReadinessView(APIView):
         return build_readiness_response(request, premium=False)
 
 
-# PREMIUM DASHBOARD API
 class DetailedReadinessAnalysisView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        # require_premium() now does a fresh DB read every time
+    def get(self, request, assessment_id=None):
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required.", "is_premium": False},
                 status=status.HTTP_403_FORBIDDEN
             )
-
+        # If assessment_id is provided, pass it via query_params
+        if assessment_id:
+            request.query_params = request.query_params.copy()
+            request.query_params['assessment_id'] = assessment_id
         return build_readiness_response(request, premium=True)
 
 
-# CATEGORY SCORES (PREMIUM ONLY)
 class CalculateCategoryScoresView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, assessment_id=None, format=None):
-        # require_premium() now does a fresh DB read every time
         if not require_premium(request.user):
             return Response(
                 {"detail": "Premium required.", "is_premium": False},
@@ -255,15 +246,16 @@ class CalculateCategoryScoresView(APIView):
                 "assessment_id": assessment.id,
                 "created_at": assessment.created_at.isoformat(),
                 "categories": categories,
-                "readiness_score": assessment.readiness_score,
+                "readiness_score": assessment.readiness_score or 0,
                 "risk_level": assessment.risk_level,
                 "is_premium": True
             }, status=status.HTTP_200_OK)
 
+        # List all assessments (limited to last 10 for performance)
         assessments = (
             Assessment.objects
             .filter(user=request.user)
-            .order_by('-created_at')
+            .order_by('-created_at')[:10]
         )
 
         data = [

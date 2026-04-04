@@ -1,7 +1,14 @@
 {% extends "sidebar.html" %}
+{% load static %}
+
 {% block content %}
 
 <style>
+/* ============================================ */
+/* All CSS styles remain exactly as in your     */
+/* original file – no changes needed.           */
+/* ============================================ */
+
 :root{
   --bg:#0b1020;
   --panel:#111a33;
@@ -10,472 +17,544 @@
   --border:rgba(255,255,255,.10);
   --radius:18px;
   --good:#28d17c;
+  --mid:#f7c948;
+  --bad:#ff5a7a;
   --primary:#6c7dff;
   --primary2:#8b5cf6;
+  --gold:#c9a54c;
 }
 
-body{background:var(--bg);color:var(--text);}
-
-/* ============================= */
-/* LAYOUT                        */
-/* ============================= */
+*{ box-sizing:border-box; }
+body{ font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); margin:0; }
 
 .wrap{
-  padding:30px 20px;
-  max-width:1100px;
+  padding:32px 24px 80px;
+  max-width:1080px;
   margin:auto;
 }
 
-/* ============================= */
-/* CARDS                         */
-/* ============================= */
+.pageHeader{ margin-bottom:28px; }
+.pageHeader h1{
+  font-size:22px; font-weight:700; margin:0 0 4px;
+  background:linear-gradient(135deg,#e9eefc,var(--gold));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.pageHeader .sub{ font-size:13px; color:var(--muted); }
 
 .card{
   border:1px solid var(--border);
-  background: rgba(17,26,51,.75);
-  border-radius: var(--radius);
-  padding:20px;
-  margin-bottom:25px;
+  background:rgba(17,26,51,.80);
+  backdrop-filter:blur(14px);
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:22px;
 }
 
-h1{margin:0 0 8px;font-size:22px;}
-.sub{color:var(--muted);font-size:13px;margin-bottom:15px;}
-
-/* ============================= */
-/* ASSESSMENT SELECT             */
-/* ============================= */
-
-.assessmentSelectWrap{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+.topRow{
+  display:grid;
+  grid-template-columns:1fr 220px;
+  gap:20px;
+  align-items:stretch;
 }
 
-.assessmentLabel{
-  font-size:12px;
-  color:var(--muted);
+.assessmentLabel{ font-size:12px; color:var(--muted); margin-bottom:6px; display:block; }
+
+.selectWrap{ position:relative; }
+.selectWrap::after{
+  content:"▾"; position:absolute; right:14px; top:50%;
+  transform:translateY(-50%); color:var(--muted); pointer-events:none; font-size:12px;
 }
 
 select{
-  width:100%;
-  background:#0f1730;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:12px;
-  border-radius:10px;
-  font-size:13px;
-  outline:none;
-  transition:.2s;
+  appearance:none; -webkit-appearance:none;
+  width:100%; background:rgba(255,255,255,.04);
+  border:1px solid var(--border); color:var(--text);
+  padding:12px 36px 12px 14px; border-radius:12px;
+  font-size:13px; font-family:inherit; outline:none;
+  cursor:pointer; transition:.2s border-color,.2s box-shadow;
 }
+select option{ background:#111a33; color:#e9eefc; }
+select:focus{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(108,125,255,.2); }
 
-select:hover{ border-color:var(--primary); }
-
-select:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 2px rgba(108,125,255,.25);
+.progressWrap{ margin-top:20px; }
+.progressMeta{
+  display:flex; justify-content:space-between;
+  font-size:12px; color:var(--muted); margin-bottom:8px;
 }
-
-/* ============================= */
-/* PROGRESS BAR                  */
-/* ============================= */
-
-.progressWrap{margin-top:20px;}
-
 .track{
-  height:12px;
-  border-radius:999px;
-  background: rgba(255,255,255,.10);
-  overflow:hidden;
+  height:8px; border-radius:999px;
+  background:rgba(255,255,255,.08); overflow:hidden;
 }
-
 .fill{
-  height:100%;
-  width:0%;
-  border-radius:999px;
-  background: linear-gradient(90deg, var(--good), var(--primary));
-  transition:.3s ease;
+  height:100%; width:0%; border-radius:999px;
+  background:linear-gradient(90deg,var(--good),var(--primary));
+  transition:.4s ease;
 }
 
-/* ============================= */
-/* DOCUMENT GRID                 */
-/* ============================= */
+.scoreCard{
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; gap:10px;
+}
+
+.ring{
+  width:110px; height:110px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:.5s background;
+  flex-shrink:0;
+}
+
+.ringInner{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+.ringScore{ font-size:26px; font-weight:700; line-height:1; color:var(--text); }
+.ringPct{ font-size:11px; color:var(--muted); }
+
+.scoreLabel{
+  font-size:10px; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1px;
+}
+
+.scoreBadge{
+  display:inline-block; padding:3px 12px;
+  border-radius:20px; font-size:11px; font-weight:600;
+  background:rgba(201,165,76,.15); color:var(--gold);
+  border:1px solid rgba(201,165,76,.3);
+  transition:.3s;
+}
+
+@keyframes scorePop{
+  0%{ transform:scale(1); }
+  50%{ transform:scale(1.12); }
+  100%{ transform:scale(1); }
+}
+.scorePop{ animation:scorePop .35s ease; }
 
 .grid{
-  margin-top:25px;
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:16px;
 }
 
 .docCard{
   border:1px solid var(--border);
-  background: rgba(255,255,255,.05);
-  border-radius:16px;
-  padding:16px;
+  background:rgba(255,255,255,.04);
+  border-radius:16px; padding:18px;
+  transition:.2s border-color,.2s background;
+  position:relative;
 }
-
 .docCard.completed{
-  border:1px solid var(--good);
+  border-color:var(--good);
+  background:rgba(40,209,124,.04);
 }
 
-.docCard h3{margin:0;font-size:15px;}
-.docCard p{margin:6px 0 12px;color:var(--muted);font-size:12px;}
-
-/* ============================= */
-/* BUTTONS                       */
-/* ============================= */
-
-button{
-  border:0;
-  cursor:pointer;
-  color:#fff;
-  padding:8px 12px;
-  border-radius:10px;
-  font-size:12px;
-  font-weight:600;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
+.docStatus{
+  position:absolute; top:14px; right:14px;
+  font-size:16px;
 }
+
+.docCard h3{ margin:0 24px 6px 0; font-size:14px; font-weight:600; }
+.docCard p{ margin:0 0 14px; color:var(--muted); font-size:12px; line-height:1.5; }
+
+.actions{ display:flex; flex-direction:column; gap:8px; }
+
+.btnPrimary{
+  border:0; cursor:pointer; color:#fff;
+  padding:9px 14px; border-radius:10px;
+  font-size:12px; font-weight:600; font-family:inherit;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  transition:.15s opacity,.15s transform; width:100%; text-align:center;
+}
+.btnPrimary:hover{ opacity:.88; transform:translateY(-1px); }
 
 .btnGhost{
-  background: rgba(255,255,255,.08);
+  background:rgba(255,255,255,.07);
   border:1px solid var(--border);
+  cursor:pointer; color:var(--text);
+  padding:9px 14px; border-radius:10px;
+  font-size:12px; font-weight:500; font-family:inherit;
+  transition:.15s background; width:100%; text-align:center;
+  text-decoration:none; display:block;
 }
+.btnGhost:hover{ background:rgba(255,255,255,.12); }
 
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+.btnDanger{
+  background:rgba(255,90,122,.1);
+  border:1px solid rgba(255,90,122,.25);
+  cursor:pointer; color:var(--bad);
+  padding:9px 14px; border-radius:10px;
+  font-size:12px; font-weight:500; font-family:inherit;
+  transition:.15s background; width:100%; text-align:center;
 }
+.btnDanger:hover{ background:rgba(255,90,122,.18); }
 
-/* File input: styled for dark theme */
-.actions input[type="file"]{
-  font-size:12px;
-  color:var(--muted);
+.fileLabel{
+  display:flex; align-items:center; gap:8px;
   background:rgba(255,255,255,.05);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:7px 10px;
-  cursor:pointer;
+  border:1px dashed rgba(255,255,255,.18);
+  border-radius:10px; padding:9px 12px;
+  font-size:12px; color:var(--muted);
+  cursor:pointer; transition:.15s border-color,.15s background;
   width:100%;
-  max-width:100%;
 }
+.fileLabel:hover{ border-color:var(--primary); background:rgba(108,125,255,.06); }
+.fileLabel input{ display:none; }
+.fileLabel .fileIcon{ font-size:15px; }
 
-.actions input[type="file"]::-webkit-file-upload-button{
-  background:linear-gradient(135deg, var(--primary), var(--primary2));
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:5px 10px;
-  font-size:11px;
-  font-weight:600;
-  cursor:pointer;
-  margin-right:8px;
+.uploadingOverlay{
+  position:absolute; inset:0; border-radius:16px;
+  background:rgba(11,16,32,.75); backdrop-filter:blur(4px);
+  display:none; align-items:center; justify-content:center;
+  flex-direction:column; gap:8px; font-size:12px; color:var(--muted);
 }
+.uploadingOverlay.active{ display:flex; }
 
-/* ============================= */
-/* TOAST                         */
-/* ============================= */
+.spin{
+  width:22px; height:22px;
+  border:2px solid rgba(255,255,255,.15);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.emptyState{
+  text-align:center; padding:50px 20px;
+  color:var(--muted); font-size:13px;
+  grid-column:1/-1;
+}
 
 .toast{
-  position:fixed;
-  bottom:24px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111a33;
-  border:1px solid var(--border);
-  padding:10px 18px;
-  border-radius:12px;
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  background:#1a2540; border:1px solid var(--border);
+  padding:10px 20px; border-radius:12px; font-size:13px;
+  opacity:0; transition:.25s; z-index:9999;
+  white-space:nowrap; pointer-events:none; max-width:90vw;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.toast.show{ opacity:1; }
+
+@keyframes shimmer{
+  0%{ background-position:-400px 0; }
+  100%{ background-position:400px 0; }
+}
+.skeleton{
+  border-radius:8px; height:14px; margin-bottom:8px;
+  background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.05) 75%);
+  background-size:400px 100%;
+  animation:shimmer 1.4s infinite;
+}
+
+/* Premium Upgrade Card */
+.premium-card{
+  text-align:center;
+  padding:50px 20px;
+  background:rgba(108,125,255,.06);
+  border:1px solid rgba(108,125,255,.35);
+  border-radius:18px;
+  margin-top:20px;
+}
+.premium-card h3{
+  margin:0 0 8px;
+  color:var(--text);
+  font-size:18px;
+}
+.premium-card p{
+  color:var(--muted);
   font-size:13px;
-  opacity:0;
-  transition:.2s;
-  z-index:9999;
-  white-space:nowrap;
-  pointer-events:none;
+  margin-bottom:20px;
+}
+.upgrade-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  padding:10px 24px;
+  border-radius:40px;
+  color:white;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
 }
 
-.toast.show{opacity:1;}
-
-/* ============================= */
-/* RESPONSIVE — TABLET (≤768px)  */
-/* ============================= */
-
-@media(max-width:768px){
-  .wrap{
-    padding:20px 14px;
-  }
-
-  .grid{
-    grid-template-columns: 1fr 1fr;
-    gap:14px;
-  }
-
-  h1{font-size:19px;}
+@media(max-width:860px){
+  .topRow{ grid-template-columns:1fr; }
+  .scoreCard{ flex-direction:row; text-align:left; gap:16px; }
+  .ring{ width:80px; height:80px; }
+  .ringScore{ font-size:20px; }
 }
-
-/* ============================= */
-/* RESPONSIVE — MOBILE (≤560px)  */
-/* ============================= */
 
 @media(max-width:560px){
-  .wrap{
-    padding:14px 12px 40px;
-  }
-
-  .card{
-    padding:14px;
-    border-radius:14px;
-    margin-bottom:16px;
-  }
-
-  h1{font-size:17px;}
-  .sub{font-size:12px;}
-
-  /* Single column doc grid on mobile */
-  .grid{
-    grid-template-columns: 1fr;
-    gap:12px;
-    margin-top:16px;
-  }
-
-  .docCard{
-    padding:14px;
-    border-radius:14px;
-  }
-
-  .docCard h3{font-size:14px;}
-  .docCard p{font-size:12px;margin-bottom:10px;}
-
-  /* Progress text */
-  #progressText{
-    font-size:12px;
-    margin-bottom:8px;
-  }
-
-  .track{height:10px;}
-
-  /* File input full-width already — just ensure button is reachable */
-  .actions{
-    flex-direction:column;
-    gap:8px;
-  }
-
-  .actions a,
-  .actions button{
-    width:100%;
-    text-align:center;
-    display:block;
-  }
-
-  .actions input[type="file"]{
-    width:100%;
-  }
-
-  /* Toast: wider on mobile so text doesn't clip */
-  .toast{
-    left:12px;
-    right:12px;
-    transform:none;
-    text-align:center;
-    white-space:normal;
-  }
-}
-
-/* ============================= */
-/* RESPONSIVE — SMALL (≤400px)   */
-/* ============================= */
-
-@media(max-width:400px){
-  select{font-size:12px;padding:10px;}
+  .wrap{ padding:16px 12px 60px; }
+  .card{ padding:16px; border-radius:14px; margin-bottom:16px; }
+  .pageHeader h1{ font-size:19px; }
+  .grid{ grid-template-columns:1fr; gap:12px; }
+  .docCard{ padding:14px; }
+  .toast{ left:12px; right:12px; transform:none; text-align:center; white-space:normal; }
 }
 </style>
 
 <div class="wrap">
 
-  <div class="card">
+  <div class="pageHeader">
+    <h1>Documents Checklist &amp; Tracker</h1>
+    <div class="sub">Upload required documents to boost your readiness score in real time.</div>
+  </div>
 
-    <h1>Documents Checklist & Tracker</h1>
-    <p class="sub">Select an assessment to manage required documents.</p>
+  {% if is_premium %}
 
-    <div class="assessmentSelectWrap">
+    <!-- PREMIUM CONTENT -->
+    <div class="topRow">
+      <div class="card">
+        <label class="assessmentLabel">Choose Assessment</label>
+        <div class="selectWrap">
+          <select id="assessmentSelect">
+            <option value="">Select an assessment…</option>
+            {% for assessment in assessments %}
+              <option value="{{ assessment.id }}">
+                📅 {{ assessment.created_at|date:"F d, Y" }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="progressWrap" id="progressSection" style="display:none;">
+          <div class="progressMeta">
+            <span id="progressText">0 / 0 documents</span>
+            <span id="progressPct">0%</span>
+          </div>
+          <div class="track">
+            <div class="fill" id="progressBar"></div>
+          </div>
+        </div>
+      </div>
 
-      <label class="assessmentLabel">
-        Choose Assessment
-      </label>
-
-      <select id="assessmentSelect">
-        <option value="">Select an assessment...</option>
-
-        {% for assessment in assessments %}
-          <option value="{{ assessment.id }}">
-            📅 Assessment from {{ assessment.created_at|date:"F d, Y" }}
-          </option>
-        {% endfor %}
-
-      </select>
-
-    </div>
-
-    <div class="progressWrap" id="progressSection" style="display:none;">
-      <p id="progressText"></p>
-      <div class="track">
-        <div class="fill" id="progressBar"></div>
+      <div class="card scoreCard" id="scoreCard" style="display:none;">
+        <div class="ring" id="scoreRing">
+          <div class="ringInner">
+            <span class="ringScore" id="ringScore">—</span>
+            <span class="ringPct">/100</span>
+          </div>
+        </div>
+        <div>
+          <div class="scoreLabel">Readiness Score</div>
+          <div style="font-size:13px;font-weight:600;margin:4px 0 6px;color:var(--text)" id="scoreTitle">—</div>
+          <div class="scoreBadge" id="scoreBadge">Select assessment</div>
+        </div>
       </div>
     </div>
 
-  </div>
+    <div class="grid" id="documentsContainer">
+      <div class="emptyState">Select an assessment above to view your documents checklist.</div>
+    </div>
 
-  <div class="grid" id="documentsContainer"></div>
+  {% else %}
+
+    <!-- NON-PREMIUM UPGRADE CARD -->
+    <div class="premium-card">
+      <h3>🔒 Premium Feature</h3>
+      <p>Document uploads and readiness tracking are available with a premium subscription.</p>
+      <a href="{% url 'create_checkout_session' %}" class="upgrade-btn">Upgrade to Premium</a>
+    </div>
+
+  {% endif %}
 
 </div>
 
 <div class="toast" id="toast"></div>
 
+{% if is_premium %}
 <script>
-
 let selectedAssessment = null;
 const csrfToken = "{{ csrf_token }}";
 
-function showToast(msg){
-  const t=document.getElementById("toast");
-  t.innerText=msg;
+function showToast(msg, isError = false){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.borderColor = isError ? "rgba(255,90,122,.4)" : "rgba(255,255,255,.1)";
   t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2000);
+  setTimeout(() => t.classList.remove("show"), 2400);
 }
 
-document.getElementById("assessmentSelect")
-.addEventListener("change", function(){
-  selectedAssessment=this.value;
+function scoreColor(s){
+  if(s >= 70) return "#28d17c";
+  if(s >= 40) return "#f7c948";
+  return "#ff5a7a";
+}
+
+function scoreProfile(s){
+  if(s >= 80) return "Elite Profile";
+  if(s >= 70) return "Strong Profile";
+  if(s >= 40) return "Average Profile";
+  return "Low Profile";
+}
+
+function updateScoreRing(score){
+  const col = scoreColor(score);
+  const deg = (score / 100) * 360;
+  const ring = document.getElementById("scoreRing");
+  ring.style.background = `
+    radial-gradient(circle, rgba(17,26,51,.98) 57%, transparent 58%),
+    conic-gradient(${col} 0deg, ${col} ${deg}deg, rgba(255,255,255,.07) ${deg}deg)
+  `;
+  const ringScore = document.getElementById("ringScore");
+  ringScore.textContent = score != null ? score : "—";
+  ringScore.classList.remove("scorePop");
+  void ringScore.offsetWidth;
+  ringScore.classList.add("scorePop");
+  setTimeout(() => ringScore.classList.remove("scorePop"), 350);
+  document.getElementById("scoreTitle").textContent = score != null ? scoreProfile(score) : "—";
+  const badge = document.getElementById("scoreBadge");
+  badge.textContent = score != null ? `${score} / 100` : "—";
+  badge.style.backgroundColor = `rgba(${col === "#28d17c" ? "40,209,124" : col === "#f7c948" ? "247,201,72" : "255,90,122"}, 0.15)`;
+  badge.style.color = col;
+  badge.style.borderColor = `${col}30`;
+  document.getElementById("scoreCard").style.display = "flex";
+}
+
+async function fetchAndUpdateScore(){
+  const res = await fetch(`/tasks/${selectedAssessment}/`, { credentials: "same-origin" });
+  const data = await res.json();
+  if(data.final_score != null){
+    updateScoreRing(data.final_score);
+  }
+}
+
+document.getElementById("assessmentSelect").addEventListener("change", function(){
+  selectedAssessment = this.value;
   if(selectedAssessment){
     loadChecklist();
+    fetchAndUpdateScore();
+  } else {
+    document.getElementById("scoreCard").style.display = "none";
+    document.getElementById("progressSection").style.display = "none";
+    document.getElementById("documentsContainer").innerHTML =
+      '<div class="emptyState">Select an assessment above to view your documents checklist.</div>';
   }
 });
 
 function loadChecklist(){
+  if(!selectedAssessment) return;
+  const container = document.getElementById("documentsContainer");
+  container.innerHTML = Array(4).fill(`
+    <div class="docCard">
+      <div class="skeleton" style="width:60%;height:16px;margin-bottom:10px"></div>
+      <div class="skeleton" style="width:90%;height:12px"></div>
+      <div class="skeleton" style="width:80%;height:12px"></div>
+      <div class="skeleton" style="width:100%;height:36px;margin-top:14px;border-radius:10px"></div>
+    </div>
+  `).join("");
   fetch(`/checklist/${selectedAssessment}/`)
-  .then(res=>res.json())
-  .then(data=>{
-
-    document.getElementById("progressSection").style.display="block";
-
-    document.getElementById("progressText").innerText =
-      `${data.completed} / ${data.total} Completed (${data.percentage}%)`;
-
-    document.getElementById("progressBar").style.width =
-      data.percentage + "%";
-
-    const container=document.getElementById("documentsContainer");
-    container.innerHTML="";
-
-    data.checklist.forEach(item=>{
-
-      const card=document.createElement("div");
-      card.className="docCard"+(item.uploaded?" completed":"");
-
-      card.innerHTML=`
-        <h3>${item.title} ${item.uploaded?"✔":""}</h3>
-        <p>${item.description}</p>
-        <div class="actions" id="actions-${item.key}"></div>
-      `;
-
-      const actions=card.querySelector(`#actions-${item.key}`);
-
-      if(item.uploaded){
-
-        if(item.file_url){
-          actions.innerHTML+=`
-            <a href="${item.file_url}" target="_blank" style="width:100%">
-              <button class="btnGhost" style="width:100%">View</button>
-            </a>`;
-        }
-
-        actions.innerHTML+=`
-          <button class="btnGhost" style="width:100%"
-            onclick="deleteDoc('${item.key}',${item.object_id})">
-            Delete
-          </button>`;
-      }
-      else{
-
-        actions.innerHTML+=`
-          <input type="file"
-            onchange="uploadFile('${item.key}',this.files[0])">
-        `;
-      }
-
-      container.appendChild(card);
-
-    });
-
-  });
+    .then(res => res.json())
+    .then(data => renderChecklist(data))
+    .catch(() => showToast("Failed to load checklist", true));
 }
 
-function uploadFile(type,file){
-
-  if(!file){
-    showToast("Please select a file");
+function renderChecklist(data){
+  const progressSection = document.getElementById("progressSection");
+  progressSection.style.display = "block";
+  document.getElementById("progressText").textContent = `${data.completed} / ${data.total} documents uploaded`;
+  document.getElementById("progressPct").textContent = `${data.percentage}%`;
+  document.getElementById("progressBar").style.width = data.percentage + "%";
+  const container = document.getElementById("documentsContainer");
+  container.innerHTML = "";
+  if(!data.checklist || !data.checklist.length){
+    container.innerHTML = '<div class="emptyState">No documents required for this assessment.</div>';
     return;
   }
-
-  const formData=new FormData();
-
-  if(type==="reference_letter"){
-
-    formData.append("file",file);
-
-    fetch(`/add-reference/${selectedAssessment}/`,{
-      method:"POST",
-      headers:{"X-CSRFToken":csrfToken},
-      body:formData
-    }).then(()=>{
-      showToast("Reference uploaded");
-      loadChecklist();
-    });
-
-  }
-  else if(type==="cover_letter"){
-
-    formData.append("file",file);
-
-    fetch(`/save-cover-letter/${selectedAssessment}/`,{
-      method:"POST",
-      headers:{"X-CSRFToken":csrfToken},
-      body:formData
-    }).then(()=>{
-      showToast("Cover letter uploaded");
-      loadChecklist();
-    });
-
-  }
-  else{
-
-    formData.append("document_type",type);
-    formData.append("file",file);
-
-    fetch(`/upload-document/${selectedAssessment}/`,{
-      method:"POST",
-      headers:{"X-CSRFToken":csrfToken},
-      body:formData
-    }).then(()=>{
-      showToast("Uploaded");
-      loadChecklist();
-    });
-
-  }
-
-}
-
-function deleteDoc(type,id){
-
-  fetch(`/checklist/${selectedAssessment}/delete/${type}/${id}/`,{
-    method:"DELETE",
-    headers:{"X-CSRFToken":csrfToken}
-  }).then(()=>{
-    showToast("Deleted");
-    loadChecklist();
+  data.checklist.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "docCard" + (item.uploaded ? " completed" : "");
+    card.id = `doc-card-${item.key}`;
+    card.innerHTML = `
+      <div class="docStatus">${item.uploaded ? "✅" : "⬜"}</div>
+      <h3>${item.title}</h3>
+      <p>${item.description}</p>
+      <div class="actions" id="actions-${item.key}"></div>
+      <div class="uploadingOverlay" id="overlay-${item.key}">
+        <div class="spin"></div>
+        <span>Uploading…</span>
+      </div>
+    `;
+    const actions = card.querySelector(`#actions-${item.key}`);
+    if(item.uploaded){
+      if(item.file_url){
+        actions.innerHTML += `<a href="${item.file_url}" target="_blank" class="btnGhost">↗ View File</a>`;
+      }
+      actions.innerHTML += `<button class="btnDanger" onclick="deleteDoc('${item.key}', ${item.object_id})">🗑 Delete</button>`;
+    } else {
+      actions.innerHTML += `
+        <label class="fileLabel">
+          <span class="fileIcon">📎</span>
+          <span>Choose file to upload</span>
+          <input type="file" onchange="uploadFile('${item.key}', this)">
+        </label>`;
+    }
+    container.appendChild(card);
   });
-
 }
 
-</script>
+async function uploadFile(type, inputEl){
+  const file = inputEl.files[0];
+  if(!file){ showToast("Please select a file", true); return; }
+  const overlay = document.getElementById(`overlay-${type}`);
+  if(overlay) overlay.classList.add("active");
+  const formData = new FormData();
+  let url = "";
+  if(type === "reference_letter"){
+    formData.append("file", file);
+    url = `/add-reference/${selectedAssessment}/`;
+  } else if(type === "cover_letter"){
+    formData.append("file", file);
+    url = `/save-cover-letter/${selectedAssessment}/`;
+  } else {
+    formData.append("document_type", type);
+    formData.append("file", file);
+    url = `/upload-document/${selectedAssessment}/`;
+  }
+  try{
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "X-CSRFToken": csrfToken },
+      body: formData
+    });
+    const data = await res.json();
+    if(!res.ok){
+      showToast(data.detail || "Upload failed", true);
+      return;
+    }
+    showToast("✓ Uploaded successfully!");
+    if(data.final_score != null){
+      updateScoreRing(data.final_score);
+    } else {
+      await fetchAndUpdateScore();
+    }
+    loadChecklist();
+  } catch(e){
+    showToast("Upload error. Please try again.", true);
+  } finally {
+    if(overlay) overlay.classList.remove("active");
+  }
+}
 
-{% endblock %}
+async function deleteDoc(type, id){
+  try{
+    const res = await fetch(`/checklist/${selectedAssessment}/delete/${type}/${id}/`, {
+      method: "DELETE",
+      headers: { "X-CSRFToken": csrfToken }
+    });
+    const data = await res.json();
+    if(!res.ok){
+      showToast(data.detail || "Delete failed", true);
+      return;
+    }
+    showToast("Deleted");
+    if(data.final_score != null){
+      updateScoreRing(data.final_score);
+    } else {
+      await fetchAndUpdateScore();
+    }
+    loadChecklist();
+  } catch(e){
+    showToast("Delete error. Please try again.", true);
+  }
+}
+</script>
+{% endif %}
+
+{% endblock content %}

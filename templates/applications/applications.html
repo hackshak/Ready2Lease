@@ -321,101 +321,150 @@ input,select,textarea{
 @media(max-width:400px){
   input,select,textarea{font-size:12px;padding:9px;}
 }
+
+/* ============================= */
+/* PREMIUM UPGRADE CARD          */
+/* ============================= */
+
+.premium-card{
+  text-align:center;
+  padding:50px 20px;
+  background:rgba(108,125,255,.06);
+  border:1px solid rgba(108,125,255,.35);
+  border-radius:18px;
+}
+
+.premium-card h3{
+  margin:0 0 8px;
+  color:var(--text);
+  font-size:18px;
+}
+
+.premium-card p{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:20px;
+}
+
+.upgrade-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  padding:10px 24px;
+  border-radius:40px;
+  color:white;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+}
 </style>
 
 <div class="wrap">
 
-<div class="card" id="listSection">
-  <h1>Application Tracker</h1>
-  <button onclick="openModal()">+ Add New Application</button>
+{% if is_premium %}
 
-  <!-- Desktop table -->
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Status</th>
-          <th>Date Applied</th>
-          <th>Rent</th>
-          <th>Docs</th>
-        </tr>
-      </thead>
-      <tbody id="appTable"></tbody>
-    </table>
-  </div>
+  <!-- PREMIUM CONTENT -->
+  <div class="card" id="listSection">
+    <h1>Application Tracker</h1>
+    <button onclick="openModal()">+ Add New Application</button>
 
-  <!-- Mobile card list -->
-  <div class="mob-app-list" id="mobAppList"></div>
-</div>
-
-<div class="card" id="detailSection">
-  <h1>Application Details</h1>
-  <div class="detail-grid" id="detailContent"></div>
-  <div class="actions">
-    <button onclick="editCurrent()">Edit</button>
-    <button class="btnDanger" onclick="openDeleteModal()">Delete</button>
-    <button class="btnGhost" onclick="backToList()">Back</button>
-  </div>
-</div>
-
-</div>
-
-<!-- FORM MODAL -->
-<div class="modal" id="formModal">
-  <div class="modal-content">
-    <div class="modal-title" id="modalTitle">New Application</div>
-    <input type="hidden" id="appId">
-
-    <div class="form-grid">
-      <input type="text" id="property_address" placeholder="Property Address">
-      <input type="text" id="company_name" placeholder="Company Name">
-      <input type="text" id="contact_person" placeholder="Contact Person">
-      <input type="email" id="contact_email" placeholder="Contact Email">
-      <input type="text" id="contact_phone" placeholder="Contact Phone">
-      <input type="number" id="rent_amount" placeholder="Rent Amount">
-
-      <input type="text" id="date_applied" class="date-picker" placeholder="Select application date (YYYY-MM-DD)">
-      <input type="text" id="interview_date" class="date-picker" placeholder="Select interview date (optional)">
-      <input type="text" id="follow_up_date" class="date-picker" placeholder="Select follow-up reminder date">
-
-      <select id="status">
-        <option value="Applied">Applied</option>
-        <option value="Interview">Interview</option>
-        <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option>
-      </select>
-
-      <label class="full" style="color:white;">
-        <input type="checkbox" id="documents_submitted"> Documents Submitted
-      </label>
-
-      <textarea id="notes" class="full" rows="3" placeholder="Notes..."></textarea>
+    <!-- Desktop table -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Status</th>
+            <th>Date Applied</th>
+            <th>Rent</th>
+            <th>Docs</th>
+          </tr>
+        </thead>
+        <tbody id="appTable"></tbody>
+      </table>
     </div>
 
+    <!-- Mobile card list -->
+    <div class="mob-app-list" id="mobAppList"></div>
+  </div>
+
+  <div class="card" id="detailSection">
+    <h1>Application Details</h1>
+    <div class="detail-grid" id="detailContent"></div>
     <div class="actions">
-      <button class="btnGhost" onclick="closeModal()">Cancel</button>
-      <button onclick="saveApplication()">Save</button>
+      <button onclick="editCurrent()">Edit</button>
+      <button class="btnDanger" onclick="openDeleteModal()">Delete</button>
+      <button class="btnGhost" onclick="backToList()">Back</button>
     </div>
   </div>
-</div>
 
-<!-- DELETE MODAL -->
-<div class="modal" id="deleteModal">
-  <div class="modal-content" style="width:400px;max-width:100%;">
-    <h3 style="color:var(--primary);">Confirm Delete</h3>
-    <p style="color:var(--muted);">Are you sure?</p>
-    <div class="actions">
-      <button class="btnGhost" onclick="closeDeleteModal()">Cancel</button>
-      <button class="btnDanger" onclick="confirmDelete()">Delete</button>
+  <!-- FORM MODAL -->
+  <div class="modal" id="formModal">
+    <div class="modal-content">
+      <div class="modal-title" id="modalTitle">New Application</div>
+      <input type="hidden" id="appId">
+
+      <div class="form-grid">
+        <input type="text" id="property_address" placeholder="Property Address">
+        <input type="text" id="company_name" placeholder="Company Name">
+        <input type="text" id="contact_person" placeholder="Contact Person">
+        <input type="email" id="contact_email" placeholder="Contact Email">
+        <input type="text" id="contact_phone" placeholder="Contact Phone">
+        <input type="number" id="rent_amount" placeholder="Rent Amount">
+
+        <input type="text" id="date_applied" class="date-picker" placeholder="Select application date (YYYY-MM-DD)">
+        <input type="text" id="interview_date" class="date-picker" placeholder="Select interview date (optional)">
+        <input type="text" id="follow_up_date" class="date-picker" placeholder="Select follow-up reminder date">
+
+        <select id="status">
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+
+        <label class="full" style="color:white;">
+          <input type="checkbox" id="documents_submitted"> Documents Submitted
+        </label>
+
+        <textarea id="notes" class="full" rows="3" placeholder="Notes..."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btnGhost" onclick="closeModal()">Cancel</button>
+        <button onclick="saveApplication()">Save</button>
+      </div>
     </div>
   </div>
+
+  <!-- DELETE MODAL -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content" style="width:400px;max-width:100%;">
+      <h3 style="color:var(--primary);">Confirm Delete</h3>
+      <p style="color:var(--muted);">Are you sure?</p>
+      <div class="actions">
+        <button class="btnGhost" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btnDanger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+{% else %}
+
+  <!-- NON-PREMIUM UPGRADE CARD -->
+  <div class="premium-card">
+    <h3>🔒 Premium Feature</h3>
+    <p>Application tracking is available with a premium subscription.</p>
+    <a href="{% url 'create_checkout_session' %}" class="upgrade-btn">Upgrade to Premium</a>
+  </div>
+
+{% endif %}
+
 </div>
 
-<div class="toast" id="toast"></div>
-
+{% if is_premium %}
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <script>
 flatpickr(".date-picker",{dateFormat:"Y-m-d"});
 
@@ -438,7 +487,7 @@ function loadApplications(){
         <td>${app.date_applied||"-"}</td>
         <td>${app.rent_amount||"-"}</td>
         <td>${app.documents_submitted?"✅":"—"}</td>
-      </tr>`;
+       </tr>`;
     });
 
     /* Mobile card list */
@@ -576,5 +625,6 @@ function getCSRFToken(){
     ?.split('=')[1];
 }
 </script>
+{% endif %}
 
-{% endblock %}
+{% endblock content %}

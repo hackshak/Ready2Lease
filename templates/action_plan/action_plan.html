@@ -240,6 +240,39 @@
 }
 
 /* =========================================
+   PREMIUM UPGRADE CARD
+========================================= */
+
+.premium-card{
+    text-align:center;
+    padding:50px 20px;
+    background:rgba(108,125,255,.06);
+    border:1px solid rgba(108,125,255,.35);
+    border-radius:18px;
+    margin:20px;
+}
+.premium-card h3{
+    margin:0 0 8px;
+    color:var(--text);
+    font-size:18px;
+}
+.premium-card p{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:20px;
+}
+.upgrade-btn{
+    display:inline-block;
+    background:linear-gradient(135deg,#6c7dff,#8b5cf6);
+    padding:10px 24px;
+    border-radius:40px;
+    color:white;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* =========================================
    RESPONSIVE — TABLET (≤900px)
 ========================================= */
 
@@ -345,6 +378,8 @@
 
 <div class="ap-center-wrapper">
 
+{% if is_premium %}
+
 <div class="action-plan-container">
 
 <form style="display:none;">{% csrf_token %}</form>
@@ -378,7 +413,6 @@
 
 </div>
 </div>
-</div>
 
 <div id="apModal" class="ap-modal">
   <div class="ap-modal-content">
@@ -387,6 +421,20 @@
   </div>
 </div>
 
+{% else %}
+
+<!-- NON-PREMIUM UPGRADE CARD -->
+<div class="premium-card">
+    <h3 style="color: white;">🔒 Premium Feature</h3>
+    <p style="color: white;">Action plan and score improvement tasks are available with a premium subscription.</p>
+    <a href="{% url 'create_checkout_session' %}" class="upgrade-btn">Upgrade to Premium</a>
+</div>
+
+{% endif %}
+
+</div>
+
+{% if is_premium %}
 <script>
 let selectedAssessment=null;
 
@@ -553,5 +601,6 @@ function closeModal(){
 document.getElementById("refreshBtn").onclick=loadTasks;
 document.addEventListener("DOMContentLoaded",loadAssessments);
 </script>
+{% endif %}
 
-{% endblock %}
+{% endblock content %}
